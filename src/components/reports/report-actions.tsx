@@ -1,7 +1,7 @@
 "use client";
 
 import { callAction } from "@/lib/call-action";
-import { FileDown, Loader2, MessageCircle, Printer } from "lucide-react";
+import { FileDown, Loader2, Printer } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Field } from "@/components/forms/field";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { whatsappLink } from "@/lib/whatsapp";
 import { whatsappShareAction } from "@/modules/reports/actions";
 
@@ -58,7 +59,7 @@ export function ReportActions({ params, size = "sm", compact = false }: { params
           </a>
         </Button>
         <Button variant="outline" size={size} onClick={openShare} disabled={loading}>
-          {loading ? <Loader2 className="animate-spin" /> : <MessageCircle />} {!compact && "WhatsApp"}
+          {loading ? <Loader2 className="animate-spin" /> : <WhatsAppIcon />} {!compact && "WhatsApp"}
           {compact && <span className="sr-only">Share on WhatsApp</span>}
         </Button>
       </div>
@@ -84,7 +85,7 @@ export function ReportActions({ params, size = "sm", compact = false }: { params
             </Button>
             <Button asChild>
               <a href={share ? whatsappLink(share.text, share.phone) : "#"} target="_blank" rel="noopener noreferrer" onClick={() => setTimeout(() => setShare(null), 100)}>
-                <MessageCircle /> Open WhatsApp
+                <WhatsAppIcon /> Open WhatsApp
               </a>
             </Button>
           </DialogFooter>
