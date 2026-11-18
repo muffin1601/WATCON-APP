@@ -1,0 +1,21 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - img "Watcon International" [ref=e5]
+    - generic [ref=e6]:
+      - heading "Sign in" [level=1] [ref=e7]
+      - paragraph [ref=e8]: Use your work email or username.
+      - generic [ref=e9]:
+        - generic [ref=e10]:
+          - generic [ref=e11]: Email or username
+          - textbox "Email or username" [active] [ref=e12]
+        - generic [ref=e13]:
+          - generic [ref=e14]: Password
+          - generic [ref=e15]:
+            - textbox "Password" [ref=e16]
+            - button "Show password" [ref=e17] [cursor=pointer]
+        - button "Sign in" [ref=e21] [cursor=pointer]
+        - link "Forgot your password?" [ref=e23] [cursor=pointer]:
+          - /url: /forgot-password
+    - paragraph [ref=e24]: Authorized personnel only. Activity is logged.
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e30] [cursor=pointer]

@@ -1,0 +1,10 @@
+node_modules
+.next
+.pgdata
+.env
+.env.*
+!.env.example
+test-results
+playwright-report
+src/generated
+.git

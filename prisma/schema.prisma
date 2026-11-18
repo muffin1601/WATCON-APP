@@ -1,0 +1,490 @@
+// Watcon Enterprise — Phase 1 schema (Projects, Departments, Team Members, Tasks).
+// Conventions:
+//   * UUID primary keys (stable; future POs / challans / bills reference project ids directly).
+//   * Human-facing business codes (PRJ-0001, TSK-00001 …) are generated from `code_counters`
+//     with an atomic UPSERT … RETURNING inside the creating transaction (never MAX(id)+1).
+//   * snake_case table/column names via @@map / @map.
+//   * History tables (project_status_updates, task_activity, audit_logs) are append-only.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ───────────────────────────── Enums ─────────────────────────────
+
+enum RoleKey {
+  SUPER_ADMIN
+  ADMIN
+  USER
+}
+
+enum AccountStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum RecordStatus {
+  ACTIVE
+  INACTIVE
+}
+
+/// Declaration order is the sort order (ascending = lowest first).
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  BLOCKED
+  COMPLETED
+  CANCELLED
+}
+
+enum TaskActivityAction {
+  CREATED
+  EDITED
+  ASSIGNEES_CHANGED
+  DEPARTMENTS_CHANGED
+  OWNER_CHANGED
+  STATUS_CHANGED
+  PROGRESS_CHANGED
+  DUE_DATE_CHANGED
+  COMMENT_ADDED
+  COMPLETED
+  REOPENED
+}
+
+enum CodeScope {
+  PROJECT
+  TASK
+  DEPARTMENT
+  EMPLOYEE
+}
+
+// ─────────────────────────── Organization ───────────────────────────
+
+model Organization {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  legalName   String?  @map("legal_name")
+  address     String?
+  phone       String?
+  email       String?
+  /// Small PNG/JPEG logo stored as a data URL (validated, ≤ 256 KB).
+  logoDataUrl String?  @map("logo_data_url")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  users        User[]
+  departments  Department[]
+  projects     Project[]
+  tasks        Task[]
+  auditLogs    AuditLog[]
+  codeCounters CodeCounter[]
+
+  @@map("organizations")
+}
+
+model CodeCounter {
+  organizationId String       @map("organization_id") @db.Uuid
+  scope          CodeScope
+  value          Int          @default(0)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@id([organizationId, scope])
+  @@map("code_counters")
+}
+
+// ─────────────────────── Roles & permissions ───────────────────────
+
+model Role {
+  id          String           @id @default(uuid()) @db.Uuid
+  key         RoleKey          @unique
+  name        String
+  description String?
+  isSystem    Boolean          @default(true) @map("is_system")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+  permissions RolePermission[]
+  users       User[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(uuid()) @db.Uuid
+  key         String           @unique
+  name        String
+  group       String
+  description String?
+  roles       RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String     @map("role_id") @db.Uuid
+  permissionId String     @map("permission_id") @db.Uuid
+  grantedAt    DateTime   @default(now()) @map("granted_at")
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+// ───────────────────── Users (= team members) ─────────────────────
+
+/// One identity per employee: the team-member profile IS the user account.
+model User {
+  id                  String        @id @default(uuid()) @db.Uuid
+  organizationId      String        @map("organization_id") @db.Uuid
+  employeeCode        String        @map("employee_code")
+  username            String        @unique
+  /// Stored lower-cased.
+  email               String        @unique
+  passwordHash        String        @map("password_hash")
+  fullName            String        @map("full_name")
+  phone               String?
+  whatsappNumber      String?       @map("whatsapp_number")
+  designation         String?
+  joiningDate         DateTime?     @map("joining_date") @db.Date
+  roleId              String        @map("role_id") @db.Uuid
+  status              AccountStatus @default(ACTIVE)
+  primaryDepartmentId String?       @map("primary_department_id") @db.Uuid
+  mustChangePassword  Boolean       @default(false) @map("must_change_password")
+  passwordChangedAt   DateTime?     @map("password_changed_at")
+  lastLoginAt         DateTime?     @map("last_login_at")
+  /// MFA foundation (not enforced in Phase 1).
+  mfaEnabled          Boolean       @default(false) @map("mfa_enabled")
+  mfaSecretEncrypted  String?       @map("mfa_secret_encrypted")
+  createdById         String?       @map("created_by_id") @db.Uuid
+  createdAt           DateTime      @default(now()) @map("created_at")
+  updatedAt           DateTime      @updatedAt @map("updated_at")
+
+  organization      Organization  @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  role              Role          @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  primaryDepartment Department?   @relation("PrimaryDepartment", fields: [primaryDepartmentId], references: [id], onDelete: SetNull)
+  createdBy         User?         @relation("UserCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdUsers      User[]        @relation("UserCreatedBy")
+
+  sessions             Session[]
+  passwordResetTokens  PasswordResetToken[]
+  departmentMembership DepartmentMember[]
+  headOfDepartments    Department[]          @relation("DepartmentHead")
+  managedProjects      Project[]             @relation("ProjectManager")
+  createdProjects      Project[]             @relation("ProjectCreatedBy")
+  archivedProjects     Project[]             @relation("ProjectArchivedBy")
+  projectMemberships   ProjectMember[]
+  statusUpdates        ProjectStatusUpdate[]
+  ownedTasks           Task[]                @relation("TaskOwner")
+  createdTasks         Task[]                @relation("TaskCreatedBy")
+  taskAssignments      TaskAssignee[]        @relation("TaskAssignee")
+  assignedByMe         TaskAssignee[]        @relation("TaskAssignedBy")
+  taskComments         TaskComment[]
+  taskActivity         TaskActivity[]
+  auditLogs            AuditLog[]
+  notifications        Notification[]
+
+  @@unique([organizationId, employeeCode])
+  @@index([organizationId, status])
+  @@index([organizationId, fullName])
+  @@map("users")
+}
+
+model Session {
+  id         String   @id @default(uuid()) @db.Uuid
+  /// SHA-256 of the random session token; the raw token only lives in the HttpOnly cookie.
+  tokenHash  String   @unique @map("token_hash")
+  userId     String   @map("user_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at")
+  lastSeenAt DateTime @default(now()) @map("last_seen_at")
+  expiresAt  DateTime @map("expires_at")
+  ipAddress  String?  @map("ip_address")
+  userAgent  String?  @map("user_agent")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  tokenHash String    @unique @map("token_hash")
+  userId    String    @map("user_id") @db.Uuid
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+/// Fixed-window rate limiting shared by all app instances.
+model RateLimitEvent {
+  id        BigInt   @id @default(autoincrement())
+  key       String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([key, createdAt])
+  @@map("rate_limit_events")
+}
+
+// ─────────────────────────── Departments ───────────────────────────
+
+model Department {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @map("organization_id") @db.Uuid
+  code           String
+  name           String
+  description    String?
+  headId         String?      @map("head_id") @db.Uuid
+  status         RecordStatus @default(ACTIVE)
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  head           User?              @relation("DepartmentHead", fields: [headId], references: [id], onDelete: SetNull)
+  members        DepartmentMember[]
+  primaryMembers User[]             @relation("PrimaryDepartment")
+  tasks          TaskDepartment[]
+
+  @@unique([organizationId, code])
+  @@unique([organizationId, name])
+  @@index([organizationId, status])
+  @@map("departments")
+}
+
+model DepartmentMember {
+  departmentId String     @map("department_id") @db.Uuid
+  userId       String     @map("user_id") @db.Uuid
+  joinedAt     DateTime   @default(now()) @map("joined_at")
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Restrict)
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([departmentId, userId])
+  @@index([userId])
+  @@map("department_members")
+}
+
+// ───────────────────────────── Projects ─────────────────────────────
+
+model Project {
+  id                     String        @id @default(uuid()) @db.Uuid
+  organizationId         String        @map("organization_id") @db.Uuid
+  code                   String
+  name                   String
+  siteAddress            String        @map("site_address")
+  description            String
+  startDate              DateTime?     @map("start_date") @db.Date
+  expectedCompletionDate DateTime?     @map("expected_completion_date") @db.Date
+  priority               Priority      @default(MEDIUM)
+  status                 ProjectStatus @default(PLANNING)
+  managerId              String?       @map("manager_id") @db.Uuid
+  createdById            String        @map("created_by_id") @db.Uuid
+  archivedAt             DateTime?     @map("archived_at")
+  archivedById           String?       @map("archived_by_id") @db.Uuid
+  createdAt              DateTime      @default(now()) @map("created_at")
+  updatedAt              DateTime      @updatedAt @map("updated_at")
+
+  organization  Organization          @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  manager       User?                 @relation("ProjectManager", fields: [managerId], references: [id], onDelete: SetNull)
+  createdBy     User                  @relation("ProjectCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  archivedBy    User?                 @relation("ProjectArchivedBy", fields: [archivedById], references: [id], onDelete: SetNull)
+  members       ProjectMember[]
+  statusUpdates ProjectStatusUpdate[]
+  tasks         Task[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId, status])
+  @@index([organizationId, updatedAt])
+  @@index([organizationId, name])
+  @@index([managerId])
+  @@map("projects")
+}
+
+model ProjectMember {
+  projectId String   @map("project_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  addedAt   DateTime @default(now()) @map("added_at")
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, userId])
+  @@index([userId])
+  @@map("project_members")
+}
+
+/// Append-only. The latest row is the "Current Project Status".
+model ProjectStatusUpdate {
+  id        String   @id @default(uuid()) @db.Uuid
+  projectId String   @map("project_id") @db.Uuid
+  body      String
+  authorId  String   @map("author_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([projectId, createdAt])
+  @@map("project_status_updates")
+}
+
+// ────────────────────────────── Tasks ──────────────────────────────
+
+/// One record per task, shared by the global, project, department and member views.
+model Task {
+  id             String     @id @default(uuid()) @db.Uuid
+  organizationId String     @map("organization_id") @db.Uuid
+  code           String
+  title          String
+  description    String?
+  projectId      String     @map("project_id") @db.Uuid
+  startDate      DateTime?  @map("start_date") @db.Date
+  dueDate        DateTime?  @map("due_date") @db.Date
+  priority       Priority   @default(MEDIUM)
+  status         TaskStatus @default(TODO)
+  progress       Int        @default(0)
+  ownerId        String?    @map("owner_id") @db.Uuid
+  createdById    String     @map("created_by_id") @db.Uuid
+  completedAt    DateTime?  @map("completed_at")
+  /// Optimistic-concurrency version; incremented on every update.
+  version        Int        @default(1)
+  /// Sort key: lower-cased alphabetically-first assigned department name (NULL when none).
+  departmentSortKey String? @map("department_sort_key")
+  /// Sort key: lower-cased alphabetically-first assignee full name (NULL when none).
+  assigneeSortKey   String? @map("assignee_sort_key")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  project      Project          @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  owner        User?            @relation("TaskOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  createdBy    User             @relation("TaskCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  departments  TaskDepartment[]
+  assignees    TaskAssignee[]
+  comments     TaskComment[]
+  activity     TaskActivity[]
+
+  @@unique([organizationId, code])
+  @@index([projectId])
+  @@index([organizationId, status])
+  @@index([organizationId, dueDate])
+  @@index([organizationId, createdAt])
+  @@index([organizationId, priority])
+  @@index([organizationId, departmentSortKey])
+  @@index([organizationId, assigneeSortKey])
+  @@index([ownerId])
+  @@map("tasks")
+}
+
+model TaskDepartment {
+  taskId       String     @map("task_id") @db.Uuid
+  departmentId String     @map("department_id") @db.Uuid
+  assignedAt   DateTime   @default(now()) @map("assigned_at")
+  task         Task       @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Restrict)
+
+  @@id([taskId, departmentId])
+  @@index([departmentId])
+  @@map("task_departments")
+}
+
+model TaskAssignee {
+  taskId       String   @map("task_id") @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  assignedById String?  @map("assigned_by_id") @db.Uuid
+  assignedAt   DateTime @default(now()) @map("assigned_at")
+  task         Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user         User     @relation("TaskAssignee", fields: [userId], references: [id], onDelete: Restrict)
+  assignedBy   User?    @relation("TaskAssignedBy", fields: [assignedById], references: [id], onDelete: SetNull)
+
+  @@id([taskId, userId])
+  @@index([userId])
+  @@map("task_assignees")
+}
+
+model TaskComment {
+  id        String   @id @default(uuid()) @db.Uuid
+  taskId    String   @map("task_id") @db.Uuid
+  authorId  String   @map("author_id") @db.Uuid
+  body      String
+  createdAt DateTime @default(now()) @map("created_at")
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([taskId, createdAt])
+  @@map("task_comments")
+}
+
+/// Append-only task history.
+model TaskActivity {
+  id        String             @id @default(uuid()) @db.Uuid
+  taskId    String             @map("task_id") @db.Uuid
+  actorId   String             @map("actor_id") @db.Uuid
+  action    TaskActivityAction
+  fromValue Json?              @map("from_value")
+  toValue   Json?              @map("to_value")
+  createdAt DateTime           @default(now()) @map("created_at")
+  task      Task               @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  actor     User               @relation(fields: [actorId], references: [id], onDelete: Restrict)
+
+  @@index([taskId, createdAt])
+  @@index([createdAt])
+  @@map("task_activity")
+}
+
+// ─────────────────────── Audit & notifications ───────────────────────
+
+model AuditLog {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @map("organization_id") @db.Uuid
+  actorId        String?      @map("actor_id") @db.Uuid
+  action         String
+  entityType     String       @map("entity_type")
+  entityId       String?      @map("entity_id")
+  summary        String?
+  metadata       Json?
+  ipAddress      String?      @map("ip_address")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  actor          User?        @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, createdAt])
+  @@index([entityType, entityId])
+  @@index([actorId])
+  @@map("audit_logs")
+}
+
+model Notification {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  type      String
+  title     String
+  body      String?
+  link      String?
+  readAt    DateTime? @map("read_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, createdAt])
+  @@map("notifications")
+}
