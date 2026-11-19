@@ -16,6 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { formatDateTime, initials } from "@/lib/format";
 import { logoutAction } from "@/modules/auth/actions";
@@ -199,6 +200,7 @@ export function AppHeader({ user, unread, onToggleSidebar }: { user: HeaderUser;
       <div className="flex min-w-0 flex-1 justify-center sm:justify-start">
         <GlobalSearch />
       </div>
+      <ThemeToggle />
       <Notifications initialUnread={unread} />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

@@ -11,7 +11,8 @@ const ROLE_DESCRIPTIONS = {
  * Idempotently syncs the code-defined role & permission catalogue into the database.
  * - Creates missing roles/permissions and refreshes their labels.
  * - Grants default permissions only to roles that have no grants yet (so Super Admin
- *   customisations survive re-runs).
+ *   customisations survive re-runs), plus the defaults of permissions that are new to
+ *   this database (so a release that adds permissions reaches existing roles).
  * - SUPER_ADMIN is always granted the full catalogue; super-admin-only permissions are
  *   always revoked from other roles.
  */
@@ -26,6 +27,7 @@ export async function syncRbac(client: PrismaClient): Promise<void> {
     roles.set(key, role.id);
   }
 
+  const known = new Set((await client.permission.findMany({ select: { key: true } })).map((p) => p.key));
   const permissionIds = new Map<string, string>();
   for (const p of PERMISSIONS) {
     const row = await client.permission.upsert({
@@ -39,7 +41,8 @@ export async function syncRbac(client: PrismaClient): Promise<void> {
   for (const key of ROLE_KEYS) {
     const roleId = roles.get(key)!;
     const existing = await client.rolePermission.count({ where: { roleId } });
-    const grants = key === "SUPER_ADMIN" || existing === 0 ? defaultPermissionsFor(key) : [];
+    const defaults = defaultPermissionsFor(key);
+    const grants = key === "SUPER_ADMIN" || existing === 0 ? defaults : defaults.filter((g) => !known.has(g));
     if (grants.length) {
       await client.rolePermission.createMany({
         data: grants.map((g) => ({ roleId, permissionId: permissionIds.get(g)! })),

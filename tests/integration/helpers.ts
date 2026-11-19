@@ -10,7 +10,7 @@ let passwordHash: string | null = null;
 /** Wipes all business data (keeps roles & permissions) and re-syncs RBAC. */
 export async function resetDatabase() {
   await db.$executeRawUnsafe(`
-    TRUNCATE TABLE notifications, audit_logs, task_activity, task_comments, task_assignees, task_departments,
+    TRUNCATE TABLE stock_transactions, item_brands, items, brands, notifications, audit_logs, task_activity, task_comments, task_assignees, task_departments,
       tasks, project_status_updates, project_members, projects, department_members, sessions,
       password_reset_tokens, rate_limit_events, code_counters, role_permissions, permissions, roles,
       departments, users, organizations CASCADE;`);

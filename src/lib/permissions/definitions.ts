@@ -16,7 +16,7 @@ export const ROLE_LABELS: Record<RoleKey, string> = {
 type PermissionDef = {
   key: string;
   name: string;
-  group: "Dashboard" | "Projects" | "Departments" | "Team Members" | "Tasks" | "Reports" | "Administration";
+  group: "Dashboard" | "Projects" | "Departments" | "Team Members" | "Tasks" | "Reports" | "Inventory" | "Administration";
   description: string;
   /** Can never be granted to ADMIN/USER, even if a row exists in role_permissions. */
   superAdminOnly?: boolean;
@@ -46,6 +46,11 @@ export const PERMISSIONS = [
 
   { key: "reports.view", name: "Task reports", group: "Reports", description: "Print / export / share project, department, member and global task lists within the user's access.", defaults: ["ADMIN"] },
   { key: "reports.own", name: "Own task report", group: "Reports", description: "Print / export the user's own task list.", defaults: ["ADMIN", "USER"] },
+
+  { key: "items.view", name: "View inventory", group: "Inventory", description: "See items, brands, brand-wise stock balances and the stock ledger.", defaults: ["ADMIN"] },
+  { key: "items.manage", name: "Manage items & brands", group: "Inventory", description: "Create, edit and deactivate items and brands, and link brands to items.", defaults: ["ADMIN"] },
+  { key: "stock.post", name: "Post stock inward / outward", group: "Inventory", description: "Record stock received (inward) and issued (outward).", defaults: ["ADMIN"] },
+  { key: "stock.adjust", name: "Stock adjustments", group: "Inventory", description: "Post opening stock and stock adjustments (a reason is mandatory).", defaults: [] },
 
   { key: "settings.company", name: "Company settings", group: "Administration", description: "Edit company name, logo and contact details.", superAdminOnly: true, defaults: [] },
   { key: "settings.roles", name: "Roles & permissions", group: "Administration", description: "Change which permissions Admin and User roles have.", superAdminOnly: true, defaults: [] },

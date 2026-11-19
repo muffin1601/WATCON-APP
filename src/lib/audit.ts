@@ -4,7 +4,7 @@ export type AuditEntry = {
   organizationId: string;
   actorId: string | null;
   action: string;
-  entityType: "user" | "project" | "department" | "task" | "organization" | "role" | "session";
+  entityType: "user" | "project" | "department" | "task" | "organization" | "role" | "session" | "item" | "brand" | "stock";
   entityId?: string | null;
   summary?: string;
   metadata?: Prisma.InputJsonValue;

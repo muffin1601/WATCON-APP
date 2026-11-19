@@ -76,6 +76,21 @@ enum CodeScope {
   TASK
   DEPARTMENT
   EMPLOYEE
+  ITEM
+  BRAND
+  STOCK_TXN
+}
+
+enum StockTxnType {
+  OPENING
+  INWARD
+  OUTWARD
+  ADJUSTMENT
+}
+
+enum StockDirection {
+  IN
+  OUT
 }
 
 // ─────────────────────────── Organization ───────────────────────────
@@ -92,12 +107,16 @@ model Organization {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  users        User[]
-  departments  Department[]
-  projects     Project[]
-  tasks        Task[]
-  auditLogs    AuditLog[]
-  codeCounters CodeCounter[]
+  users             User[]
+  departments       Department[]
+  projects          Project[]
+  tasks             Task[]
+  auditLogs         AuditLog[]
+  codeCounters      CodeCounter[]
+  items             Item[]
+  brands            Brand[]
+  itemBrands        ItemBrand[]
+  stockTransactions StockTransaction[]
 
   @@map("organizations")
 }
@@ -179,11 +198,11 @@ model User {
   createdAt           DateTime      @default(now()) @map("created_at")
   updatedAt           DateTime      @updatedAt @map("updated_at")
 
-  organization      Organization  @relation(fields: [organizationId], references: [id], onDelete: Restrict)
-  role              Role          @relation(fields: [roleId], references: [id], onDelete: Restrict)
-  primaryDepartment Department?   @relation("PrimaryDepartment", fields: [primaryDepartmentId], references: [id], onDelete: SetNull)
-  createdBy         User?         @relation("UserCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  createdUsers      User[]        @relation("UserCreatedBy")
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  role              Role         @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  primaryDepartment Department?  @relation("PrimaryDepartment", fields: [primaryDepartmentId], references: [id], onDelete: SetNull)
+  createdBy         User?        @relation("UserCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdUsers      User[]       @relation("UserCreatedBy")
 
   sessions             Session[]
   passwordResetTokens  PasswordResetToken[]
@@ -202,6 +221,9 @@ model User {
   taskActivity         TaskActivity[]
   auditLogs            AuditLog[]
   notifications        Notification[]
+  createdItems         Item[]                @relation("ItemCreatedBy")
+  createdBrands        Brand[]               @relation("BrandCreatedBy")
+  stockTransactions    StockTransaction[]    @relation("StockTxnCreatedBy")
 
   @@unique([organizationId, employeeCode])
   @@index([organizationId, status])
@@ -352,28 +374,28 @@ model ProjectStatusUpdate {
 
 /// One record per task, shared by the global, project, department and member views.
 model Task {
-  id             String     @id @default(uuid()) @db.Uuid
-  organizationId String     @map("organization_id") @db.Uuid
-  code           String
-  title          String
-  description    String?
-  projectId      String     @map("project_id") @db.Uuid
-  startDate      DateTime?  @map("start_date") @db.Date
-  dueDate        DateTime?  @map("due_date") @db.Date
-  priority       Priority   @default(MEDIUM)
-  status         TaskStatus @default(TODO)
-  progress       Int        @default(0)
-  ownerId        String?    @map("owner_id") @db.Uuid
-  createdById    String     @map("created_by_id") @db.Uuid
-  completedAt    DateTime?  @map("completed_at")
+  id                String     @id @default(uuid()) @db.Uuid
+  organizationId    String     @map("organization_id") @db.Uuid
+  code              String
+  title             String
+  description       String?
+  projectId         String     @map("project_id") @db.Uuid
+  startDate         DateTime?  @map("start_date") @db.Date
+  dueDate           DateTime?  @map("due_date") @db.Date
+  priority          Priority   @default(MEDIUM)
+  status            TaskStatus @default(TODO)
+  progress          Int        @default(0)
+  ownerId           String?    @map("owner_id") @db.Uuid
+  createdById       String     @map("created_by_id") @db.Uuid
+  completedAt       DateTime?  @map("completed_at")
   /// Optimistic-concurrency version; incremented on every update.
-  version        Int        @default(1)
+  version           Int        @default(1)
   /// Sort key: lower-cased alphabetically-first assigned department name (NULL when none).
-  departmentSortKey String? @map("department_sort_key")
+  departmentSortKey String?    @map("department_sort_key")
   /// Sort key: lower-cased alphabetically-first assignee full name (NULL when none).
-  assigneeSortKey   String? @map("assignee_sort_key")
-  createdAt      DateTime   @default(now()) @map("created_at")
-  updatedAt      DateTime   @updatedAt @map("updated_at")
+  assigneeSortKey   String?    @map("assignee_sort_key")
+  createdAt         DateTime   @default(now()) @map("created_at")
+  updatedAt         DateTime   @updatedAt @map("updated_at")
 
   organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Restrict)
   project      Project          @relation(fields: [projectId], references: [id], onDelete: Restrict)
@@ -487,4 +509,133 @@ model Notification {
 
   @@index([userId, readAt, createdAt])
   @@map("notifications")
+}
+
+// ─────────────────────── Inventory (Phase 2) ───────────────────────
+
+model Item {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @map("organization_id") @db.Uuid
+  /// Stored upper-cased; entered manually or generated (ITM-0001).
+  code           String
+  name           String
+  category       String?
+  unit           String
+  description    String?
+  status         RecordStatus @default(ACTIVE)
+  createdById    String?      @map("created_by_id") @db.Uuid
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  organization Organization       @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  createdBy    User?              @relation("ItemCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  brands       ItemBrand[]
+  images       ItemImage[]
+  transactions StockTransaction[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId, status])
+  @@index([organizationId, name])
+  @@index([organizationId, category])
+  @@map("items")
+}
+
+model ItemImage {
+  id        String   @id @default(uuid()) @db.Uuid
+  itemId    String   @map("item_id") @db.Uuid
+  /// Public path under /public, e.g. /assets/images/368-automatic-cover/1.webp
+  path      String
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, path])
+  @@index([itemId, sortOrder])
+  @@map("item_images")
+}
+
+model Brand {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @map("organization_id") @db.Uuid
+  code           String
+  name           String
+  description    String?
+  status         RecordStatus @default(ACTIVE)
+  createdById    String?      @map("created_by_id") @db.Uuid
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  organization Organization       @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  createdBy    User?              @relation("BrandCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  items        ItemBrand[]
+  transactions StockTransaction[]
+
+  @@unique([organizationId, code])
+  @@unique([organizationId, name])
+  @@index([organizationId, status])
+  @@map("brands")
+}
+
+/// One stock position per item–brand combination. `currentQty` is only changed by
+/// posting a StockTransaction in the same database transaction (never edited directly).
+model ItemBrand {
+  id             String   @id @default(uuid()) @db.Uuid
+  organizationId String   @map("organization_id") @db.Uuid
+  itemId         String   @map("item_id") @db.Uuid
+  brandId        String   @map("brand_id") @db.Uuid
+  currentQty     Decimal  @default(0) @map("current_qty") @db.Decimal(14, 3)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  organization Organization       @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  item         Item               @relation(fields: [itemId], references: [id], onDelete: Restrict)
+  brand        Brand              @relation(fields: [brandId], references: [id], onDelete: Restrict)
+  transactions StockTransaction[]
+
+  @@unique([itemId, brandId])
+  @@index([organizationId])
+  @@index([brandId])
+  @@map("item_brands")
+}
+
+/// Append-only stock ledger. `quantity` is always positive; `direction` gives the sign.
+model StockTransaction {
+  id             String         @id @default(uuid()) @db.Uuid
+  organizationId String         @map("organization_id") @db.Uuid
+  code           String
+  itemBrandId    String         @map("item_brand_id") @db.Uuid
+  itemId         String         @map("item_id") @db.Uuid
+  brandId        String         @map("brand_id") @db.Uuid
+  type           StockTxnType
+  direction      StockDirection
+  quantity       Decimal        @db.Decimal(14, 3)
+  balanceAfter   Decimal        @map("balance_after") @db.Decimal(14, 3)
+  txnDate        DateTime       @map("txn_date") @db.Date
+  reference      String?
+  remarks        String?
+  /// Mandatory for ADJUSTMENT.
+  reason         String?
+  /// Client-generated key per submission; a retried/duplicate submit cannot post twice.
+  idempotencyKey String         @map("idempotency_key")
+  /// Future source documents (supplier bill, challan …) post with their own type/id.
+  sourceType     String?        @map("source_type")
+  sourceId       String?        @map("source_id")
+  createdById    String         @map("created_by_id") @db.Uuid
+  createdAt      DateTime       @default(now()) @map("created_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  itemBrand    ItemBrand    @relation(fields: [itemBrandId], references: [id], onDelete: Restrict)
+  item         Item         @relation(fields: [itemId], references: [id], onDelete: Restrict)
+  brand        Brand        @relation(fields: [brandId], references: [id], onDelete: Restrict)
+  createdBy    User         @relation("StockTxnCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@unique([organizationId, code])
+  @@unique([organizationId, idempotencyKey])
+  @@index([itemBrandId, txnDate, createdAt])
+  @@index([organizationId, txnDate])
+  @@index([itemId])
+  @@index([brandId])
+  @@index([sourceType, sourceId])
+  @@map("stock_transactions")
 }

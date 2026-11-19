@@ -16,7 +16,8 @@ await client.connect();
 await client.query("DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;");
 await client.end();
 
-const run = (cmd) => execSync(cmd, { stdio: "inherit", env: process.env });
+// prisma.config.ts prefers DIRECT_URL (which .env may point at a real database); pin it to the E2E DB.
+const run = (cmd) => execSync(cmd, { stdio: "inherit", env: { ...process.env, DIRECT_URL: url } });
 run("npx prisma migrate deploy");
 run("npx tsx scripts/bootstrap-admin.ts");
 console.log("E2E database ready.");

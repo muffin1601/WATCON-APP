@@ -12,7 +12,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
   return (
     <AppShell
       user={{ id: user.id, fullName: user.fullName, email: user.email, roleLabel: ROLE_LABELS[user.role], employeeCode: user.employeeCode }}
-      nav={{ id: user.id, canViewMembers: can(user, "members.view") }}
+      nav={{ id: user.id, canViewMembers: can(user, "members.view"), canViewInventory: can(user, "items.view") }}
       orgName={org?.name ?? "Watcon"}
       unread={unread}
     >

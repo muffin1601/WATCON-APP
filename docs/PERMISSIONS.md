@@ -27,6 +27,10 @@ Resource scoping: `src/lib/permissions/scopes.ts`. Both are unit-tested.
 | tasks.comment | ✔ | ✔ | On visible tasks |
 | reports.view | ✔ | | Project / department / member / global lists within the user's access |
 | reports.own | ✔ | ✔ | Own member task list + visible single tasks |
+| items.view | ✔ | | Items, brands, brand-wise stock and ledger (`/items`, `/brands`, `/stock`) |
+| items.manage | ✔ | | Create/edit/deactivate items and brands; link/unlink brands (unlink only without stock history) |
+| stock.post | ✔ | | Inward / outward movements |
+| stock.adjust | | | Opening stock and adjustments (reason mandatory). Super Admin only unless granted |
 | users.manage_admins 🔒 | | | Create admins, change roles |
 | settings.company 🔒 | | | |
 | settings.roles 🔒 | | | |

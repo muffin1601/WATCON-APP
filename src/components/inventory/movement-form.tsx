@@ -1,0 +1,164 @@
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowDownToLine, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Controller, useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
+import type { z } from "zod";
+import { SingleSelect } from "@/components/forms/combobox";
+import { Field } from "@/components/forms/field";
+import { FormDialog } from "@/components/shared/dialogs";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { callAction } from "@/lib/call-action";
+import { formatQty } from "@/lib/format";
+import { newId } from "@/lib/utils";
+import { applyActionResult } from "@/lib/forms";
+import { postStockMovementAction } from "@/modules/inventory/actions";
+import { movementSchema, type MovementInput } from "@/modules/inventory/validation";
+
+type Output = z.output<typeof movementSchema>;
+
+export type PositionOption = { id: string; itemCode: string; itemName: string; brandName: string; unit: string; currentQty: string };
+
+function MovementForm({ positions, canPost, canAdjust, today, presetId, onDone }: { positions: PositionOption[]; canPost: boolean; canAdjust: boolean; today: string; presetId?: string; onDone: () => void }) {
+  const router = useRouter();
+  const form = useForm<MovementInput, unknown, Output>({
+    resolver: zodResolver(movementSchema),
+    defaultValues: {
+      itemBrandId: presetId ?? "",
+      type: canPost ? "INWARD" : "ADJUSTMENT",
+      direction: null,
+      quantity: "",
+      txnDate: today,
+      reference: "",
+      remarks: "",
+      reason: "",
+      // One key per form instance: a double submit or retry can never post twice.
+      idempotencyKey: newId(),
+    },
+  });
+  const { errors, isSubmitting } = form.formState;
+  const [type, itemBrandId] = useWatch({ control: form.control, name: ["type", "itemBrandId"] });
+  const position = positions.find((p) => p.id === itemBrandId);
+
+  async function onSubmit(values: Output) {
+    const res = await callAction(postStockMovementAction, values);
+    if (!applyActionResult(res, form.setError)) return;
+    if (res.data.duplicate) toast.info(`Already posted as ${res.data.code}. Nothing was posted twice.`);
+    else toast.success(`Posted ${res.data.code}. New balance: ${formatQty(res.data.balanceAfter)}${position ? ` ${position.unit}` : ""}`);
+    onDone();
+    router.refresh();
+  }
+
+  return (
+    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" noValidate>
+      <Field id="mv-position" label="Item – brand" required error={errors.itemBrandId?.message} help={position ? `Available: ${formatQty(position.currentQty)} ${position.unit}` : undefined}>
+        <Controller
+          control={form.control}
+          name="itemBrandId"
+          render={({ field }) => (
+            <SingleSelect
+              id="mv-position"
+              options={positions.map((p) => ({ value: p.id, label: `${p.itemName} — ${p.brandName}`, hint: `${p.itemCode} · ${formatQty(p.currentQty)} ${p.unit}` }))}
+              value={field.value || null}
+              onChange={(v) => field.onChange(v ?? "")}
+              placeholder="Select item and brand"
+              searchPlaceholder="Search item, code or brand…"
+              invalid={!!errors.itemBrandId}
+              disabled={!!presetId}
+              allowClear={false}
+            />
+          )}
+        />
+      </Field>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field id="mv-type" label="Movement" required error={errors.type?.message}>
+          <Controller
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger id="mv-type" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {canPost && <SelectItem value="INWARD">Inward (received)</SelectItem>}
+                  {canPost && <SelectItem value="OUTWARD">Outward (issued)</SelectItem>}
+                  {canAdjust && <SelectItem value="ADJUSTMENT">Adjustment</SelectItem>}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </Field>
+        {type === "ADJUSTMENT" && (
+          <Field id="mv-direction" label="Adjustment" required error={errors.direction?.message}>
+            <Controller
+              control={form.control}
+              name="direction"
+              render={({ field }) => (
+                <Select value={field.value ?? ""} onValueChange={field.onChange}>
+                  <SelectTrigger id="mv-direction" className="w-full" aria-invalid={!!errors.direction}>
+                    <SelectValue placeholder="Increase or decrease" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="IN">Increase stock</SelectItem>
+                    <SelectItem value="OUT">Decrease stock</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </Field>
+        )}
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field id="mv-qty" label={`Quantity${position ? ` (${position.unit})` : ""}`} required error={errors.quantity?.message}>
+          <Input id="mv-qty" inputMode="decimal" autoComplete="off" aria-invalid={!!errors.quantity} {...form.register("quantity")} />
+        </Field>
+        <Field id="mv-date" label="Date" required error={errors.txnDate?.message}>
+          <Input id="mv-date" type="date" max={today} aria-invalid={!!errors.txnDate} {...form.register("txnDate")} />
+        </Field>
+      </div>
+      <Field id="mv-ref" label="Reference" error={errors.reference?.message} help="Bill, challan, indent or site reference.">
+        <Input id="mv-ref" autoComplete="off" {...form.register("reference")} />
+      </Field>
+      {type === "ADJUSTMENT" && (
+        <Field id="mv-reason" label="Reason" required error={errors.reason?.message}>
+          <Textarea id="mv-reason" rows={2} aria-invalid={!!errors.reason} {...form.register("reason")} />
+        </Field>
+      )}
+      <Field id="mv-remarks" label="Remarks" error={errors.remarks?.message}>
+        <Textarea id="mv-remarks" rows={2} {...form.register("remarks")} />
+      </Field>
+      <div className="flex justify-end gap-2">
+        <Button type="button" variant="outline" onClick={onDone}>
+          Cancel
+        </Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting && <Loader2 className="animate-spin" />}
+          Post
+        </Button>
+      </div>
+    </form>
+  );
+}
+
+export function PostMovementButton({ positions, canPost, canAdjust, today, presetId, label = "Post stock", size = "default", variant = "default" }: { positions: PositionOption[]; canPost: boolean; canAdjust: boolean; today: string; presetId?: string; label?: string; size?: "sm" | "default"; variant?: "default" | "outline" }) {
+  if (!canPost && !canAdjust) return null;
+  return (
+    <FormDialog
+      title="Post stock movement"
+      description="Inward and outward update the brand-wise balance immediately. Stock can never go below zero."
+      trigger={
+        <Button size={size} variant={variant}>
+          <ArrowDownToLine /> {label}
+        </Button>
+      }
+    >
+      {(close) => <MovementForm positions={positions} canPost={canPost} canAdjust={canAdjust} today={today} presetId={presetId} onDone={close} />}
+    </FormDialog>
+  );
+}

@@ -70,7 +70,7 @@ export function FilterSelect({ param, label, options, allLabel = "All", classNam
 export function DateRangeFilter({ fromParam, toParam, label }: { fromParam: string; toParam: string; label: string }) {
   const { get, setParams } = useQueryParams();
   return (
-    <fieldset className="flex w-full items-center gap-1.5 sm:w-auto">
+    <fieldset className="flex w-full min-w-0 items-center gap-1.5 sm:w-auto">
       <legend className="sr-only">{label}</legend>
       <span className="w-14 shrink-0 text-xs whitespace-nowrap text-muted-foreground sm:w-auto">{label}</span>
       <Input type="date" value={get(fromParam)} onChange={(e) => setParams({ [fromParam]: e.target.value || null })} className="h-9 min-w-0 flex-1 bg-card sm:w-[9.5rem] sm:flex-none" aria-label={`${label} from`} />

@@ -1,12 +1,15 @@
 import type { Tx } from "@/lib/db";
 
-export type CodeScopeKey = "PROJECT" | "TASK" | "DEPARTMENT" | "EMPLOYEE";
+export type CodeScopeKey = "PROJECT" | "TASK" | "DEPARTMENT" | "EMPLOYEE" | "ITEM" | "BRAND" | "STOCK_TXN";
 
 const FORMATS: Record<CodeScopeKey, { prefix: string; width: number }> = {
   PROJECT: { prefix: "PRJ", width: 4 },
   TASK: { prefix: "TSK", width: 5 },
   DEPARTMENT: { prefix: "DEP", width: 3 },
   EMPLOYEE: { prefix: "EMP", width: 4 },
+  ITEM: { prefix: "ITM", width: 4 },
+  BRAND: { prefix: "BRD", width: 3 },
+  STOCK_TXN: { prefix: "STX", width: 6 },
 };
 
 /** Pure formatter: formatCode("TASK", 42) → "TSK-00042". Grows past the width instead of truncating. */

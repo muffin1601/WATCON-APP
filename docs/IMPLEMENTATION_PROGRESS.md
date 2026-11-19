@@ -84,9 +84,25 @@ credentials). Everything below was executed locally against real PostgreSQL 17.
 8. Per-IP login limiting trusts `X-Forwarded-For`; deploy behind a proxy that sets it (per-account limiting is unaffected).
 9. UI is single-organisation (tables are multi-tenant ready).
 
+## Phase 2 — Items, Brands & brand-wise stock (2026-11-18)
+
+- Tables: `items`, `brands`, `item_brands` (one stock position per item–brand, `current_qty`), `stock_transactions`
+  (append-only ledger with `balance_after`, `idempotency_key`, `source_type/source_id` for future documents).
+  Migration `20261118115905_phase2_inventory` is additive only; adds CHECK constraints (qty ≥ 0, quantity > 0,
+  adjustment reason required).
+- Rules (`src/modules/inventory/rules.ts`): no negative stock, no future dates, no back-dating before the latest
+  movement of the same item–brand, period summary = opening + inward − outward.
+- Posting is one conditional `UPDATE … WHERE current_qty >= q` + ledger insert in a single transaction; repeated
+  submits with the same idempotency key return the original entry.
+- Data access isolated in `src/modules/inventory/repository.ts` (Firebase migration replaces this file).
+- `syncRbac` now grants the defaults of permissions that are new to a database to existing roles.
+- Supplier bills / challans: **not implemented** (no existing documents or posting rules); ledger is ready for them.
+- **Not yet applied to the production database** — run `npm run db:deploy` (and `npm run bootstrap:admin` or the
+  seed to sync permissions) only after approval.
+
 ## Next exact development step
 
-Phase 2 planning (Items / Suppliers). Optional Phase 1 polish: embed a Unicode font for PDFs, paginate comments, implement TOTP MFA.
+Apply the Phase 2 migration to production (after approval), then Suppliers and supplier bills / challans. Optional Phase 1 polish: embed a Unicode font for PDFs, paginate comments, implement TOTP MFA.
 
 ## Continuation prompt (if resuming)
 

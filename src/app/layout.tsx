@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
@@ -19,7 +20,7 @@ addEventListener("load",function(){setTimeout(function(){o.disconnect()},5000)})
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+    <html lang="en" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
       {process.env.NODE_ENV === "development" && (
         <head>
           {/* Dev only: some browser extensions inject `bis_skin_checked` into every <div> before React
@@ -28,8 +29,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </head>
       )}
       <body className="min-h-full bg-background font-sans text-foreground" suppressHydrationWarning>
-        <TooltipProvider delayDuration={300}>{children}</TooltipProvider>
-        <Toaster theme="light" position="top-right" richColors closeButton />
+        <ThemeProvider>
+          <TooltipProvider delayDuration={300}>{children}</TooltipProvider>
+          <Toaster position="top-right" richColors closeButton />
+        </ThemeProvider>
       </body>
     </html>
   );
