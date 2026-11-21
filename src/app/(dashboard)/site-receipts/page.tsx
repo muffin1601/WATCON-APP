@@ -32,10 +32,12 @@ export default async function SiteReceiptsPage({ searchParams }: PageProps<"/sit
         description="Record material that arrives at site. Accepted quantities are added to the site's stock after verification."
         breadcrumbs={listCrumbs(locked, "site-receipts")}
         actions={
+          // Receipts start from a delivery in the "Waiting to be received" list below; this
+          // button is for sending material out, so say so plainly.
           can(user, "stock.transfer") && (
             <Button asChild size="sm" variant="outline">
               <Link href={`/challans/new${projectId ? `?projectId=${projectId}` : ""}`}>
-                <Truck /> New challan
+                <Truck /> Send material (challan)
               </Link>
             </Button>
           )

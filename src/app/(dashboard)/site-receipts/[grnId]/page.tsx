@@ -6,7 +6,8 @@ import { DetailGrid, DocStatusBadge, Section } from "@/components/commercial/ui"
 import { ActivityTimeline } from "@/components/documents/activity-timeline";
 import { AttachmentsPanel } from "@/components/documents/attachments-panel";
 import { DocShare } from "@/components/documents/doc-share";
-import { NextStep } from "@/components/procurement/next-step";
+import { NextStep, ProjectTrace } from "@/components/procurement/next-step";
+import { traceSalesOrdersForPoLines } from "@/modules/procurement/trace";
 import { GrnActions } from "@/components/stores/actions";
 import { docCrumbs } from "@/components/procurement/crumbs";
 import { PageHeader } from "@/components/shared/page-header";
@@ -23,7 +24,11 @@ export default async function GrnPage({ params }: PageProps<"/site-receipts/[grn
   const user = await requirePagePermission("grn.view");
   const { grnId } = await params;
   const { grn, can } = await orNotFound(getGrn(user, grnId));
-  const [files, activity] = await Promise.all([listAttachments(user, "grn", grn.id), entityActivity(user, "grn", grn.id)]);
+  const [files, activity, salesOrders] = await Promise.all([
+    listAttachments(user, "grn", grn.id),
+    entityActivity(user, "grn", grn.id),
+    traceSalesOrdersForPoLines(user, grn.lines.map((l) => l.poLineId)),
+  ]);
   const source = grn.po ? { label: "Purchase order", id: grn.po.id, number: grn.po.number, href: `/purchase-orders/${grn.po.id}` } : grn.challan ? { label: "Challan", id: grn.challan.id, number: grn.challan.number, href: `/challans/${grn.challan.id}` } : null;
   const issues = grn.lines.filter((l) => l.damagedQty !== "0" || l.rejectedQty !== "0" || l.shortQty !== "0");
   const summary = `Site receipt ${grn.number} (${formatDate(grn.receiptDate)})${source ? ` against ${source.number}` : ""}\n${grn.lines.map((l) => `• ${l.itemBrand.item.name} (${l.itemBrand.brand.name}) – received ${formatQty(l.receivedQty)}, accepted ${formatQty(l.acceptedQty)} ${l.itemBrand.item.unit}`).join("\n")}`;
@@ -48,7 +53,7 @@ export default async function GrnPage({ params }: PageProps<"/site-receipts/[grn
         );
       case "POSTED":
         return (
-          <NextStep tone="done" title="Posted — accepted material is in site stock" links={[{ href: "/stock?tab=locations-stock", label: "View stock" }]}>
+          <NextStep tone="done" title="Posted — accepted material is in site stock" links={[{ href: `/stock?tab=locations-stock&locationId=${grn.location.id}${grn.project ? `&projectId=${grn.project.id}` : ""}`, label: "View stock" }]}>
             {grn.po ? "The purchase order's received quantities are updated. Accounts can now match the supplier bill to this receipt." : "The transfer's in-transit quantity is updated."}
           </NextStep>
         );
@@ -71,11 +76,7 @@ export default async function GrnPage({ params }: PageProps<"/site-receipts/[grn
         meta={
           <>
             <DocStatusBadge status={grn.status} />
-            {grn.project && (
-              <Link href={`/projects/${grn.project.id}`} className="text-sm text-primary hover:underline">
-                For project {grn.project.code} – {grn.project.name}
-              </Link>
-            )}
+            <ProjectTrace project={grn.project} salesOrders={salesOrders} tab="site-receipts" />
           </>
         }
         actions={

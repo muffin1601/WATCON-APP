@@ -232,6 +232,32 @@ describe("sales orders drive the project", () => {
     expect(row.cgst.toFixed(2)).toBe("0.00");
   });
 
+  it("refuses to invoice a client with no state (place of supply)", async () => {
+    const noState = await createParty(fx.actors.admin, { name: "Stateless Builders", isClient: true });
+    const so = await createSalesOrder(fx.roles.pm.actor, { projectId: fx.p1.id, partyId: noState.id, orderDate: day(), lines: [cementLine("5")] });
+    await salesOrderAction(fx.roles.pm.actor, so.id, "submit", { version: await v("salesOrder", so.id) });
+    await salesOrderAction(fx.actors.admin, so.id, "approve", { version: await v("salesOrder", so.id) });
+    const line = await db.soLine.findFirstOrThrow({ where: { soId: so.id } });
+    const c = await createChallan(fx.roles.sk.actor, { type: "CLIENT_DELIVERY", soId: so.id, partyId: so.partyId, fromLocationId: fx.warehouse.id, dispatchDate: day(), lines: [{ itemBrandId: fx.ibUltra.id, quantity: "5", soLineId: line.id }] });
+    await challanAction(fx.roles.sk.actor, c.id, "dispatch", { version: (await db.challan.findUniqueOrThrow({ where: { id: c.id } })).version });
+    const err = await errorOf(createClientInvoice(fx.roles.ac.actor, { source: "SO", soId: so.id, invoiceDate: day(), lines: [{ sourceLineId: line.id, quantity: "5" }] }));
+    expect(err.message).toMatch(/place of supply/);
+  });
+
+  it("the person who drafted an invoice cannot issue it; another approver can", async () => {
+    const so = await approvedSo([cementLine("8")]);
+    const line = so.lines[0]!;
+    const c = await createChallan(fx.roles.sk.actor, { type: "CLIENT_DELIVERY", soId: so.id, partyId: so.partyId, fromLocationId: fx.warehouse.id, dispatchDate: day(), lines: [{ itemBrandId: fx.ibUltra.id, quantity: "8", soLineId: line.id }] });
+    await challanAction(fx.roles.sk.actor, c.id, "dispatch", { version: (await db.challan.findUniqueOrThrow({ where: { id: c.id } })).version });
+    const inv = await createClientInvoice(fx.actors.admin, { source: "SO", soId: so.id, invoiceDate: day(), lines: [{ sourceLineId: line.id, quantity: "8" }] });
+    const view = await getClientInvoice(fx.actors.admin, inv.id);
+    expect(view.can.issue).toBe(false);
+    expect(view.can.issueBlocked).toMatch(/another approver/);
+    expect((await errorOf(clientInvoiceAction(fx.actors.admin, inv.id, "issue", { version: await v("clientInvoice", inv.id) }))).message).toMatch(/Separation of duties/);
+    const res = await clientInvoiceAction(fx.actors.superAdmin, inv.id, "issue", { version: await v("clientInvoice", inv.id) });
+    expect(res?.number).toMatch(/^INV\//);
+  });
+
   it("cancelling an approved order cancels its requirement (never deletes it)", async () => {
     const so = await approvedSo([cementLine("12")]);
     await salesOrderAction(fx.actors.admin, so.id, "cancel", { version: so.version, note: "Client dropped" });

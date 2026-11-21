@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { GrnForm } from "@/components/stores/grn-form";
 import { docCrumbs } from "@/components/procurement/crumbs";
+import { NextStep } from "@/components/procurement/next-step";
 import { PageHeader } from "@/components/shared/page-header";
 import { requirePagePermission } from "@/lib/auth/session";
 import { orNotFound } from "@/lib/pages";
@@ -21,6 +22,11 @@ export default async function NewReceiptPage({ searchParams }: PageProps<"/site-
   return (
     <>
       <PageHeader title="Receive material" description="Check each item against the vehicle and the supplier's challan, then submit. A second person verifies and posts it to stock." breadcrumbs={docCrumbs(source.project, "site-receipts", { label: `Receive ${source.number}` })} />
+      {source.lines.every((l) => Number(l.expected) <= 0) && (
+        <NextStep tone="warn" title={`Everything on ${source.number} has already been received`}>
+          Nothing more is expected against it. Only continue if extra material really arrived — otherwise go back to the list of deliveries waiting to be received.
+        </NextStep>
+      )}
       <GrnForm source={source} header={{ receiptDate: todayString(), supplierChallanNo: "", supplierInvoiceNo: "", vehicleNo: "", receivedByName: user.fullName, remarks: "", latitude: "", longitude: "" }} />
     </>
   );

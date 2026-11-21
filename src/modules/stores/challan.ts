@@ -357,6 +357,10 @@ export async function challanFormData(actor: Actor) {
   return {
     stock: balances.map((b) => ({ itemBrandId: b.itemBrandId, locationId: b.locationId, onHand: dec3(b.onHand) })),
     pos,
-    sos: sos.map((s) => ({ id: s.id, number: s.number, partyId: s.partyId, projectId: s.projectId, lines: s.lines.filter((l) => l.itemBrandId).map((l) => ({ itemBrandId: l.itemBrandId!, pending: subQty(dec3(l.quantity), subQty(dec3(l.deliveredQty), dec3(l.returnedQty))) })) })),
+    // Only orders with material still to deliver — service-only or fully delivered orders have
+    // nothing a delivery challan could carry.
+    sos: sos
+      .map((s) => ({ id: s.id, number: s.number, partyId: s.partyId, projectId: s.projectId, lines: s.lines.filter((l) => l.itemBrandId).map((l) => ({ itemBrandId: l.itemBrandId!, pending: subQty(dec3(l.quantity), subQty(dec3(l.deliveredQty), dec3(l.returnedQty))) })) }))
+      .filter((s) => s.lines.some((l) => Number(l.pending) > 0)),
   };
 }

@@ -5,6 +5,7 @@ import { listApprovals, listSoAmendmentRequests } from "@/modules/insights/appro
 import { projectFinancials } from "@/modules/insights/finance";
 import { runReport, toCsv } from "@/modules/insights/reports";
 import { listProjectDocs, projectCommandCenter, projectDocCounts, projectOrderFlow } from "@/modules/insights/workspace";
+import { recordConsumption, reverseStockEntry } from "@/modules/inventory/locations";
 import { createPo, poAction } from "@/modules/procurement/po";
 import { createPr, prAction } from "@/modules/procurement/pr";
 import { createGrn, postGrn } from "@/modules/stores/grn";
@@ -43,6 +44,14 @@ describe("project workspace & insights", () => {
     // Draft PO must not count as committed.
     await createPo(fx.roles.pu.actor, { projectId: fx.p1.id, partyId: fx.supplier.id, orderDate: day(), lines: [{ itemBrandId: fx.ibUltra.id, quantity: "5", rate: "100", gstRate: "28" }] });
 
+    // Material cost counts only what left site stock (used here, or delivered to the client),
+    // net of reversals: consume 20 + 5, reverse the 5 → 20 used × ₹380 = ₹7,600.
+    const before = (await projectFinancials(fx.org.id, [fx.p1.id])).get(fx.p1.id)!;
+    expect(before.materialCost).toBe("0.00");
+    await recordConsumption(fx.roles.se.actor, { projectId: fx.p1.id, itemBrandId: fx.ibUltra.id, quantity: "20", txnDate: day(), idempotencyKey: key() });
+    const extra = await recordConsumption(fx.roles.se.actor, { projectId: fx.p1.id, itemBrandId: fx.ibUltra.id, quantity: "5", txnDate: day(), idempotencyKey: key() });
+    await reverseStockEntry(fx.actors.superAdmin, extra.id, { reason: "Entered twice by mistake" });
+
     const f = (await projectFinancials(fx.org.id, [fx.p1.id])).get(fx.p1.id)!;
     expect(f.committed).toBe("24320.00");
     expect(f.receivedValue).toBe("19000.00");
@@ -52,9 +61,9 @@ describe("project workspace & insights", () => {
     expect(f.billed).toBe("35400.00");
     expect(f.received).toBe("20000.00");
     expect(f.receivable).toBe("15400.00");
-    expect(f.materialCost).toBe("19000.00");
-    expect(f.margin).toBe("11000.00");
-    expect(f.marginPct).toBe("36.67");
+    expect(f.materialCost).toBe("7600.00");
+    expect(f.margin).toBe("22400.00");
+    expect(f.marginPct).toBe("74.67");
 
     const cc = await projectCommandCenter(fx.roles.pm.actor, fx.p1.id);
     expect(cc.financials?.receivable).toBe("15400.00");

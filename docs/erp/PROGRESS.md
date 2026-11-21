@@ -85,3 +85,17 @@ original suite 98/98 (full suite not re-run after the latest UI files — run it
   (RBAC sync → 9 roles, 70 permissions). `migrate diff` vs schema is empty. Data unchanged (86 projects, 353 items, 4 users).
   Pre-migration JSON backup of all 69 tables: `C:/Users/Admin/Desktop/Sana/watcon-supabase-backup-2026-11-21/`.
   The deployed app code is NOT updated yet — nothing committed/pushed.
+
+## Session 2026-11-21 (evening) — owner decisions applied
+
+* Contract value = active client POs + approved sales orders not linked to a client PO (no double counting).
+* Material cost / margin = cost of material delivered to the client or consumed at site (net of reversals), valued at
+  the project's weighted-average receipt cost (org-wide average as fallback). Stock still at site is not a cost.
+* Client invoices: cannot be created without a place of supply (client state); the person who drafted an invoice cannot
+  issue it (standard separation of duties via `assertCanApprove`, docType `INVOICE`).
+* Small fixes: SO line text no longer duplicated; SO and PR "Related documents" list the PR → RFQ → PO → receipt chain
+  (`procurementForSalesOrder` / `procurementForRequisition` in `procurement/trace.ts`, filtered by view permission);
+  GRN header shows its sales order; site-receipts header button reads "Send material (challan)"; receipt form warns
+  when nothing more is expected; "View stock" after posting opens filtered to the location; challan SO picker lists
+  only orders with material left to deliver; project overview shortage count matches planning.
+* Verified: tsc, eslint, full Vitest 180/180, `next build`.

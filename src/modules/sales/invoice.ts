@@ -8,7 +8,7 @@ import { NotFoundError, ValidationError } from "@/lib/errors";
 import { addQty, cmpMoney, cmpQty, subMoney, subQty, taxModeFor } from "@/lib/money";
 import { can, type Actor } from "@/lib/permissions/definitions";
 import { dateString, optionalText, toDbDate, uuid } from "@/lib/validations/common";
-import { dec2, dec3, dec4, getCommercialSettings, parseInput, projectRequiredScoped, requirePermission, transition } from "@/modules/commercial/core";
+import { approvalHint, assertCanApprove, dec2, dec3, dec4, getCommercialSettings, parseInput, projectRequiredScoped, requirePermission, transition } from "@/modules/commercial/core";
 import { priceDocument, qtyOrZero } from "@/modules/commercial/pricing";
 import type { EntityAccess } from "@/modules/documents/access";
 import { cpoLineBilled, lockClientPo, netRate, optDate } from "./shared";
@@ -140,6 +140,9 @@ export async function createClientInvoice(actor: Actor, input: unknown) {
 
     const party = await tx.party.findUniqueOrThrow({ where: { id: partyId }, select: { name: true, stateCode: true } });
     const pos = placeOfSupply ?? party.stateCode;
+    if (!pos) {
+      throw new ValidationError(`Set the state (place of supply) on ${party.name} before invoicing — it decides CGST + SGST or IGST.`, { partyId: "Client has no state." });
+    }
     const mode = taxModeFor(settings.stateCode, pos);
     const priced = priceDocument(lines, mode, { roundToRupee: true });
     const t = priced.totals;
@@ -198,6 +201,10 @@ export async function clientInvoiceAction(actor: Actor, id: string, action: Invo
   if (!inv) throw new NotFoundError("Invoice");
   const w = { id, organizationId: actor.organizationId, version: opts.version };
   if (action === "issue") {
+    if (!inv.placeOfSupply) throw new ValidationError("This invoice has no place of supply. Set the client's state, then cancel this draft and create the invoice again.");
+    // Separation of duties, as for every other approved document: the person who drafted the
+    // invoice cannot also issue it.
+    await assertCanApprove(actor, { permission: "invoice.approve", docType: "INVOICE", amount: dec2(inv.total), createdById: inv.createdById, what: "an invoice" });
     return db.$transaction(async (tx) => {
       const number = await nextDocNumber(tx, actor.organizationId, "INV", inv.invoiceDate);
       await transition(tx.clientInvoice, w, ["DRAFT"], { status: "ISSUED", number, issuedById: actor.id, issuedAt: new Date() }, "invoice");
@@ -246,6 +253,9 @@ export async function getClientInvoice(actor: Actor, id: string) {
   if (!inv) throw new NotFoundError("Invoice");
   const outstanding = subMoney(subMoney(dec2(inv.netReceivable), dec2(inv.receivedAmount)), dec2(inv.adjustedAmount));
   const overdue = !!inv.dueDate && inv.dueDate < new Date() && ["ISSUED", "PARTIALLY_PAID"].includes(inv.status) && cmpMoney(outstanding, "0") > 0;
+  const settings = await getCommercialSettings(actor.organizationId);
+  const hint = approvalHint(actor, "invoice.approve", { createdById: inv.createdById }, settings.enforceSegregation);
+  const issueBlocked = inv.status !== "DRAFT" ? null : !inv.placeOfSupply ? "No place of supply — set the client's state, then recreate this invoice." : hint.reason;
   return {
     invoice: {
       ...inv,
@@ -268,7 +278,8 @@ export async function getClientInvoice(actor: Actor, id: string) {
     },
     can: {
       edit: can(actor, "invoice.manage") && inv.status === "DRAFT",
-      issue: can(actor, "invoice.approve") && inv.status === "DRAFT",
+      issue: hint.canApprove && inv.status === "DRAFT" && !!inv.placeOfSupply,
+      issueBlocked,
       cancel: can(actor, "invoice.approve") && ["DRAFT", "ISSUED"].includes(inv.status) && cmpMoney(dec2(inv.receivedAmount), "0") === 0 && inv.allocations.length === 0,
       receive: can(actor, "payments.manage") && ["ISSUED", "PARTIALLY_PAID"].includes(inv.status) && cmpMoney(outstanding, "0") > 0,
     },

@@ -28,7 +28,7 @@ export type ProjectFinancials = {
 };
 
 export const KPI_HELP = {
-  contractValue: "Total value (incl. GST) of active, completed or closed client purchase orders, after revisions.",
+  contractValue: "Total value (incl. GST) of active, completed or closed client purchase orders, plus approved sales orders not linked to a client PO — after revisions and amendments.",
   billed: "Issued client tax invoices (incl. GST), excluding drafts and cancelled invoices.",
   certified: "Gross value certified by the client on running bills.",
   received: "Client receipts recorded against this project (cash/bank + TDS deducted by the client).",
@@ -38,12 +38,13 @@ export const KPI_HELP = {
   supplierBilled: "Approved supplier bills (incl. GST).",
   paid: "Supplier payments recorded against this project.",
   payable: "Approved supplier bills' net payable (after TDS) minus payments and supplier notes.",
-  materialCost: "The higher of material received (at PO rate) and supplier bills approved, both excluding GST.",
-  margin: "Billed revenue excluding GST minus material cost. Labour and overheads are not included.",
+  materialCost: "Cost of material delivered to the client or used at site, valued at this project's average purchase cost (excl. GST). Stock still lying at site is not counted.",
+  margin: "Billed revenue excluding GST minus the cost of material delivered or used. Labour and overheads are not included.",
 } as const;
 
 const ZERO = "0.00";
 const CONTRACT_ACTIVE = ["ACTIVE", "COMPLETED", "CLOSED"] as const;
+const SO_ACTIVE = ["APPROVED", "PARTIALLY_FULFILLED", "FULFILLED", "CLOSED"] as const;
 const INVOICE_LIVE = ["ISSUED", "PARTIALLY_PAID", "PAID"] as const;
 const RA_CERTIFIED = ["CLIENT_CERTIFIED", "INVOICED", "PARTIALLY_PAID", "PAID"] as const;
 const PO_COMMITTED = ["APPROVED", "SENT", "ACKNOWLEDGED", "PARTIALLY_RECEIVED", "FULLY_RECEIVED", "CLOSED"] as const;
@@ -59,8 +60,10 @@ export async function projectFinancials(organizationId: string, projectIds: stri
   if (!projectIds.length) return out;
   const inProjects = { organizationId, projectId: { in: projectIds } };
 
-  const [cpo, inv, ra, payIn, po, bills, payOut, received] = await Promise.all([
+  const [cpo, soDirect, inv, ra, payIn, po, bills, payOut, received, issuedCost] = await Promise.all([
     db.clientPo.groupBy({ by: ["projectId"], where: { ...inProjects, status: { in: [...CONTRACT_ACTIVE] } }, _sum: { total: true } }),
+    // Sales orders under a client PO are already inside that PO's value; count only the others.
+    db.salesOrder.groupBy({ by: ["projectId"], where: { ...inProjects, clientPoId: null, status: { in: [...SO_ACTIVE] } }, _sum: { total: true } }),
     db.clientInvoice.groupBy({ by: ["projectId"], where: { ...inProjects, status: { in: [...INVOICE_LIVE] } }, _sum: { total: true, taxable: true, netReceivable: true, receivedAmount: true, adjustedAmount: true } }),
     db.raBill.groupBy({ by: ["projectId"], where: { ...inProjects, status: { in: [...RA_CERTIFIED] } }, _sum: { certifiedAmount: true } }),
     db.payment.groupBy({ by: ["projectId"], where: { ...inProjects, direction: "IN", status: "POSTED" }, _sum: { amount: true, tdsAmount: true } }),
@@ -76,10 +79,43 @@ export async function projectFinancials(organizationId: string, projectIds: stri
       WHERE g.organization_id = ${organizationId}::uuid AND g.status = 'POSTED' AND g.po_id IS NOT NULL
         AND g.project_id = ANY(${projectIds}::uuid[])
       GROUP BY g.project_id`,
+    // Cost of goods: quantity delivered to the client or consumed at site (net of reversals),
+    // valued at the project's weighted-average receipt cost for that item–brand, falling back
+    // to the organisation-wide average when the stock came from elsewhere (e.g. a transfer).
+    db.$queryRaw<{ project_id: string; value: string }[]>`
+      WITH proj_cost AS (
+        SELECT project_id, item_brand_id, SUM(quantity * unit_cost) / NULLIF(SUM(quantity), 0) AS avg_cost
+        FROM stock_transactions
+        WHERE organization_id = ${organizationId}::uuid AND type = 'RECEIPT' AND unit_cost IS NOT NULL
+          AND project_id = ANY(${projectIds}::uuid[])
+        GROUP BY project_id, item_brand_id
+      ), org_cost AS (
+        SELECT item_brand_id, SUM(quantity * unit_cost) / NULLIF(SUM(quantity), 0) AS avg_cost
+        FROM stock_transactions
+        WHERE organization_id = ${organizationId}::uuid AND type = 'RECEIPT' AND unit_cost IS NOT NULL
+        GROUP BY item_brand_id
+      ), issued AS (
+        SELECT t.project_id, t.item_brand_id,
+               SUM(CASE WHEN t.type IN ('CLIENT_DELIVERY', 'CONSUMPTION') THEN t.quantity
+                        WHEN t.type = 'REVERSAL' AND o.type IN ('CLIENT_DELIVERY', 'CONSUMPTION') THEN -t.quantity
+                        ELSE 0 END) AS qty
+        FROM stock_transactions t
+        LEFT JOIN stock_transactions o ON o.id = t.reversal_of_id
+        WHERE t.organization_id = ${organizationId}::uuid AND t.project_id = ANY(${projectIds}::uuid[])
+          AND (t.type IN ('CLIENT_DELIVERY', 'CONSUMPTION') OR t.type = 'REVERSAL')
+        GROUP BY t.project_id, t.item_brand_id
+      )
+      SELECT i.project_id::text AS project_id,
+             ROUND(SUM(GREATEST(i.qty, 0) * COALESCE(pc.avg_cost, oc.avg_cost, 0)), 2)::text AS value
+      FROM issued i
+      LEFT JOIN proj_cost pc ON pc.project_id = i.project_id AND pc.item_brand_id = i.item_brand_id
+      LEFT JOIN org_cost oc ON oc.item_brand_id = i.item_brand_id
+      GROUP BY i.project_id`,
   ]);
 
   const get = (id: string | null) => (id ? out.get(id) : undefined);
   for (const r of cpo) { const f = get(r.projectId); if (f) f.contractValue = dec2(r._sum.total); }
+  for (const r of soDirect) { const f = get(r.projectId); if (f) f.contractValue = addMoney(f.contractValue, dec2(r._sum.total)); }
   for (const r of inv) {
     const f = get(r.projectId);
     if (!f) continue;
@@ -99,9 +135,9 @@ export async function projectFinancials(organizationId: string, projectIds: stri
   }
   for (const r of payOut) { const f = get(r.projectId); if (f) f.paid = dec2(r._sum.amount); }
   for (const r of received) { const f = get(r.project_id); if (f) f.receivedValue = new Prisma.Decimal(r.value ?? 0).toFixed(2); }
+  for (const r of issuedCost) { const f = get(r.project_id); if (f) f.materialCost = new Prisma.Decimal(r.value ?? 0).toFixed(2); }
 
   for (const f of out.values()) {
-    f.materialCost = cmpMoney(f.receivedValue, f.supplierBilledTaxable) >= 0 ? f.receivedValue : f.supplierBilledTaxable;
     f.margin = subMoney(f.billedTaxable, f.materialCost);
     f.marginPct = cmpMoney(f.billedTaxable, ZERO) > 0 ? percent(f.margin, f.billedTaxable) : null;
   }

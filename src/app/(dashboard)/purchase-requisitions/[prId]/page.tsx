@@ -14,7 +14,7 @@ import { orNotFound } from "@/lib/pages";
 import { entityActivity } from "@/modules/documents/activity";
 import { listAttachments } from "@/modules/documents/attachments";
 import { getPr } from "@/modules/procurement/pr";
-import { traceSalesOrders } from "@/modules/procurement/trace";
+import { procurementForRequisition, traceSalesOrders, visibleTraced } from "@/modules/procurement/trace";
 
 export const metadata: Metadata = { title: "Requisition" };
 
@@ -22,7 +22,19 @@ export default async function PrPage({ params }: PageProps<"/purchase-requisitio
   const user = await requirePagePermission("pr.view");
   const { prId } = await params;
   const { pr, can } = await orNotFound(getPr(user, prId));
-  const [files, activity, salesOrders] = await Promise.all([listAttachments(user, "purchase_requisition", pr.id), entityActivity(user, "purchase_requisition", pr.id), traceSalesOrders(user, { prIds: [pr.id] })]);
+  const [files, activity, salesOrders, traced] = await Promise.all([
+    listAttachments(user, "purchase_requisition", pr.id),
+    entityActivity(user, "purchase_requisition", pr.id),
+    traceSalesOrders(user, { prIds: [pr.id] }),
+    procurementForRequisition(user.organizationId, pr.id).then((d) => visibleTraced(user, d)),
+  ]);
+  // Header links (pr.rfqs / pr.purchaseOrders) plus documents reached through the PR's lines
+  // (e.g. POs created from an RFQ award), de-duplicated.
+  const related = new Map<string, { type: string; id: string; number: string; status?: string; href: string }>();
+  for (const s of salesOrders) related.set(`so:${s.id}`, { type: "Sales order", id: s.id, number: s.number, href: `/sales-orders/${s.id}` });
+  for (const r of pr.rfqs) related.set(`Rate enquiry:${r.id}`, { type: "Rate enquiry", id: r.id, number: r.number, status: r.status, href: `/rate-enquiries/${r.id}` });
+  for (const p of pr.purchaseOrders) related.set(`Purchase order:${p.id}`, { type: "Purchase order", id: p.id, number: p.number, status: p.status, href: `/purchase-orders/${p.id}` });
+  for (const d of traced) related.set(`${d.type}:${d.id}`, d);
   const summary = `Purchase requisition ${pr.number}${pr.project ? ` – ${pr.project.name}` : ""}\n${pr.lines.map((l) => `• ${l.itemBrand.item.name} (${l.itemBrand.brand.name}) – ${formatQty(l.quantity)} ${l.itemBrand.item.unit}`).join("\n")}`;
   return (
     <>
@@ -69,7 +81,7 @@ export default async function PrPage({ params }: PageProps<"/purchase-requisitio
           <ActivityTimeline items={activity} />
         </div>
         <div className="space-y-4">
-          <RelatedDocs docs={[...pr.rfqs.map((r) => ({ type: "Rate enquiry", id: r.id, number: r.number, status: r.status, href: `/rate-enquiries/${r.id}` })), ...pr.purchaseOrders.map((p) => ({ type: "Purchase order", id: p.id, number: p.number, status: p.status, href: `/purchase-orders/${p.id}` }))]} />
+          <RelatedDocs docs={[...related.values()]} />
           <AttachmentsPanel entityType="purchase_requisition" entityId={pr.id} data={files} currentUserId={user.id} />
         </div>
       </div>

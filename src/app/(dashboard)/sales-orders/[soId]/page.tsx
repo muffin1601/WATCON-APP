@@ -19,6 +19,7 @@ import { formatINR } from "@/lib/money";
 import { orNotFound } from "@/lib/pages";
 import { entityActivity } from "@/modules/documents/activity";
 import { listAttachments } from "@/modules/documents/attachments";
+import { procurementForSalesOrder, visibleTraced } from "@/modules/procurement/trace";
 import { getSalesOrder } from "@/modules/sales/sales-order";
 
 export const metadata: Metadata = { title: "Sales order" };
@@ -30,7 +31,12 @@ export default async function SalesOrderPage({ params }: PageProps<"/sales-order
   const user = await requirePagePermission("so.view");
   const { soId } = await params;
   const { so, fulfilment, pendingRequest, can } = await orNotFound(getSalesOrder(user, soId));
-  const [files, activity] = await Promise.all([listAttachments(user, "sales_order", so.id), entityActivity(user, "sales_order", so.id)]);
+  const itemBrandIds = [...new Set(so.lines.map((l) => l.itemBrandId).filter((x): x is string => !!x))];
+  const [files, activity, procurement] = await Promise.all([
+    listAttachments(user, "sales_order", so.id),
+    entityActivity(user, "sales_order", so.id),
+    procurementForSalesOrder(user.organizationId, so.projectId, itemBrandIds).then((d) => visibleTraced(user, d)),
+  ]);
   const intra = so.taxMode === "INTRA";
   const locked = ["APPROVED", "PARTIALLY_FULFILLED", "FULFILLED"].includes(so.status);
   const fMap = new Map(fulfilment.map((f) => [f.lineId, f]));
@@ -137,7 +143,9 @@ export default async function SalesOrderPage({ params }: PageProps<"/sales-order
                       <td className="px-3 py-2">
                         <div className="font-medium">{l.description ?? l.itemBrand?.item.name}</div>
                         <div className="text-xs text-muted-foreground">
-                          {l.itemBrand ? `${l.itemBrand.item.name} – ${l.itemBrand.brand.name}` : "Service / non-stock"}
+                          {l.itemBrand
+                            ? (l.description === `${l.itemBrand.item.name} – ${l.itemBrand.brand.name}` ? "Material" : `${l.itemBrand.item.name} – ${l.itemBrand.brand.name}`)
+                            : "Service / non-stock"}
                           {l.hsnSac ? ` · HSN/SAC ${l.hsnSac}` : ""}
                           {l.clientPoLine ? ` · contract line ${l.clientPoLine.lineNo}` : ""}
                         </div>
@@ -216,6 +224,7 @@ export default async function SalesOrderPage({ params }: PageProps<"/sales-order
           <RelatedDocs
             docs={[
               ...(so.clientPo ? [{ type: "Client PO", id: so.clientPo.id, number: so.clientPo.number, href: `/client-pos/${so.clientPo.id}` }] : []),
+              ...procurement,
               ...so.challans.map((c) => ({ type: "Delivery challan", id: c.id, number: c.number, status: c.status, href: `/challans/${c.id}`, meta: formatDate(c.dispatchDate) })),
               ...so.invoices.map((i) => ({ type: "Invoice", id: i.id, number: i.number, status: i.status, href: `/client-invoices/${i.id}`, meta: formatINR(i.total) })),
             ]}
