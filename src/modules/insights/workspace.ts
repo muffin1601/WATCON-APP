@@ -261,7 +261,9 @@ async function shortageCount(organizationId: string, projectId: string): Promise
           AND pr.status IN ('DRAFT','SUBMITTED','APPROVED','PARTIALLY_ORDERED')), 0)
       + COALESCE((
         SELECT SUM(t.quantity) FROM stock_transactions t
-        WHERE t.item_brand_id = r.item_brand_id AND t.project_id = r.project_id AND t.type = 'CONSUMPTION'), 0)`;
+        WHERE t.item_brand_id = r.item_brand_id AND t.project_id = r.project_id
+          -- Client deliveries fulfil the requirement too (same rule as planning/service.ts).
+          AND t.type IN ('CONSUMPTION', 'CLIENT_DELIVERY')), 0)`;
   return Number(rows[0]?.n ?? 0);
 }
 
