@@ -60,8 +60,8 @@ export default async function PoPage({ params }: PageProps<"/purchase-orders/[po
       {["SENT", "ACKNOWLEDGED", "PARTIALLY_RECEIVED"].includes(po.status) && <NextStep tone="info" title={po.status === "PARTIALLY_RECEIVED" ? "Partly delivered — waiting for the rest" : "Waiting for delivery at site"} links={can.receive ? [{ href: `/site-receipts/new?poId=${po.id}`, label: "Receive material" }] : []}>When material arrives, the site records a receipt; accepted quantity updates this order and site stock.</NextStep>}
       {po.status === "FULLY_RECEIVED" && <NextStep tone="done" title="Fully received" links={can.bill ? [{ href: `/supplier-bills/new?poId=${po.id}`, label: "Record supplier bill" }] : []}>All ordered material has been accepted at site. Record the supplier’s bill to match it against these receipts.</NextStep>}
       {po.statusNote && !["REJECTED"].includes(po.status) && <p className="mb-4 rounded-lg border bg-muted/40 px-3 py-2 text-sm">{po.statusNote}</p>}
-      <div className="grid gap-4 xl:grid-cols-3">
-        <div className="space-y-4 xl:col-span-2">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="min-w-0 space-y-4 xl:col-span-2">
           <Section title="Order">
             <DetailGrid
               items={[

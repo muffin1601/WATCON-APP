@@ -95,8 +95,8 @@ export default async function SalesOrderPage({ params }: PageProps<"/sales-order
       {locked && !pendingView && <NextStep tone="info" title="Approved and locked" links={[...(can.planning ? [{ href: `/projects/${so.projectId}?tab=planning`, label: "Material planning" }] : []), ...(can.deliver ? [{ href: `/challans/new?type=CLIENT_DELIVERY&soId=${so.id}&projectId=${so.projectId}&partyId=${so.partyId}`, label: "Deliver" }] : [])]}>Nobody can edit this order directly. To change it, request an amendment — a Super Admin approves it and the revision number goes up.</NextStep>}
       {so.statusNote && so.status !== "REJECTED" && <p className="mb-4 rounded-lg border bg-muted/40 px-3 py-2 text-sm">{so.statusNote}</p>}
 
-      <div className="grid gap-4 xl:grid-cols-3">
-        <div className="space-y-4 xl:col-span-2">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="min-w-0 space-y-4 xl:col-span-2">
           <Section title="Order">
             <DetailGrid
               items={[

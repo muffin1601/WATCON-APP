@@ -56,8 +56,8 @@ export default async function PaymentPage({ params }: PageProps<"/payments/[paym
           Cancelled by {p.cancelledBy?.fullName} on {formatDateTime(p.cancelledAt)}: {p.cancelReason}
         </p>
       )}
-      <div className="grid gap-4 xl:grid-cols-3">
-        <div className="space-y-4 xl:col-span-2">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="min-w-0 space-y-4 xl:col-span-2">
           <Section title={out ? "Payment" : "Receipt"}>
             <DetailGrid
               items={[

@@ -200,7 +200,7 @@ export function SidebarNav({ user, collapsed = false, onNavigate }: { user: NavU
 
 export function Brand({ name, collapsed }: { name: string; collapsed?: boolean }) {
   return (
-    <Link href="/dashboard" aria-label={name} className={cn("flex h-14 items-center gap-2.5 px-4", collapsed && "justify-center px-0")}>
+    <Link href="/dashboard" aria-label={name} className={cn("flex h-14 shrink-0 items-center gap-2.5 px-4", collapsed && "justify-center px-0")}>
       {collapsed ? (
         <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground">{name.charAt(0).toUpperCase()}</span>
       ) : (

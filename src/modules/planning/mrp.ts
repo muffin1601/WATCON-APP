@@ -5,7 +5,7 @@
  * Definitions (per project × item–brand):
  *   siteStock        on hand at the project's site store
  *   inTransit        dispatched to the site on challans, not yet received
- *   consumed         consumed / installed at the site (net of reversals)
+ *   consumed         consumed / installed at the site, or delivered to the client (net of reversals)
  *   fulfilled        siteStock + inTransit + consumed
  *   remainingNeed    max(0, required − fulfilled)
  *   projectReserved  open reservations for this project (in stores)

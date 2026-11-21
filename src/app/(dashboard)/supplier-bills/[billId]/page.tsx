@@ -58,8 +58,8 @@ export default async function BillPage({ params }: PageProps<"/supplier-bills/[b
       />
       {b.statusNote && <p className="mb-4 rounded-lg border bg-muted/40 px-3 py-2 text-sm">{b.statusNote}</p>}
 
-      <div className="grid gap-4 xl:grid-cols-3">
-        <div className="space-y-4 xl:col-span-2">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="min-w-0 space-y-4 xl:col-span-2">
           <Section title={b.po ? `Check against ${b.po.number}` : "Check"}>
             {!b.po ? (
               <p className="flex items-start gap-2 text-sm text-muted-foreground">

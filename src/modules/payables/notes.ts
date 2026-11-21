@@ -7,7 +7,7 @@ import { NotFoundError, ValidationError } from "@/lib/errors";
 import { addMoney, cmpMoney, formatINR, pctOf } from "@/lib/money";
 import { can, type Actor, type PermissionKey } from "@/lib/permissions/definitions";
 import { dateString, optionalText, text, toDbDate, uuid } from "@/lib/validations/common";
-import { approvalHint, assertCanApprove, dec2, getCommercialSettings, parseInput, projectScoped, requirePermission, transition } from "@/modules/commercial/core";
+import { approvalHint, assertCanApprove, dec2, getCommercialSettings, parseInput, projectRequiredScoped, projectScoped, requirePermission, transition } from "@/modules/commercial/core";
 import { gstRateField, moneyField } from "@/modules/commercial/pricing";
 import type { EntityAccess } from "@/modules/documents/access";
 import { applyBillSettlement, applyInvoiceSettlement, lockBill, lockInvoice, outstandingOf } from "./settlement";
@@ -50,7 +50,7 @@ async function targetOf(tx: Tx | typeof db, actor: Actor, data: { partyRole: "SU
     return { kind: "bill" as const, id: b.id, number: b.number, partyId: b.partyId, projectId: b.projectId, taxMode: b.taxMode, status: b.status, outstanding: outstandingOf(dec2(b.netPayable), dec2(b.paidAmount), dec2(b.adjustedAmount)), open: ["APPROVED", "PARTIALLY_PAID"].includes(b.status) };
   }
   if (!data.clientInvoiceId) throw new ValidationError("Choose the invoice this note adjusts.", { clientInvoiceId: "Required." });
-  const inv = await tx.clientInvoice.findFirst({ where: { AND: [{ id: data.clientInvoiceId }, projectScoped(actor) as Prisma.ClientInvoiceWhereInput] } });
+  const inv = await tx.clientInvoice.findFirst({ where: { AND: [{ id: data.clientInvoiceId }, projectRequiredScoped(actor) as Prisma.ClientInvoiceWhereInput] } });
   if (!inv) throw new ValidationError("Invoice not found.", { clientInvoiceId: "Not found." });
   return { kind: "invoice" as const, id: inv.id, number: inv.number, partyId: inv.partyId, projectId: inv.projectId, taxMode: inv.taxMode, status: inv.status, outstanding: outstandingOf(dec2(inv.netReceivable), dec2(inv.receivedAmount), dec2(inv.adjustedAmount)), open: ["ISSUED", "PARTIALLY_PAID"].includes(inv.status) };
 }
@@ -169,7 +169,7 @@ export async function noteTargets(actor: Actor, projectId?: string | null) {
   const inProject = projectId ? { projectId } : {};
   const [bills, invoices] = await Promise.all([
     can(actor, "bills.manage") ? db.supplierBill.findMany({ where: { AND: [projectScoped(actor) as Prisma.SupplierBillWhereInput, { status: { in: ["APPROVED", "PARTIALLY_PAID"] } }, inProject] }, orderBy: { invoiceDate: "desc" }, take: 500, select: { id: true, number: true, supplierInvoiceNo: true, netPayable: true, paidAmount: true, adjustedAmount: true, taxMode: true, party: { select: { name: true } }, project: { select: { code: true } } } }) : [],
-    can(actor, "invoice.manage") ? db.clientInvoice.findMany({ where: { AND: [projectScoped(actor) as Prisma.ClientInvoiceWhereInput, { status: { in: ["ISSUED", "PARTIALLY_PAID"] } }, inProject] }, orderBy: { invoiceDate: "desc" }, take: 500, select: { id: true, number: true, netReceivable: true, receivedAmount: true, adjustedAmount: true, taxMode: true, party: { select: { name: true } }, project: { select: { code: true } } } }) : [],
+    can(actor, "invoice.manage") ? db.clientInvoice.findMany({ where: { AND: [projectRequiredScoped(actor) as Prisma.ClientInvoiceWhereInput, { status: { in: ["ISSUED", "PARTIALLY_PAID"] } }, inProject] }, orderBy: { invoiceDate: "desc" }, take: 500, select: { id: true, number: true, netReceivable: true, receivedAmount: true, adjustedAmount: true, taxMode: true, party: { select: { name: true } }, project: { select: { code: true } } } }) : [],
   ]);
   return {
     bills: bills.map((b) => ({ id: b.id, label: `${b.number} · ${b.party.name} · inv ${b.supplierInvoiceNo}`, project: b.project?.code ?? null, outstanding: outstandingOf(dec2(b.netPayable), dec2(b.paidAmount), dec2(b.adjustedAmount)), taxMode: b.taxMode })),

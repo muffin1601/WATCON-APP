@@ -60,8 +60,8 @@ export default async function ClientPoPage({ params }: PageProps<"/client-pos/[c
           { label: "Outstanding", value: formatINR(summary.outstanding), tone: summary.outstanding !== "0.00" ? "warn" : "default" },
         ]}
       />
-      <div className="mt-4 grid gap-4 xl:grid-cols-3">
-        <div className="space-y-4 xl:col-span-2">
+      <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="min-w-0 space-y-4 xl:col-span-2">
           <Section title="Contract">
             <DetailGrid
               items={[

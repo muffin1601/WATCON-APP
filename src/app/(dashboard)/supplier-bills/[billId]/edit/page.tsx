@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { BillForm, refsFromPrefill } from "@/components/payables/bill-form";
+import { BillForm } from "@/components/payables/bill-form";
+import { refsFromPrefill } from "@/components/payables/bill-prefill";
 import { payablesCrumbs } from "@/components/payables/crumbs";
 import { PageHeader } from "@/components/shared/page-header";
 import { requirePagePermission } from "@/lib/auth/session";

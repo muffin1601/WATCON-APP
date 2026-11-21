@@ -42,11 +42,14 @@ export function AppShell({ user, nav, orgName, unread, children }: { user: Heade
         </div>
       </aside>
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetContent side="left" className="w-64 p-0">
+        <SheetContent side="left" className="w-64 gap-0 p-0">
           <SheetTitle className="sr-only">Navigation</SheetTitle>
           <SheetDescription className="sr-only">Main navigation</SheetDescription>
           <Brand name={orgName} />
-          <SidebarNav user={nav} onNavigate={() => setMobileOpen(false)} />
+          {/* The sheet is viewport-high: scroll the nav so the lower groups stay reachable on phones. */}
+          <div className="min-h-0 flex-1 overflow-y-auto py-2">
+            <SidebarNav user={nav} onNavigate={() => setMobileOpen(false)} />
+          </div>
         </SheetContent>
       </Sheet>
       <div className="flex min-w-0 flex-1 flex-col">

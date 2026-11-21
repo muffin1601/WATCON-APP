@@ -126,8 +126,8 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
         </Panel>
       </div>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-3">
-        <div className="xl:col-span-2">
+      <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <div className="min-w-0 xl:col-span-2">
           <Panel title="Recent projects" action={<Link href="/projects" className="text-xs text-primary hover:underline">All projects</Link>}>
             {d.recentProjects.length ? (
               <div className="overflow-x-auto">

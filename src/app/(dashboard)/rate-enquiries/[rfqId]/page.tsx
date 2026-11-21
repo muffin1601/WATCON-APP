@@ -69,8 +69,8 @@ export default async function RfqPage({ params }: PageProps<"/rate-enquiries/[rf
         actions={<DocShare type="rfq" id={rfq.id} summary={summary} subject={`Rate enquiry ${rfq.number}`} />}
       />
       {step}
-      <div className="grid gap-4 xl:grid-cols-3">
-        <div className="space-y-4 xl:col-span-2">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="min-w-0 space-y-4 xl:col-span-2">
           <Section title="Enquiry">
             <DetailGrid
               items={[

@@ -232,6 +232,18 @@ function MobileLine({ l, i, setLine, options, optMap, errors, orig, amend, onRem
         <Input aria-label={`Line ${i + 1} unit`} placeholder="Unit" value={l.unit ?? ""} onChange={(e) => setLine(i, { unit: e.target.value })} />
         <Input aria-label={`Line ${i + 1} rate`} inputMode="decimal" placeholder="Rate ₹" value={l.rate} onChange={(e) => setLine(i, { rate: e.target.value })} />
       </div>
+      <div className="grid grid-cols-2 gap-2">
+        <label className="space-y-1 text-xs text-muted-foreground">
+          Disc %
+          <Input aria-label={`Line ${i + 1} discount`} inputMode="decimal" value={l.discountPct} onChange={(e) => setLine(i, { discountPct: e.target.value })} />
+        </label>
+        <label className="space-y-1 text-xs text-muted-foreground">
+          GST %
+          <select aria-label={`Line ${i + 1} GST`} className="h-9 w-full rounded-md border bg-card px-2 text-sm text-foreground" value={n(l.gstRate) || "0"} onChange={(e) => setLine(i, { gstRate: e.target.value })}>
+            {GST.map((g) => <option key={g} value={g}>{g}%</option>)}
+          </select>
+        </label>
+      </div>
       {orig && amend && (n(orig.quantity) !== n(l.quantity) || n(orig.rate) !== n(l.rate)) && <p className="text-xs text-amber-800">was {formatQty(orig.quantity)} @ ₹{n(orig.rate)}</p>}
       {l.note && <p className="text-xs text-muted-foreground">{l.note}</p>}
       {(errors[`lines.${i}.quantity`] || errors[`lines.${i}.description`]) && <p className="text-xs text-destructive">{errors[`lines.${i}.quantity`] ?? errors[`lines.${i}.description`]}</p>}

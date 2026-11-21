@@ -253,5 +253,5 @@ export async function paymentDefaultsFor(actor: Actor, direction: "OUT" | "IN", 
   requirePermission(actor, "payments.manage");
   return direction === "OUT"
     ? db.supplierBill.findFirst({ where: { AND: [{ id: documentId }, projectScoped(actor) as Prisma.SupplierBillWhereInput] }, select: { partyId: true, projectId: true } })
-    : db.clientInvoice.findFirst({ where: { AND: [{ id: documentId }, projectScoped(actor) as Prisma.ClientInvoiceWhereInput] }, select: { partyId: true, projectId: true } });
+    : db.clientInvoice.findFirst({ where: { AND: [{ id: documentId }, projectRequiredScoped(actor) as Prisma.ClientInvoiceWhereInput] }, select: { partyId: true, projectId: true } });
 }

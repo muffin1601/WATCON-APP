@@ -15,9 +15,10 @@ import { useUnsavedWarning } from "@/hooks/use-unsaved-warning";
 import { callAction } from "@/lib/call-action";
 import { GSTIN_RE, TDS_SECTIONS } from "@/lib/gst";
 import { formatINR, pctOf, subMoney, taxModeFor, type TaxMode } from "@/lib/money";
-import { cn, newId } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { billPrefillAction, createBillAction, updateBillAction } from "@/modules/payables/actions";
 import { matchBill, type GrnLineRef, type MatchMode, type PoLineRef } from "@/modules/payables/match";
+import { linesFromPrefill, refsFromPrefill } from "./bill-prefill";
 
 export type BillPoOption = { id: string; number: string; supplier: string; projectId: string | null; project: string | null; total: string; orderDate: string };
 export type BillPartyOpt = { id: string; name: string; code: string; gstin: string | null; stateCode: string | null; paymentTermsDays: number | null; tdsSection: string | null; tdsRate: string | null; status: string };
@@ -44,14 +45,6 @@ export type BillFormValues = {
   lines: EditableLine[];
 };
 
-type Prefill = Awaited<ReturnType<typeof import("@/modules/payables/bills").billPrefillFromPo>>;
-
-export function linesFromPrefill(p: Prefill): EditableLine[] {
-  return p.lines.map((l) => ({ key: newId(), description: l.description, hsnSac: l.hsnCode ?? "", unit: l.unit, quantity: l.quantity, rate: l.rate, discountPct: l.discountPct, gstRate: l.gstRate, note: l.note, links: { poLineId: l.poLineId, grnLineId: l.grnLineId, itemBrandId: l.itemBrandId } }));
-}
-export function refsFromPrefill(p: Prefill): MatchRefs {
-  return { poNumber: p.po.number, poTaxMode: p.po.taxMode, mode: p.mode, rateTolerancePct: p.rateTolerancePct, poLines: p.poLines, grnLines: p.grnLines };
-}
 
 export function BillForm({ initial, initialRefs, billId, version, pos, suppliers, projects, companyStateCode, lockProject }: { initial: BillFormValues; initialRefs: MatchRefs | null; billId?: string; version?: number; pos: BillPoOption[]; suppliers: BillPartyOpt[]; projects: BillProjectOpt[]; companyStateCode: string | null; lockProject?: boolean }) {
   const router = useRouter();

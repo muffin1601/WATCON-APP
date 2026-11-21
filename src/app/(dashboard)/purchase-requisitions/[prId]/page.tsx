@@ -38,8 +38,8 @@ export default async function PrPage({ params }: PageProps<"/purchase-requisitio
       {(pr.status === "APPROVED" || pr.status === "PARTIALLY_ORDERED") && <NextStep title={pr.status === "APPROVED" ? "Approved — next: get rates or order" : "Partly ordered — the rest still needs ordering"} links={[...(can.rfq ? [{ href: `/rate-enquiries/new?prId=${pr.id}`, label: "Request rates" }] : []), ...(can.po ? [{ href: `/purchase-orders/new?prId=${pr.id}`, label: "Create purchase order" }] : [])]}>Request quotations from suppliers when you need to compare prices, or raise a purchase order directly if the supplier and rate are known.</NextStep>}
       {pr.status === "ORDERED" && <NextStep tone="done" title="Fully ordered">Track deliveries on the linked purchase orders.</NextStep>}
       {pr.statusNote && !["REJECTED"].includes(pr.status) && <p className="mb-4 rounded-lg border bg-muted/40 px-3 py-2 text-sm">{pr.statusNote}</p>}
-      <div className="grid gap-4 xl:grid-cols-3">
-        <div className="space-y-4 xl:col-span-2">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="min-w-0 space-y-4 xl:col-span-2">
           <Section title="Details">
             <DetailGrid items={[
               { label: "Deliver to", value: pr.deliveryLocation?.name },

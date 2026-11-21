@@ -220,7 +220,9 @@ export async function getMrp(actor: Actor, raw: unknown) {
     const pk = k(ib, r.projectId);
     const mv = (t: string) => g(moves, k(ib, r.projectId, t));
     const receivedAtSite = mv("RECEIPT") + mv("TRANSFER_IN") + mv("INWARD") + mv("OPENING");
-    const consumed = mv("CONSUMPTION");
+    // Material delivered to the client against the sales order has left site stock but has
+    // fulfilled the requirement — count it with consumption, or planning would re-order it.
+    const consumed = mv("CONSUMPTION") + mv("CLIENT_DELIVERY");
     const returned = mv("TRANSFER_OUT") + mv("RETURN_TO_SUPPLIER");
     // Free (available-to-promise) = warehouse stock not reserved for any project. Stock at other
     // projects' sites belongs to them; this project's site stock already counts as fulfilled.

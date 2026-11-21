@@ -53,8 +53,8 @@ export default async function RunningBillPage({ params }: PageProps<"/running-bi
       {bill.status === "DISPUTED" && <NextStep tone="warn" title="Disputed by the client">{bill.disputeNote ?? "Resolve the objection, then resubmit or record the certification."}</NextStep>}
       {bill.status === "CLIENT_CERTIFIED" && <NextStep title="Certified — raise the invoice" links={can.invoice ? [{ href: `/client-invoices/new?raBillId=${bill.id}`, label: "Create invoice" }] : []}>The tax invoice is raised for the certified quantities.</NextStep>}
       {bill.statusNote && <p className="mb-4 rounded-lg border bg-muted/40 px-3 py-2 text-sm">{bill.statusNote}</p>}
-      <div className="grid gap-4 xl:grid-cols-3">
-        <div className="space-y-4 xl:col-span-2">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="min-w-0 space-y-4 xl:col-span-2">
           <Section title="Bill">
             <DetailGrid
               items={[

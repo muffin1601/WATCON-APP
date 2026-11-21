@@ -51,8 +51,8 @@ export default async function ClientInvoicePage({ params }: PageProps<"/client-i
       {inv.status === "DRAFT" && <NextStep title="Draft — issue the invoice">{can.issue ? "Issuing allocates the GST invoice number and locks the invoice." : "An approver issues the invoice."}</NextStep>}
       {["ISSUED", "PARTIALLY_PAID"].includes(inv.status) && <NextStep tone={inv.overdue ? "warn" : "info"} title={`${formatINR(inv.outstanding)} outstanding`} links={can.receive ? [{ href: `/payments/new?direction=IN&partyId=${inv.partyId}&invoiceId=${inv.id}`, label: "Record receipt" }] : []}>{inv.dueDate ? `Due ${formatDate(inv.dueDate)}.` : "No due date set."}</NextStep>}
       {inv.statusNote && <p className="mb-4 rounded-lg border bg-muted/40 px-3 py-2 text-sm">{inv.statusNote}</p>}
-      <div className="grid gap-4 xl:grid-cols-3">
-        <div className="space-y-4 xl:col-span-2">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="min-w-0 space-y-4 xl:col-span-2">
           <Section title="Invoice">
             <DetailGrid
               items={[
