@@ -1,0 +1,78 @@
+- generic [active] [ref=f14e1]:
+  - generic [ref=f14e3]:
+    - banner [aria-hidden] [ref=f14e4]:
+      - button [ref=f14e81] [cursor=pointer]
+      - generic [ref=f14e6]:
+        - button [ref=f14e82] [cursor=pointer]:
+          - generic [ref=f14e11]: Search projects, tasks, people…
+          - generic [ref=f14e12]: Ctrl K
+        - generic [ref=f14e13]:
+          - heading [level=2] [ref=f14e83]: Search
+          - paragraph [ref=f14e15]: Search projects, tasks, team members and departments
+      - button [ref=f14e84] [cursor=pointer]
+      - button [ref=f14e85] [cursor=pointer]:
+        - generic [ref=f14e18]: "1"
+      - button [ref=f14e86] [cursor=pointer]:
+        - generic [ref=f14e20]: SA
+        - generic [ref=f14e22]: Smoke Admin
+    - main [ref=f14e23]:
+      - generic [aria-hidden] [ref=f14e24]:
+        - navigation [ref=f14e87]:
+          - list [ref=f14e26]:
+            - listitem [ref=f14e27]:
+              - link [ref=f14e88] [cursor=pointer]:
+                - /url: /dashboard
+                - text: Dashboard
+            - listitem [aria-hidden] [ref=f14e29]
+            - listitem [ref=f14e32]:
+              - link [disabled] [ref=f14e89]: Brands
+        - generic [ref=f14e34]:
+          - generic [ref=f14e35]:
+            - heading [level=1] [ref=f14e90]: Brands
+            - paragraph [ref=f14e37]: Brands that items can be stocked in. Each item–brand pair has its own stock balance.
+          - button [ref=f14e91] [cursor=pointer]: Add brand
+      - generic [aria-hidden] [ref=f14e40]:
+        - searchbox [ref=f14e92]
+        - combobox [ref=f14e93] [cursor=pointer]:
+          - generic: "Status: All"
+      - table [ref=f14e97]:
+        - rowgroup [ref=f14e98]:
+          - row [ref=f14e99]:
+            - columnheader "Brand" [ref=f14e100]:
+              - button "Brand" [ref=f14e101] [cursor=pointer]
+            - columnheader "Code" [ref=f14e104]:
+              - button "Code" [ref=f14e105] [cursor=pointer]
+            - columnheader "Description" [ref=f14e109]
+            - columnheader "Items" [ref=f14e110]
+            - columnheader "Status" [ref=f14e111]
+            - columnheader "Actions" [ref=f14e112]
+        - rowgroup [ref=f14e114]:
+          - row [ref=f14e115]:
+            - cell "Supreme" [ref=f14e116]
+            - cell "BRD-001" [ref=f14e117]
+            - cell "—" [ref=f14e118]
+            - cell [ref=f14e120]:
+              - link "0" [ref=f14e121] [cursor=pointer]:
+                - /url: /stock?brandId=5e41d43a-780a-45b5-b377-fef9268b0268
+            - cell "Active" [ref=f14e122]
+            - cell [ref=f14e125]:
+              - button "Actions for Supreme" [ref=f14e126] [cursor=pointer]
+      - generic [ref=f14e52]:
+        - generic [ref=f14e53]: Showing 1–1 of 1
+        - generic [aria-hidden] [ref=f14e54]:
+          - combobox [ref=f14e127] [cursor=pointer]:
+            - generic: 20 / page
+          - button [disabled]
+          - generic [ref=f14e56]: 1 / 1
+          - button [disabled]
+  - region "Notifications alt+T":
+    - list:
+      - listitem [ref=f14e128]:
+        - button "Close toast" [ref=f14e129] [cursor=pointer]
+        - generic [ref=f14e137]: Brand created
+  - alert [ref=f14e57]
+  - dialog "Add brand" [ref=f14e59]:
+    - generic [ref=f14e60]:
+      - heading "Add brand" [level=2] [ref=f14e61]
+      - paragraph [ref=f14e62]: A brand code is generated automatically.
+    - button "Close" [ref=f14e79] [cursor=pointer]

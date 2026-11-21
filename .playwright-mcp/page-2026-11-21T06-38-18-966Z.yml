@@ -1,0 +1,271 @@
+- generic [active] [ref=f18e1]:
+  - generic [ref=f18e3]:
+    - banner [ref=f18e4]:
+      - button "Toggle navigation" [ref=f18e5] [cursor=pointer]
+      - generic [ref=f18e6]:
+        - button "Search projects, tasks, people… Ctrl K" [ref=f18e7] [cursor=pointer]:
+          - generic [ref=f18e11]: Search projects, tasks, people…
+          - generic [ref=f18e12]: Ctrl K
+        - generic [ref=f18e13]:
+          - heading "Search" [level=2] [ref=f18e14]
+          - paragraph [ref=f18e15]: Search projects, tasks, team members and departments
+      - button "Change theme" [ref=f18e16] [cursor=pointer]
+      - button "Notifications (1 unread)" [ref=f18e17] [cursor=pointer]:
+        - generic [ref=f18e18]: "1"
+      - button "Account menu" [ref=f18e19] [cursor=pointer]:
+        - generic [ref=f18e20]: SA
+        - generic [ref=f18e22]: Smoke Admin
+    - main [ref=f18e23]:
+      - generic [ref=f18e24]:
+        - navigation "breadcrumb" [ref=f18e25]:
+          - list [ref=f18e26]:
+            - listitem [ref=f18e27]:
+              - link "Projects" [ref=f18e28] [cursor=pointer]:
+                - /url: /projects
+            - listitem [aria-hidden] [ref=f18e29]
+            - listitem [ref=f18e32]:
+              - link "PRJ-0001" [disabled] [ref=f18e33]
+        - generic [ref=f18e34]:
+          - generic [ref=f18e35]:
+            - heading "Smoke Test Site" [level=1] [ref=f18e36]
+            - generic [ref=f18e37]:
+              - generic [ref=f18e38]: PRJ-0001
+              - generic [ref=f18e39]: Planning
+              - generic [ref=f18e41]: Medium
+          - generic [ref=f18e42]:
+            - link "Create task" [ref=f18e43] [cursor=pointer]:
+              - /url: /tasks/new?projectId=b4e386dc-8674-4d4c-9048-ad82db6e3345
+            - link "Edit" [ref=f18e44] [cursor=pointer]:
+              - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345/edit
+            - button "Archive" [ref=f18e45] [cursor=pointer]
+      - navigation "Project sections" [ref=f18e46]:
+        - tablist [ref=f18e47]:
+          - tab "Overview" [selected] [ref=f18e48] [cursor=pointer]
+          - tab "Sales 1" [ref=f18e49] [cursor=pointer]:
+            - text: Sales
+            - generic [ref=f18e50]: "1"
+          - tab "Materials" [ref=f18e51] [cursor=pointer]
+          - tab "Site & stores" [ref=f18e52] [cursor=pointer]
+          - tab "Accounts" [ref=f18e53] [cursor=pointer]
+          - tab "Records" [ref=f18e54] [cursor=pointer]
+      - generic [ref=f18e55]:
+        - region "Order flow" [ref=f18e56]:
+          - generic [ref=f18e57]:
+            - generic [ref=f18e58]:
+              - heading "Order flow" [level=2] [ref=f18e59]
+              - paragraph [ref=f18e60]: Everything in this project follows its sales order. Work through the steps in order.
+            - 'link "Next: Open planning" [ref=f18e61] [cursor=pointer]':
+              - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=planning
+          - list [ref=f18e62]:
+            - listitem [ref=f18e63]:
+              - generic [ref=f18e68]:
+                - link "1. Sales order" [ref=f18e69] [cursor=pointer]:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=sales-orders
+                - paragraph [ref=f18e70]: 1 approved order
+                - generic [ref=f18e71]: Done
+              - link "View sales orders" [ref=f18e72] [cursor=pointer]:
+                - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=sales-orders
+            - listitem [ref=f18e75]:
+              - generic [ref=f18e79]:
+                - link "2. Material planning" [ref=f18e80] [cursor=pointer]:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=planning
+                - paragraph [ref=f18e81]: Material needs appear here once the sales order is approved.
+                - generic [ref=f18e82]: Not started
+              - link "Open planning" [ref=f18e83] [cursor=pointer]:
+                - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=planning
+            - listitem [ref=f18e86]:
+              - generic [ref=f18e90]:
+                - link "3. Requisitions" [ref=f18e91] [cursor=pointer]:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=requisitions
+                - paragraph [ref=f18e92]: Request the material to be bought.
+                - generic [ref=f18e93]: Not started
+              - link "New requisition" [ref=f18e94] [cursor=pointer]:
+                - /url: /purchase-requisitions/new?projectId=b4e386dc-8674-4d4c-9048-ad82db6e3345
+            - listitem [ref=f18e97]:
+              - generic [ref=f18e101]:
+                - link "4. Rates & purchase orders" [ref=f18e102] [cursor=pointer]:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=purchase-orders
+                - paragraph [ref=f18e103]: Compare supplier rates and place orders.
+                - generic [ref=f18e104]: Not started
+              - link "New purchase order" [ref=f18e105] [cursor=pointer]:
+                - /url: /purchase-orders/new?projectId=b4e386dc-8674-4d4c-9048-ad82db6e3345
+            - listitem [ref=f18e108]:
+              - generic [ref=f18e112]:
+                - link "5. Site receipts" [ref=f18e113] [cursor=pointer]:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=site-receipts
+                - paragraph [ref=f18e114]: Record material as it arrives at site.
+                - generic [ref=f18e115]: Not started
+              - link "Receive material" [ref=f18e116] [cursor=pointer]:
+                - /url: /site-receipts?projectId=b4e386dc-8674-4d4c-9048-ad82db6e3345
+            - listitem [ref=f18e119]:
+              - generic [ref=f18e123]:
+                - link "6. Client delivery" [ref=f18e124] [cursor=pointer]:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=challans
+                - paragraph [ref=f18e125]: Deliver material to the client against the sales order.
+                - generic [ref=f18e126]: Not started
+              - link "New delivery challan" [ref=f18e127] [cursor=pointer]:
+                - /url: /challans/new?type=CLIENT_DELIVERY&projectId=b4e386dc-8674-4d4c-9048-ad82db6e3345
+            - listitem [ref=f18e130]:
+              - generic [ref=f18e134]:
+                - link "7. Invoices & receipts" [ref=f18e135] [cursor=pointer]:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=invoices
+                - paragraph [ref=f18e136]: Invoice the client and record payments received.
+                - generic [ref=f18e137]: Not started
+              - link "New invoice" [ref=f18e138] [cursor=pointer]:
+                - /url: /client-invoices/new?projectId=b4e386dc-8674-4d4c-9048-ad82db6e3345
+        - generic [ref=f18e141]:
+          - generic [ref=f18e142]:
+            - region "Needs attention" [ref=f18e143]:
+              - heading "Needs attention" [level=2] [ref=f18e144]
+              - paragraph [ref=f18e147]: Nothing needs attention right now.
+            - generic [ref=f18e151]:
+              - generic [ref=f18e152]:
+                - heading "Money position" [level=2] [ref=f18e153]
+                - link "Project accounts" [ref=f18e155] [cursor=pointer]:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=accounts
+              - generic [ref=f18e157]:
+                - region "Client side" [ref=f18e158]:
+                  - heading "Client side" [level=3] [ref=f18e159]
+                  - generic [ref=f18e160]:
+                    - link "Contract value ₹0 Total value (incl. GST) of active, completed or closed client purchase orders, after revisions." [ref=f18e161] [cursor=pointer]:
+                      - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=client-pos
+                      - paragraph [ref=f18e162]: Contract value
+                      - paragraph [ref=f18e165]: ₹0
+                      - generic [ref=f18e166]: Total value (incl. GST) of active, completed or closed client purchase orders, after revisions.
+                    - link "Certified ₹0 Gross value certified by the client on running bills." [ref=f18e167] [cursor=pointer]:
+                      - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=running-bills
+                      - paragraph [ref=f18e168]: Certified
+                      - paragraph [ref=f18e171]: ₹0
+                      - generic [ref=f18e172]: Gross value certified by the client on running bills.
+                    - link "Billed ₹0 Issued client tax invoices (incl. GST), excluding drafts and cancelled invoices." [ref=f18e173] [cursor=pointer]:
+                      - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=invoices
+                      - paragraph [ref=f18e174]: Billed
+                      - paragraph [ref=f18e177]: ₹0
+                      - generic [ref=f18e178]: Issued client tax invoices (incl. GST), excluding drafts and cancelled invoices.
+                    - link "Received ₹0 Client receipts recorded against this project (cash/bank + TDS deducted by the client)." [ref=f18e179] [cursor=pointer]:
+                      - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=client-receipts
+                      - paragraph [ref=f18e180]: Received
+                      - paragraph [ref=f18e183]: ₹0
+                      - generic [ref=f18e184]: Client receipts recorded against this project (cash/bank + TDS deducted by the client).
+                    - generic "Issued invoices' net receivable (after retention, advance recovery and deductions) minus amounts received and credit notes." [ref=f18e185]:
+                      - paragraph [ref=f18e186]: Receivable
+                      - paragraph [ref=f18e189]: ₹0
+                - region "Supplier side" [ref=f18e191]:
+                  - heading "Supplier side" [level=3] [ref=f18e192]
+                  - generic [ref=f18e193]:
+                    - link "Committed (POs) ₹0 Purchase orders approved or later (incl. GST), excluding drafts, rejected and cancelled orders." [ref=f18e194] [cursor=pointer]:
+                      - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=purchase-orders
+                      - paragraph [ref=f18e195]: Committed (POs)
+                      - paragraph [ref=f18e198]: ₹0
+                      - generic [ref=f18e199]: Purchase orders approved or later (incl. GST), excluding drafts, rejected and cancelled orders.
+                    - link "Material received ₹0 Material accepted at site on posted receipts, valued at the PO rate (excl. GST)." [ref=f18e200] [cursor=pointer]:
+                      - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=site-receipts
+                      - paragraph [ref=f18e201]: Material received
+                      - paragraph [ref=f18e204]: ₹0
+                      - generic [ref=f18e205]: Material accepted at site on posted receipts, valued at the PO rate (excl. GST).
+                    - link "Supplier billed ₹0 Approved supplier bills (incl. GST)." [ref=f18e206] [cursor=pointer]:
+                      - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=supplier-bills
+                      - paragraph [ref=f18e207]: Supplier billed
+                      - paragraph [ref=f18e210]: ₹0
+                      - generic [ref=f18e211]: Approved supplier bills (incl. GST).
+                    - link "Paid ₹0 Supplier payments recorded against this project." [ref=f18e212] [cursor=pointer]:
+                      - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=payments
+                      - paragraph [ref=f18e213]: Paid
+                      - paragraph [ref=f18e216]: ₹0
+                      - generic [ref=f18e217]: Supplier payments recorded against this project.
+                    - generic "Approved supplier bills' net payable (after TDS) minus payments and supplier notes." [ref=f18e218]:
+                      - paragraph [ref=f18e219]: Payable
+                      - paragraph [ref=f18e222]: ₹0
+                - generic "Billed revenue excluding GST minus material cost. Labour and overheads are not included." [ref=f18e224]:
+                  - generic [ref=f18e225]: Gross material margin
+                  - generic [ref=f18e226]: ₹0.00
+                - group [ref=f18e227]:
+                  - generic "How these figures are calculated" [ref=f18e228] [cursor=pointer]
+          - generic [ref=f18e229]:
+            - region "Material status" [ref=f18e230]:
+              - heading "Material status" [level=2] [ref=f18e231]
+              - generic [ref=f18e232]:
+                - link [ref=f18e233] [cursor=pointer]:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=planning&status=SHORTAGE
+                  - definition [ref=f18e234]: "0"
+                  - term [ref=f18e235]: Shortages to order
+                - link [ref=f18e236] [cursor=pointer]:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=purchase-orders
+                  - definition [ref=f18e237]: "0"
+                  - term [ref=f18e238]: POs awaiting delivery
+                - link [ref=f18e239] [cursor=pointer]:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=purchase-orders
+                  - definition [ref=f18e240]: "0"
+                  - term [ref=f18e241]: Deliveries overdue
+                - link [ref=f18e242] [cursor=pointer]:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=site-receipts&status=SUBMITTED
+                  - definition [ref=f18e243]: "0"
+                  - term [ref=f18e244]: Receipts to verify
+            - region "Project details" [ref=f18e245]:
+              - heading "Project details" [level=2] [ref=f18e246]
+              - paragraph [ref=f18e247]: Browser smoke test project
+              - generic [ref=f18e248]:
+                - generic [ref=f18e253]:
+                  - term [ref=f18e254]: Site address
+                  - definition [ref=f18e255]: Plot 1, Gurugram
+                - generic [ref=f18e260]:
+                  - term [ref=f18e261]: Project manager
+                  - definition [ref=f18e262]: Smoke PM
+                - generic [ref=f18e266]:
+                  - term [ref=f18e267]: Start → target completion
+                  - definition [ref=f18e268]: — → —
+            - region "Task progress" [ref=f18e269]:
+              - generic [ref=f18e270]:
+                - heading "Task progress" [level=2] [ref=f18e271]
+                - link "All tasks" [ref=f18e272] [cursor=pointer]:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=tasks
+              - generic [ref=f18e273]:
+                - progressbar "Progress" [ref=f18e274]
+                - generic [ref=f18e275]: 0%
+              - generic [ref=f18e276]:
+                - generic [ref=f18e277]:
+                  - definition [ref=f18e278]: "0"
+                  - term [ref=f18e279]: Total
+                - generic [ref=f18e280]:
+                  - definition [ref=f18e281]: "0"
+                  - term [ref=f18e282]: Open
+                - generic [ref=f18e283]:
+                  - definition [ref=f18e284]: "0"
+                  - term [ref=f18e285]: Done
+              - generic [ref=f18e286]:
+                - paragraph [ref=f18e287]: Project task list
+                - generic [ref=f18e288]:
+                  - link "Print" [ref=f18e289] [cursor=pointer]:
+                    - /url: /reports/print?type=project&id=b4e386dc-8674-4d4c-9048-ad82db6e3345
+                  - link "Export PDF" [ref=f18e290] [cursor=pointer]:
+                    - /url: /api/reports/pdf?type=project&id=b4e386dc-8674-4d4c-9048-ad82db6e3345
+                  - button "WhatsApp" [ref=f18e291] [cursor=pointer]
+        - region "Current project status" [ref=f18e292]:
+          - heading "Current project status" [level=2] [ref=f18e294]
+          - paragraph [ref=f18e295]: No status has been posted yet.
+          - generic [ref=f18e297]:
+            - generic [ref=f18e298]: New status update
+            - textbox "New status update" [ref=f18e299]:
+              - /placeholder: e.g. Electrical installation is currently in progress. Civil work for the second floor is completed. Material procurement is pending supplier confirmation.
+            - generic [ref=f18e300]:
+              - generic [ref=f18e301]: Saving adds a new entry; earlier updates stay in Status History.
+              - button "Save update" [disabled]
+        - region "Project tasks" [ref=f18e302]:
+          - generic [ref=f18e303]:
+            - heading "Project tasks" [level=2] [ref=f18e304]
+            - link "View all with filters" [ref=f18e305] [cursor=pointer]:
+              - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=tasks
+          - generic [ref=f18e306]:
+            - paragraph [ref=f18e311]: No tasks yet
+            - paragraph [ref=f18e312]: Tasks created for this project appear here.
+            - link "Create task" [ref=f18e314] [cursor=pointer]:
+              - /url: /tasks/new?projectId=b4e386dc-8674-4d4c-9048-ad82db6e3345
+          - generic [ref=f18e315]:
+            - generic [ref=f18e316]: No records
+            - generic [ref=f18e317]:
+              - combobox "Rows per page" [ref=f18e318] [cursor=pointer]
+              - button "Previous page" [disabled]
+              - generic [ref=f18e319]: 1 / 1
+              - button "Next page" [disabled]
+  - region "Notifications alt+T"
+  - alert [ref=f18e320]

@@ -1,0 +1,119 @@
+- generic [ref=f25e1]:
+  - generic [ref=f25e3]:
+    - banner [ref=f25e4]:
+      - button "Toggle navigation" [ref=f25e5] [cursor=pointer]
+      - generic [ref=f25e6]:
+        - button "Search projects, tasks, people… Ctrl K" [ref=f25e7] [cursor=pointer]:
+          - generic [ref=f25e11]: Search projects, tasks, people…
+          - generic [ref=f25e12]: Ctrl K
+        - generic [ref=f25e13]:
+          - heading "Search" [level=2] [ref=f25e14]
+          - paragraph [ref=f25e15]: Search projects, tasks, team members and departments
+      - button "Change theme" [ref=f25e16] [cursor=pointer]
+      - button "Notifications (1 unread)" [ref=f25e17] [cursor=pointer]:
+        - generic [ref=f25e18]: "1"
+      - button "Account menu" [ref=f25e19] [cursor=pointer]:
+        - generic [ref=f25e20]: SA
+        - generic [ref=f25e22]: Smoke Admin
+    - main [ref=f25e23]:
+      - generic [ref=f25e37]:
+        - navigation "breadcrumb" [ref=f25e38]:
+          - list [ref=f25e39]:
+            - listitem [ref=f25e40]:
+              - link "Projects" [ref=f25e41] [cursor=pointer]:
+                - /url: /projects
+            - listitem [aria-hidden] [ref=f25e42]
+            - listitem [ref=f25e45]:
+              - link "PRJ-0001" [ref=f25e46] [cursor=pointer]:
+                - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345
+            - listitem [aria-hidden] [ref=f25e47]
+            - listitem [ref=f25e50]:
+              - link "Rate enquiries" [ref=f25e51] [cursor=pointer]:
+                - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=rate-enquiries
+            - listitem [aria-hidden] [ref=f25e52]
+            - listitem [ref=f25e55]:
+              - link "New enquiry" [disabled] [ref=f25e56]
+        - generic [ref=f25e58]:
+          - heading "New rate enquiry" [level=1] [ref=f25e59]
+          - paragraph [ref=f25e60]: Ask several suppliers for prices on the same materials, then compare their quotations side by side.
+      - generic [ref=f25e61]:
+        - generic [ref=f25e62]:
+          - generic [ref=f25e63]:
+            - heading "Project" [level=2] [ref=f25e64]
+            - paragraph [ref=f25e65]: Every enquiry is for one project.
+          - generic [ref=f25e66]:
+            - generic [ref=f25e67]:
+              - generic [ref=f25e68]:
+                - text: Project
+                - generic [aria-hidden] [ref=f25e69]: "*"
+              - paragraph [ref=f25e70]: PRJ-0001 – Smoke Test Site
+              - paragraph [ref=f25e71]: From requisition PR/2026-27/0001
+            - generic [ref=f25e72]:
+              - generic [ref=f25e73]: Deliver to
+              - combobox "Deliver to" [ref=f25e74] [cursor=pointer]:
+                - generic [ref=f25e75]: Smoke Test Site (site)
+              - paragraph [ref=f25e76]: Defaults to the project's site store.
+        - generic [ref=f25e77]:
+          - generic [ref=f25e78]:
+            - heading "Enquiry" [level=2] [ref=f25e79]
+            - paragraph [ref=f25e80]: Suppliers see the subject, dates and materials.
+          - generic [ref=f25e81]:
+            - generic [ref=f25e82]:
+              - generic [ref=f25e83]:
+                - text: Subject
+                - generic [aria-hidden] [ref=f25e84]: "*"
+              - textbox "Subject" [ref=f25e85]:
+                - /placeholder: e.g. Cement and TMT bars for Block A slab
+                - text: Rates for PR/2026-27/0001 – Smoke Test Site
+            - generic [ref=f25e86]:
+              - generic [ref=f25e87]: Quotes needed by
+              - textbox "Quotes needed by" [ref=f25e88]: 2026-11-24
+            - generic [ref=f25e89]:
+              - generic [ref=f25e90]: Material needed at site by
+              - textbox "Material needed at site by" [ref=f25e91]
+            - generic [ref=f25e92]:
+              - generic [ref=f25e93]:
+                - text: Suppliers to ask
+                - generic [aria-hidden] [ref=f25e94]: "*"
+              - generic [ref=f25e95]:
+                - combobox "Suppliers to ask" [expanded] [ref=f25e96] [cursor=pointer]:
+                  - generic [ref=f25e97]: 1 selected
+                - generic [ref=f25e134]:
+                  - text: Pipe Traders Pvt Ltd
+                  - button "Remove Pipe Traders Pvt Ltd" [ref=f25e135] [cursor=pointer]
+              - link "+ Add a new supplier" [ref=f25e98] [cursor=pointer]:
+                - /url: /parties/new?type=supplier
+              - paragraph [ref=f25e99]: Search and add as many as you like. Missing one?
+        - region "Materials" [ref=f25e100]:
+          - heading "Materials" [level=2] [ref=f25e101]
+          - generic [ref=f25e102]:
+            - generic [ref=f25e103]:
+              - combobox [ref=f25e104] [cursor=pointer]:
+                - generic [ref=f25e105]: PVC Pipe 50mm — Supreme
+              - textbox "Line 1 acceptable brands" [ref=f25e106]:
+                - /placeholder: Other acceptable brands (optional), e.g. alternatives to Supreme
+              - textbox "Line 1 specification" [ref=f25e107]:
+                - /placeholder: Specification / grade (optional)
+            - generic [ref=f25e108]:
+              - textbox "Line 1 quantity" [ref=f25e109]:
+                - /placeholder: Qty
+                - text: "100"
+              - paragraph [ref=f25e110]: Mtr · stock 0
+            - button "Remove line 1" [disabled]
+          - button "Add material" [ref=f25e111] [cursor=pointer]
+        - button "+ Add terms (payment, freight, tax, validity, address)" [ref=f25e112] [cursor=pointer]
+        - generic [ref=f25e113]:
+          - button "Cancel" [ref=f25e114] [cursor=pointer]
+          - button "Save enquiry" [ref=f25e115] [cursor=pointer]
+  - region "Notifications alt+T"
+  - alert [ref=f25e36]
+  - dialog [ref=f25e117]:
+    - generic [ref=f25e118]:
+      - group [ref=f25e121]:
+        - combobox [expanded] [ref=f25e122]
+        - group [ref=f25e123]
+      - listbox "Suggestions" [active] [ref=f25e127]:
+        - group [ref=f25e129]:
+          - option "Pipe Traders Pvt Ltd Unregistered" [selected] [ref=f25e130]:
+            - generic [ref=f25e131]: Pipe Traders Pvt Ltd
+            - generic [ref=f25e132]: Unregistered

@@ -1,5 +1,5 @@
 import type { Prisma } from "@/generated/prisma/client";
-import { can, type Actor } from "./definitions";
+import { ADMIN_ROLE_KEYS, can, type Actor } from "./definitions";
 
 /**
  * Resource-level authorization expressed as Prisma `where` fragments. Every list,
@@ -65,12 +65,12 @@ export function memberAccessWhere(actor: Actor): Prisma.UserWhereInput {
 }
 
 /**
- * Accounts the actor may edit. Admins with members.manage may edit USER-role
- * accounts only; administrators (and role changes) need users.manage_admins.
+ * Accounts the actor may edit. Holders of members.manage may edit non-administrator
+ * accounts only; administrators (and promotion to admin) need users.manage_admins.
  * Nobody may edit a Super Admin except a Super Admin.
  */
 export function memberManageWhere(actor: Actor): Prisma.UserWhereInput {
   if (actor.role === "SUPER_ADMIN") return { organizationId: actor.organizationId };
   if (!can(actor, "members.manage")) return { id: { in: [] } };
-  return { organizationId: actor.organizationId, role: { key: "USER" } };
+  return { organizationId: actor.organizationId, role: { key: { notIn: [...ADMIN_ROLE_KEYS] } } };
 }

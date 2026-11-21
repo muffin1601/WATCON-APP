@@ -167,7 +167,7 @@ async function assertUniqueIdentity(email: string, username: string, exceptId?: 
 }
 
 function assertRoleAllowed(actor: Actor, role: RoleKey) {
-  if (role !== "USER" && !can(actor, "users.manage_admins")) {
+  if ((role === "ADMIN" || role === "SUPER_ADMIN") && !can(actor, "users.manage_admins")) {
     throw new ForbiddenError("Only a Super Admin can create or promote administrators.");
   }
 }

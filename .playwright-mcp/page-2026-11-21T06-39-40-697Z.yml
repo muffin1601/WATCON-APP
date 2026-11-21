@@ -1,0 +1,167 @@
+- generic [active] [ref=f20e1]:
+  - generic [ref=f20e3]:
+    - banner [ref=f20e4]:
+      - button "Toggle navigation" [ref=f20e5] [cursor=pointer]
+      - generic [ref=f20e6]:
+        - button "Search projects, tasks, people… Ctrl K" [ref=f20e7] [cursor=pointer]:
+          - generic [ref=f20e11]: Search projects, tasks, people…
+          - generic [ref=f20e12]: Ctrl K
+        - generic [ref=f20e13]:
+          - heading "Search" [level=2] [ref=f20e14]
+          - paragraph [ref=f20e15]: Search projects, tasks, team members and departments
+      - button "Change theme" [ref=f20e16] [cursor=pointer]
+      - button "Notifications (1 unread)" [ref=f20e17] [cursor=pointer]:
+        - generic [ref=f20e18]: "1"
+      - button "Account menu" [ref=f20e19] [cursor=pointer]:
+        - generic [ref=f20e20]: SA
+        - generic [ref=f20e22]: Smoke Admin
+    - main [ref=f20e23]:
+      - generic [ref=f20e189]:
+        - navigation "breadcrumb" [ref=f20e190]:
+          - list [ref=f20e191]:
+            - listitem [ref=f20e192]:
+              - link "Projects" [ref=f20e193] [cursor=pointer]:
+                - /url: /projects
+            - listitem [aria-hidden] [ref=f20e194]
+            - listitem [ref=f20e197]:
+              - link "PRJ-0001" [ref=f20e198] [cursor=pointer]:
+                - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345
+            - listitem [aria-hidden] [ref=f20e199]
+            - listitem [ref=f20e202]:
+              - link "Sales orders" [ref=f20e203] [cursor=pointer]:
+                - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=sales-orders
+            - listitem [aria-hidden] [ref=f20e204]
+            - listitem [ref=f20e207]:
+              - link "SO/2026-27/0002" [disabled] [ref=f20e208]
+        - generic [ref=f20e209]:
+          - generic [ref=f20e210]:
+            - heading "SO/2026-27/0002" [level=1] [ref=f20e211]
+            - generic [ref=f20e212]:
+              - generic [ref=f20e213]: Draft
+              - generic [ref=f20e214]: Smoke Client Ltd · ₹29,500.00
+          - generic [ref=f20e215]:
+            - link "Edit" [ref=f20e216] [cursor=pointer]:
+              - /url: /sales-orders/3624e4d7-eeb4-450d-babb-15b14a87f794/edit
+            - link "Material planning" [ref=f20e217] [cursor=pointer]:
+              - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=planning
+            - button "Submit for approval" [ref=f20e218] [cursor=pointer]
+            - button "Cancel" [ref=f20e219] [cursor=pointer]
+            - link "Print" [ref=f20e220] [cursor=pointer]:
+              - /url: /api/documents/pdf?type=sales_order&id=3624e4d7-eeb4-450d-babb-15b14a87f794&inline=1
+            - link "PDF" [ref=f20e221] [cursor=pointer]:
+              - /url: /api/documents/pdf?type=sales_order&id=3624e4d7-eeb4-450d-babb-15b14a87f794
+            - link "WhatsApp" [ref=f20e222] [cursor=pointer]:
+              - /url: https://wa.me/?text=Sales%20Order%20SO%2F2026-27%2F0002%0AClient%3A%20Smoke%20Client%20Ltd%0ADate%3A%2021%20Nov%202026%0AValue%3A%20%E2%82%B929%2C500.00%0A%0A%E2%80%A2%20PVC%20Pipe%2050mm%20%E2%80%93%20Supreme%20%E2%80%93%20100%20Mtr%20%40%20%E2%82%B9250%0A%0AThe%20PDF%20is%20attached.
+            - link "Email" [ref=f20e223] [cursor=pointer]:
+              - /url: mailto:?subject=Sales%20Order%20SO%2F2026-27%2F0002&body=Sales%20Order%20SO%2F2026-27%2F0002%0AClient%3A%20Smoke%20Client%20Ltd%0ADate%3A%2021%20Nov%202026%0AValue%3A%20%E2%82%B929%2C500.00%0A%0A%E2%80%A2%20PVC%20Pipe%2050mm%20%E2%80%93%20Supreme%20%E2%80%93%20100%20Mtr%20%40%20%E2%82%B9250%0A%0AThe%20PDF%20is%20attached.
+      - status [ref=f20e224]:
+        - generic [ref=f20e227]:
+          - paragraph [ref=f20e228]: Draft — submit for approval
+          - generic [ref=f20e229]: Check lines and rates, then submit. Approval locks the order and feeds material planning.
+      - generic [ref=f20e230]:
+        - generic [ref=f20e231]:
+          - generic [ref=f20e232]:
+            - heading "Order" [level=2] [ref=f20e234]
+            - generic [ref=f20e236]:
+              - generic [ref=f20e237]:
+                - term [ref=f20e238]: Client
+                - definition [ref=f20e239]:
+                  - link "Smoke Client Ltd" [ref=f20e240] [cursor=pointer]:
+                    - /url: /parties/d9a495ed-b971-49ba-bcd6-a45a22a16ac1
+              - generic [ref=f20e241]:
+                - term [ref=f20e242]: GSTIN / state
+                - definition [ref=f20e243]: Unregistered · —
+              - generic [ref=f20e244]:
+                - term [ref=f20e245]: Tax
+                - definition [ref=f20e246]: CGST + SGST
+              - generic [ref=f20e247]:
+                - term [ref=f20e248]: Project
+                - definition [ref=f20e249]:
+                  - link "PRJ-0001 – Smoke Test Site" [ref=f20e250] [cursor=pointer]:
+                    - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345
+              - generic [ref=f20e251]:
+                - term [ref=f20e252]: Client PO
+                - definition [ref=f20e253]: Not linked
+              - generic [ref=f20e254]:
+                - term [ref=f20e255]: Order date / deliver by
+                - definition [ref=f20e256]: 21 Nov 2026 → —
+              - generic [ref=f20e257]:
+                - term [ref=f20e258]: Delivery address
+                - definition [ref=f20e259]: Plot 1, Gurugram
+              - generic [ref=f20e260]:
+                - term [ref=f20e261]: Delivery schedule
+                - definition [ref=f20e262]: —
+              - generic [ref=f20e263]:
+                - term [ref=f20e264]: Billing schedule
+                - definition [ref=f20e265]: —
+              - generic [ref=f20e266]:
+                - term [ref=f20e267]: Payment terms
+                - definition [ref=f20e268]: —
+              - generic [ref=f20e269]:
+                - term [ref=f20e270]: Created
+                - definition [ref=f20e271]: Smoke Admin · 21 Nov 2026, 12:09 pm
+              - generic [ref=f20e272]:
+                - term [ref=f20e273]: Approved
+                - definition [ref=f20e274]: —
+              - generic [ref=f20e275]:
+                - term [ref=f20e276]: Notes
+                - definition [ref=f20e277]: —
+          - generic [ref=f20e278]:
+            - heading "Lines" [level=2] [ref=f20e280]
+            - generic [ref=f20e281]:
+              - table [ref=f20e283]:
+                - rowgroup [ref=f20e284]:
+                  - row [ref=f20e285]:
+                    - columnheader "#" [ref=f20e286]
+                    - columnheader "Item" [ref=f20e287]
+                    - columnheader "Qty" [ref=f20e288]
+                    - columnheader "Rate" [ref=f20e289]
+                    - columnheader "GST" [ref=f20e290]
+                    - columnheader "Amount" [ref=f20e291]
+                - rowgroup [ref=f20e292]:
+                  - row [ref=f20e293]:
+                    - cell "1" [ref=f20e294]
+                    - cell "PVC Pipe 50mm – Supreme PVC Pipe 50mm – Supreme" [ref=f20e295]:
+                      - generic [ref=f20e296]: PVC Pipe 50mm – Supreme
+                      - generic [ref=f20e297]: PVC Pipe 50mm – Supreme
+                    - cell "100 Mtr" [ref=f20e298]
+                    - cell "₹250.00" [ref=f20e299]
+                    - cell "18%" [ref=f20e300]
+                    - cell "₹29,500.00" [ref=f20e301]
+              - generic [ref=f20e303]:
+                - generic [ref=f20e304]:
+                  - term [ref=f20e305]: Taxable value
+                  - definition [ref=f20e306]: ₹25,000.00
+                - generic [ref=f20e307]:
+                  - term [ref=f20e308]: CGST + SGST
+                  - definition [ref=f20e309]: ₹4,500.00
+                - generic [ref=f20e310]:
+                  - term [ref=f20e311]: Total
+                  - definition [ref=f20e312]: ₹29,500.00
+          - generic [ref=f20e313]:
+            - heading "Revision history & amendments" [level=2] [ref=f20e315]
+            - paragraph [ref=f20e317]: No amendment requests yet. Approved orders are changed only through a request approved by a Super Admin.
+          - region "Activity & audit history" [ref=f20e318]:
+            - heading "Activity & audit history" [level=2] [ref=f20e319]
+            - list [ref=f20e324]:
+              - listitem [ref=f20e325]:
+                - generic [ref=f20e326]: 21 Nov 2026, 12:09 pm
+                - generic [ref=f20e327]: Smoke Admin
+                - generic [ref=f20e328]: Created sales order SO/2026-27/0002 for Smoke Client Ltd (PRJ-0001) – ₹29500.00
+        - generic [ref=f20e329]:
+          - region "Related documents" [ref=f20e330]:
+            - heading "Related documents" [level=2] [ref=f20e331]
+            - paragraph [ref=f20e335]: No linked documents yet.
+          - region "Documents & evidence" [ref=f20e336]:
+            - generic [ref=f20e337]:
+              - heading "Documents & evidence 0" [level=2] [ref=f20e338]:
+                - text: Documents & evidence
+                - generic [ref=f20e341]: "0"
+              - button "Upload" [ref=f20e342] [cursor=pointer]
+            - paragraph [ref=f20e343]: No documents attached yet.
+  - region "Notifications alt+T":
+    - list:
+      - listitem [ref=f20e344]:
+        - button "Close toast" [ref=f20e345] [cursor=pointer]
+        - generic [ref=f20e353]: Sales order created as draft — submit it for approval when ready.
+  - alert [ref=f20e151]: Sales order · Watcon Enterprise

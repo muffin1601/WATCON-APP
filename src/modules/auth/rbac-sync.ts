@@ -1,11 +1,17 @@
 import type { PrismaClient } from "@/generated/prisma/client";
 import { PERMISSIONS, ROLE_KEYS, ROLE_LABELS, defaultPermissionsFor, isSuperAdminOnly } from "@/lib/permissions/definitions";
 
-const ROLE_DESCRIPTIONS = {
+const ROLE_DESCRIPTIONS: Record<(typeof ROLE_KEYS)[number], string> = {
   SUPER_ADMIN: "Full company-wide control, including administrators, roles and security settings.",
-  ADMIN: "Manages projects, departments, team members and tasks within granted permissions.",
+  ADMIN: "Manages projects, departments, team members, tasks and commercial records within granted permissions.",
   USER: "Views and updates their own assigned tasks.",
-} as const;
+  PROJECT_MANAGER: "Runs projects: requirements, requisitions, site receipts, running bills and project accounts.",
+  SITE_ENGINEER: "Captures site receipts, consumption, requisitions and measurements for their projects.",
+  PURCHASE: "Suppliers, rate enquiries, quotations and purchase orders.",
+  STOREKEEPER: "Stock, reservations, transfers, challans and GRN posting.",
+  ACCOUNTS: "Supplier bills, payments, client invoices, receipts and project accounts.",
+  VIEWER: "Read-only management view of all projects, commercial records and reports.",
+};
 
 /**
  * Idempotently syncs the code-defined role & permission catalogue into the database.

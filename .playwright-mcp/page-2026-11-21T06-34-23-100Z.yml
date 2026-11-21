@@ -1,0 +1,111 @@
+- generic:
+  - generic:
+    - generic:
+      - banner [aria-hidden]:
+        - button
+        - generic:
+          - button:
+            - generic: Search projects, tasks, people…
+            - generic: Ctrl K
+          - generic:
+            - heading [level=2]: Search
+            - paragraph: Search projects, tasks, team members and departments
+        - button
+        - button:
+          - generic: "1"
+        - button:
+          - generic: SA
+          - generic: Smoke Admin
+      - main:
+        - generic [aria-hidden]:
+          - navigation:
+            - list:
+              - listitem:
+                - link:
+                  - /url: /items
+                  - text: Items
+              - listitem [aria-hidden]
+              - listitem:
+                - link [disabled]: ITM-0001
+          - generic:
+            - generic:
+              - heading [level=1]: PVC Pipe 50mm
+              - generic:
+                - generic: ITM-0001
+                - generic: Active
+                - generic: "Unit: Mtr"
+            - generic:
+              - button: Edit
+              - button: Deactivate
+              - button: Post stock
+        - generic [aria-hidden]:
+          - generic:
+            - generic: Brands
+            - generic: "0"
+          - generic:
+            - generic: Total stock (Mtr)
+            - generic: "0"
+          - generic:
+            - generic: Inward (all time)
+            - generic: "0"
+          - generic:
+            - generic: Outward (all time)
+            - generic: "0"
+        - region [aria-hidden]:
+          - generic:
+            - heading [level=2]: Brand-wise stock
+            - button [expanded]: Add brand
+          - generic:
+            - paragraph: No brands linked
+            - paragraph: Add a brand to start tracking stock for this item.
+        - region "Stock ledger":
+          - heading [level=2] [aria-hidden]: Stock ledger
+          - generic [aria-hidden]:
+            - combobox:
+              - generic: "Brand: All"
+            - combobox:
+              - generic: "Type: All"
+            - group:
+              - generic: Date
+              - generic: Date
+              - textbox
+              - generic: –
+              - textbox
+          - generic [aria-hidden]:
+            - paragraph: No stock movements
+            - paragraph: Movements appear here once stock is posted.
+          - generic:
+            - generic: No records
+            - generic [aria-hidden]:
+              - combobox:
+                - generic: 20 / page
+              - button [disabled]
+              - generic: 1 / 1
+              - button [disabled]
+        - paragraph [aria-hidden]: Created 21 Nov 2026, 12:04 pm by Smoke Admin · Last updated 21 Nov 2026, 12:04 pm
+  - region "Notifications alt+T"
+  - alert: PVC Pipe 50mm
+  - dialog "Add brand to item" [ref=f13e163]:
+    - generic [ref=f13e164]:
+      - heading "Add brand to item" [level=2] [ref=f13e165]
+      - paragraph [ref=f13e166]: Each brand keeps its own stock balance for this item.
+    - generic [ref=f13e167]:
+      - generic [ref=f13e168]:
+        - generic [ref=f13e169]:
+          - text: Brand
+          - generic [aria-hidden] [ref=f13e170]: "*"
+        - combobox "Brand" [active] [ref=f13e171] [cursor=pointer]:
+          - generic [ref=f13e172]: Select a brand
+        - paragraph [ref=f13e173]: All brands are already linked — type a new brand name to add it.
+      - generic [ref=f13e174]:
+        - generic [ref=f13e175]:
+          - generic [ref=f13e176]: Opening stock (Mtr)
+          - textbox "Opening stock (Mtr)" [ref=f13e177]
+          - paragraph [ref=f13e178]: Optional. Posted as an opening entry.
+        - generic [ref=f13e179]:
+          - generic [ref=f13e180]: Opening date
+          - textbox "Opening date" [ref=f13e181]: 2026-11-21
+      - generic [ref=f13e182]:
+        - button "Cancel" [ref=f13e183] [cursor=pointer]
+        - button "Add brand" [disabled]
+    - button "Close" [ref=f13e184] [cursor=pointer]

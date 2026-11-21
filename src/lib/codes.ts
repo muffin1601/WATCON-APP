@@ -1,6 +1,6 @@
 import type { Tx } from "@/lib/db";
 
-export type CodeScopeKey = "PROJECT" | "TASK" | "DEPARTMENT" | "EMPLOYEE" | "ITEM" | "BRAND" | "STOCK_TXN";
+export type CodeScopeKey = "PROJECT" | "TASK" | "DEPARTMENT" | "EMPLOYEE" | "ITEM" | "BRAND" | "STOCK_TXN" | "PARTY" | "LOCATION";
 
 const FORMATS: Record<CodeScopeKey, { prefix: string; width: number }> = {
   PROJECT: { prefix: "PRJ", width: 4 },
@@ -10,6 +10,8 @@ const FORMATS: Record<CodeScopeKey, { prefix: string; width: number }> = {
   ITEM: { prefix: "ITM", width: 4 },
   BRAND: { prefix: "BRD", width: 3 },
   STOCK_TXN: { prefix: "STX", width: 6 },
+  PARTY: { prefix: "PTY", width: 4 },
+  LOCATION: { prefix: "LOC", width: 3 },
 };
 
 /** Pure formatter: formatCode("TASK", 42) → "TSK-00042". Grows past the width instead of truncating. */

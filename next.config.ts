@@ -9,7 +9,8 @@ const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+  // geolocation=(self): optional, user-initiated GPS stamping of site evidence (GRN photos).
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self)" },
   { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
   // Browsers ignore HSTS over plain HTTP, so this is inert in local dev and only takes
   // effect once the app is served over HTTPS (Vercel / Nginx + TLS).

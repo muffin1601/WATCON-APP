@@ -1,0 +1,21 @@
+- generic [active] [ref=f25e1]:
+  - generic [ref=f25e3]:
+    - banner [ref=f25e4]:
+      - button "Toggle navigation" [ref=f25e5] [cursor=pointer]
+      - generic [ref=f25e6]:
+        - button "Search projects, tasks, people… Ctrl K" [ref=f25e7] [cursor=pointer]:
+          - generic [ref=f25e11]: Search projects, tasks, people…
+          - generic [ref=f25e12]: Ctrl K
+        - generic [ref=f25e13]:
+          - heading "Search" [level=2] [ref=f25e14]
+          - paragraph [ref=f25e15]: Search projects, tasks, team members and departments
+      - button "Change theme" [ref=f25e16] [cursor=pointer]
+      - button "Notifications (1 unread)" [ref=f25e17] [cursor=pointer]:
+        - generic [ref=f25e18]: "1"
+      - button "Account menu" [ref=f25e19] [cursor=pointer]:
+        - generic [ref=f25e20]: SA
+        - generic [ref=f25e22]: Smoke Admin
+    - main [ref=f25e23]:
+      - generic "Loading" [ref=f25e24]
+  - region "Notifications alt+T"
+  - alert [ref=f25e36]

@@ -16,7 +16,18 @@ import { passwordPolicy } from "@/lib/auth/password-policy";
 import { applyActionResult } from "@/lib/forms";
 import { ROLE_LABELS } from "@/lib/permissions/definitions";
 import { createMemberAction, updateMemberAction } from "@/modules/members/actions";
-import { memberUpdateSchema } from "@/modules/members/validation";
+import { ASSIGNABLE_ROLES, memberUpdateSchema } from "@/modules/members/validation";
+
+const ROLE_HELP: Record<string, string> = {
+  ADMIN: "Admins manage projects, departments, members, tasks and commercial records within their permissions.",
+  USER: "Users see and update their own assigned tasks.",
+  PROJECT_MANAGER: "Requirements, requisitions, site receipts, running bills and project accounts for their projects.",
+  SITE_ENGINEER: "Site receipts, consumption, requisitions and measurements for their projects.",
+  PURCHASE: "Suppliers, rate enquiries, quotations and purchase orders.",
+  STOREKEEPER: "Stock, reservations, transfers, challans and GRN posting.",
+  ACCOUNTS: "Supplier bills, payments, client invoices and receipts.",
+  VIEWER: "Read-only view of all projects, commercial records and reports.",
+};
 
 const baseSchema = memberUpdateSchema.extend({ password: z.string().optional() });
 
@@ -58,7 +69,7 @@ export function MemberForm({ departments, memberId, employeeCode, defaults, canA
   const primary = useWatch({ control: form.control, name: "primaryDepartmentId" });
   const isSuperAdminTarget = isEdit && defaults?.role === "SUPER_ADMIN";
   // Show the Admin option when the actor may assign it, or when the target already holds it.
-  const roleOptions = (["USER", "ADMIN"] as const).filter((r) => r === "USER" || canAssignAdmin || defaults?.role === "ADMIN");
+  const roleOptions = ASSIGNABLE_ROLES.filter((r) => r !== "ADMIN" || canAssignAdmin || defaults?.role === "ADMIN");
 
   async function onSubmit(values: FormOutput) {
     const { password, ...rest } = values;
@@ -132,7 +143,7 @@ export function MemberForm({ departments, memberId, employeeCode, defaults, canA
         <Field id="username" label="Username" required error={errors.username?.message}>
           <Input id="username" autoComplete="off" aria-invalid={!!errors.username} {...form.register("username")} />
         </Field>
-        <Field id="role" label="Role" required error={errors.role?.message} help={isSuperAdminTarget ? "A Super Admin's role cannot be changed here." : role === "ADMIN" ? "Admins manage projects, departments, members and tasks within their permissions." : "Users see and update their own assigned tasks."}>
+        <Field id="role" label="Role" required error={errors.role?.message} help={isSuperAdminTarget ? "A Super Admin's role cannot be changed here." : ROLE_HELP[role as keyof typeof ROLE_HELP]}>
           {isSuperAdminTarget ? (
             <Input id="role" value={ROLE_LABELS.SUPER_ADMIN} disabled readOnly />
           ) : (

@@ -1,8 +1,10 @@
 import { z } from "zod";
 import { passwordPolicy } from "@/lib/auth/password-policy";
 import { optionalDate, optionalText, phone, text, uuid } from "@/lib/validations/common";
+import { ROLE_KEYS } from "@/lib/permissions/definitions";
 
-export const ASSIGNABLE_ROLES = ["ADMIN", "USER"] as const;
+/** Roles that can be chosen in the member form (Super Admin only via the bootstrap procedure). */
+export const ASSIGNABLE_ROLES = ["USER", "ADMIN", "PROJECT_MANAGER", "SITE_ENGINEER", "PURCHASE", "STOREKEEPER", "ACCOUNTS", "VIEWER"] as const;
 
 const base = {
   fullName: text("Full name", 120, 2),
@@ -23,7 +25,7 @@ const base = {
 
 export const memberCreateSchema = z.object({ ...base, password: passwordPolicy });
 /** Updates accept SUPER_ADMIN only so a Super Admin's own role can be kept unchanged; promotion is blocked in the service. */
-export const memberUpdateSchema = z.object({ ...base, role: z.enum(["SUPER_ADMIN", "ADMIN", "USER"]) });
+export const memberUpdateSchema = z.object({ ...base, role: z.enum(ROLE_KEYS) });
 export const memberPasswordResetSchema = z.object({ password: passwordPolicy });
 
 export type MemberCreateInput = z.input<typeof memberCreateSchema>;
@@ -33,7 +35,7 @@ export type MemberPasswordResetInput = z.input<typeof memberPasswordResetSchema>
 export const memberListQuerySchema = z.object({
   q: z.string().trim().max(100).optional().catch(undefined),
   departmentId: uuid.optional().catch(undefined),
-  role: z.enum(["SUPER_ADMIN", "ADMIN", "USER"]).optional().catch(undefined),
+  role: z.enum(ROLE_KEYS).optional().catch(undefined),
   status: z.enum(["ACTIVE", "INACTIVE"]).optional().catch(undefined),
   sort: z.enum(["fullName", "employeeCode", "createdAt", "joiningDate"]).catch("fullName").default("fullName"),
   dir: z.enum(["asc", "desc"]).catch("asc").default("asc"),

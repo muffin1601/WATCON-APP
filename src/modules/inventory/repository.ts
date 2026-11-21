@@ -4,7 +4,8 @@ import { writeAudit } from "@/lib/audit";
 import { nextCode } from "@/lib/codes";
 import { db, Prisma, type Tx } from "@/lib/db";
 import { ConflictError, NotFoundError, ValidationError, isUniqueViolation } from "@/lib/errors";
-import { fromMilli, movementDateError, toMilli, type StockDirection, type StockSummary, type StockTxnType } from "./rules";
+import { ensureSystemLocations, postMovementTx as postEngineMovement } from "./engine";
+import { fromMilli, toMilli, type StockDirection, type StockSummary, type StockTxnType } from "./rules";
 
 /**
  * Inventory data access. Services call only these functions (never `db` directly), so a
@@ -194,6 +195,9 @@ export type MovementData = {
   organizationId: string;
   actorId: string;
   itemBrandId: string;
+  /** Defaults to the Central Warehouse (Phase 2 behaviour). */
+  locationId?: string | null;
+  projectId?: string | null;
   type: StockTxnType;
   direction: StockDirection;
   quantity: string;
@@ -207,68 +211,13 @@ export type MovementData = {
   sourceId?: string | null;
 };
 
-const txnSelect = { id: true, code: true, itemBrandId: true, type: true, direction: true, quantity: true, balanceAfter: true, txnDate: true } as const;
+const txnSelect = { id: true, code: true, itemBrandId: true, locationId: true, type: true, direction: true, quantity: true, balanceAfter: true, txnDate: true } as const;
 type TxnRow = Prisma.StockTransactionGetPayload<{ select: typeof txnSelect }>;
 const toTxn = (t: TxnRow) => ({ ...t, quantity: qty(t.quantity), balanceAfter: qty(t.balanceAfter) });
 
-/**
- * Posts one movement atomically: a single conditional UPDATE changes the balance (so
- * concurrent postings serialise on the row lock and can never take stock below zero),
- * then the ledger row is written with the resulting balance. Either both happen or neither.
- */
 async function postMovementTx(tx: Tx, m: MovementData) {
-  const delta = m.direction === "IN" ? { increment: m.quantity } : { decrement: m.quantity };
-  const updated = await tx.itemBrand.updateMany({
-    where: { id: m.itemBrandId, organizationId: m.organizationId, ...(m.direction === "OUT" ? { currentQty: { gte: m.quantity } } : {}) },
-    data: { currentQty: delta },
-  });
-  if (updated.count === 0) {
-    const current = await tx.itemBrand.findFirst({ where: { id: m.itemBrandId, organizationId: m.organizationId }, select: { currentQty: true } });
-    if (!current) throw new NotFoundError("Stock item");
-    throw new ValidationError(`Insufficient stock. Available: ${qty(current.currentQty)}.`, { quantity: `Only ${qty(current.currentQty)} in stock.` });
-  }
-  const position = await tx.itemBrand.findUniqueOrThrow({ where: { id: m.itemBrandId }, select: { itemId: true, brandId: true, currentQty: true } });
-  const latest = await tx.stockTransaction.findFirst({ where: { itemBrandId: m.itemBrandId }, orderBy: [{ txnDate: "desc" }], select: { txnDate: true } });
-  const dateError = movementDateError(m.txnDate, m.today, latest?.txnDate ?? null);
-  if (dateError) throw new ValidationError(dateError, { txnDate: dateError });
-
-  const code = await nextCode(tx, m.organizationId, "STOCK_TXN");
-  const txn = await tx.stockTransaction.create({
-    data: {
-      organizationId: m.organizationId,
-      code,
-      itemBrandId: m.itemBrandId,
-      itemId: position.itemId,
-      brandId: position.brandId,
-      type: m.type,
-      direction: m.direction,
-      quantity: m.quantity,
-      balanceAfter: position.currentQty,
-      txnDate: m.txnDate,
-      reference: m.reference,
-      remarks: m.remarks,
-      reason: m.reason,
-      idempotencyKey: m.idempotencyKey,
-      sourceType: m.sourceType ?? null,
-      sourceId: m.sourceId ?? null,
-      createdById: m.actorId,
-    },
-    select: txnSelect,
-  });
-  if (m.type === "ADJUSTMENT" || m.type === "OPENING") {
-    await writeAudit(
-      {
-        organizationId: m.organizationId,
-        actorId: m.actorId,
-        action: m.type === "OPENING" ? "stock.opening" : "stock.adjusted",
-        entityType: "stock",
-        entityId: txn.id,
-        summary: `${m.type === "OPENING" ? "Opening stock" : `Adjustment ${m.direction === "IN" ? "+" : "−"}`}${m.quantity} (${code})${m.reason ? ` – ${m.reason}` : ""}`,
-      },
-      tx,
-    );
-  }
-  return toTxn(txn);
+  const locationId = m.locationId ?? (await ensureSystemLocations(tx, m.organizationId)).WAREHOUSE;
+  return postEngineMovement(tx, { ...m, locationId });
 }
 
 async function findByIdempotencyKey(organizationId: string, key: string) {
@@ -285,7 +234,8 @@ export async function postMovement(m: MovementData): Promise<{ txn: ReturnType<t
   const existing = await findByIdempotencyKey(m.organizationId, m.idempotencyKey);
   if (existing) return assertSamePosting(existing, m);
   try {
-    return { txn: await db.$transaction((tx) => postMovementTx(tx, m)), duplicate: false };
+    const txn = await db.$transaction((tx) => postMovementTx(tx, m));
+    return { txn: { ...txn, locationId: txn.locationId }, duplicate: false };
   } catch (e) {
     if (isUniqueViolation(e)) {
       const winner = await findByIdempotencyKey(m.organizationId, m.idempotencyKey);
@@ -296,7 +246,7 @@ export async function postMovement(m: MovementData): Promise<{ txn: ReturnType<t
 }
 
 function assertSamePosting(t: ReturnType<typeof toTxn>, m: MovementData) {
-  if (t.itemBrandId !== m.itemBrandId || t.type !== m.type || t.direction !== m.direction || toMilli(t.quantity) !== toMilli(m.quantity)) {
+  if (t.itemBrandId !== m.itemBrandId || t.type !== m.type || t.direction !== m.direction || toMilli(t.quantity) !== toMilli(m.quantity) || (m.locationId && t.locationId !== m.locationId)) {
     throw new ConflictError("This submission was already used for a different stock entry. Reload the form and try again.");
   }
   return { txn: t, duplicate: true };
@@ -406,13 +356,17 @@ export async function summarizePositions(ids: string[]) {
   return summaries(ids, null, null);
 }
 
-export type LedgerFilter = StockFilter & { type?: StockTxnType; from: Date | null; to: Date | null };
+export type LedgerFilter = StockFilter & { type?: StockTxnType; from: Date | null; to: Date | null; locationId?: string; projectId?: string; sourceType?: string; sourceId?: string };
 
 export async function findLedger(f: LedgerFilter, opts: { skip: number; take: number }) {
   const and: Prisma.StockTransactionWhereInput[] = [{ organizationId: f.organizationId }];
   if (f.itemId) and.push({ itemId: f.itemId });
   if (f.brandId) and.push({ brandId: f.brandId });
   if (f.type) and.push({ type: f.type });
+  if (f.locationId) and.push({ locationId: f.locationId });
+  if (f.projectId) and.push({ projectId: f.projectId });
+  if (f.sourceType) and.push({ sourceType: f.sourceType });
+  if (f.sourceId) and.push({ sourceId: f.sourceId });
   if (f.from) and.push({ txnDate: { gte: f.from } });
   if (f.to) and.push({ txnDate: { lte: f.to } });
   if (f.category) and.push({ item: { category: { equals: f.category, mode: "insensitive" } } });
@@ -447,8 +401,13 @@ export async function findLedger(f: LedgerFilter, opts: { skip: number; take: nu
         remarks: true,
         reason: true,
         createdAt: true,
+        sourceType: true,
+        sourceId: true,
         item: { select: { id: true, code: true, name: true, unit: true } },
         brand: { select: { id: true, name: true } },
+        location: { select: { id: true, name: true } },
+        project: { select: { id: true, code: true } },
+        reversedBy: { select: { id: true } },
         createdBy: { select: { fullName: true } },
       },
     }),

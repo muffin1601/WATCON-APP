@@ -1,0 +1,262 @@
+- generic [active] [ref=f25e1]:
+  - generic [ref=f25e3]:
+    - banner [ref=f25e4]:
+      - button "Toggle navigation" [ref=f25e5] [cursor=pointer]
+      - generic [ref=f25e6]:
+        - button "Search projects, tasks, people… Ctrl K" [ref=f25e7] [cursor=pointer]:
+          - generic [ref=f25e11]: Search projects, tasks, people…
+          - generic [ref=f25e12]: Ctrl K
+        - generic [ref=f25e13]:
+          - heading "Search" [level=2] [ref=f25e14]
+          - paragraph [ref=f25e15]: Search projects, tasks, team members and departments
+      - button "Change theme" [ref=f25e16] [cursor=pointer]
+      - button "Notifications (1 unread)" [ref=f25e17] [cursor=pointer]:
+        - generic [ref=f25e18]: "1"
+      - button "Account menu" [ref=f25e19] [cursor=pointer]:
+        - generic [ref=f25e20]: SA
+        - generic [ref=f25e22]: Smoke Admin
+    - main [ref=f25e23]:
+      - generic [ref=f25e139]:
+        - navigation "breadcrumb" [ref=f25e140]:
+          - list [ref=f25e141]:
+            - listitem [ref=f25e142]:
+              - link "Projects" [ref=f25e143] [cursor=pointer]:
+                - /url: /projects
+            - listitem [aria-hidden] [ref=f25e144]
+            - listitem [ref=f25e147]:
+              - link "PRJ-0001" [ref=f25e148] [cursor=pointer]:
+                - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345
+            - listitem [aria-hidden] [ref=f25e149]
+            - listitem [ref=f25e152]:
+              - link "Rate enquiries" [ref=f25e153] [cursor=pointer]:
+                - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=rate-enquiries
+            - listitem [aria-hidden] [ref=f25e154]
+            - listitem [ref=f25e157]:
+              - link "RFQ/2026-27/0001" [disabled] [ref=f25e158]
+        - generic [ref=f25e159]:
+          - generic [ref=f25e160]:
+            - heading "RFQ/2026-27/0001" [level=1] [ref=f25e161]
+            - paragraph [ref=f25e162]: Rates for PR/2026-27/0001 – Smoke Test Site
+            - generic [ref=f25e163]:
+              - generic [ref=f25e164]: Responses in
+              - generic [ref=f25e165]:
+                - text: For project
+                - link "PRJ-0001 – Smoke Test Site" [ref=f25e166] [cursor=pointer]:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=rate-enquiries
+                - generic [ref=f25e167]:
+                  - text: · Sales order
+                  - link "SO/2026-27/0002" [ref=f25e168] [cursor=pointer]:
+                    - /url: /sales-orders/3624e4d7-eeb4-450d-babb-15b14a87f794
+          - generic [ref=f25e169]:
+            - link "Print" [ref=f25e170] [cursor=pointer]:
+              - /url: /api/documents/pdf?type=rfq&id=001d12aa-6b14-48a4-be18-5e10bf67a628&inline=1
+            - link "PDF" [ref=f25e171] [cursor=pointer]:
+              - /url: /api/documents/pdf?type=rfq&id=001d12aa-6b14-48a4-be18-5e10bf67a628
+            - link "WhatsApp" [ref=f25e172] [cursor=pointer]:
+              - /url: https://wa.me/?text=Rate%20enquiry%20RFQ%2F2026-27%2F0001%3A%20Rates%20for%20PR%2F2026-27%2F0001%20%E2%80%93%20Smoke%20Test%20Site%0AProject%3A%20Smoke%20Test%20Site%0APlease%20quote%20by%2024%20Nov%202026%0A%0A%E2%80%A2%20PVC%20Pipe%2050mm%20(Supreme)%20%E2%80%93%20100%20Mtr%0A%0APlease%20share%20your%20best%20rate%2C%20GST%2C%20freight%20and%20delivery%20time.
+            - link "Email" [ref=f25e173] [cursor=pointer]:
+              - /url: mailto:?subject=Rate%20enquiry%20RFQ%2F2026-27%2F0001&body=Rate%20enquiry%20RFQ%2F2026-27%2F0001%3A%20Rates%20for%20PR%2F2026-27%2F0001%20%E2%80%93%20Smoke%20Test%20Site%0AProject%3A%20Smoke%20Test%20Site%0APlease%20quote%20by%2024%20Nov%202026%0A%0A%E2%80%A2%20PVC%20Pipe%2050mm%20(Supreme)%20%E2%80%93%20100%20Mtr%0A%0APlease%20share%20your%20best%20rate%2C%20GST%2C%20freight%20and%20delivery%20time.
+      - status [ref=f25e174]:
+        - generic [ref=f25e177]:
+          - paragraph [ref=f25e178]: Quotations are in — compare and award
+          - generic [ref=f25e179]: Check the comparison, use “Award to recommended” or split quantities between suppliers, then send the award for approval.
+      - generic [ref=f25e180]:
+        - generic [ref=f25e181]:
+          - generic [ref=f25e182]:
+            - heading "Enquiry" [level=2] [ref=f25e184]
+            - generic [ref=f25e186]:
+              - generic [ref=f25e187]:
+                - term [ref=f25e188]: Requisition
+                - definition [ref=f25e189]:
+                  - link "PR/2026-27/0001" [ref=f25e190] [cursor=pointer]:
+                    - /url: /purchase-requisitions/0afb856c-0ef8-4bd1-8e50-56939b5077b2
+              - generic [ref=f25e191]:
+                - term [ref=f25e192]: Deliver to
+                - definition [ref=f25e193]: Smoke Test Site (site)
+              - generic [ref=f25e194]:
+                - term [ref=f25e195]: Needed at site by
+                - definition [ref=f25e196]: —
+              - generic [ref=f25e197]:
+                - term [ref=f25e198]: Quotes due
+                - definition [ref=f25e199]: 24 Nov 2026
+              - generic [ref=f25e200]:
+                - term [ref=f25e201]: Payment / freight terms
+                - definition [ref=f25e202]: —
+              - generic [ref=f25e203]:
+                - term [ref=f25e204]: Tax terms
+                - definition [ref=f25e205]: —
+              - generic [ref=f25e206]:
+                - term [ref=f25e207]: Delivery address
+                - definition [ref=f25e208]: —
+              - generic [ref=f25e209]:
+                - term [ref=f25e210]: Specifications
+                - definition [ref=f25e211]: —
+          - generic [ref=f25e212]:
+            - heading "Materials requested" [level=2] [ref=f25e214]
+            - list [ref=f25e216]:
+              - listitem [ref=f25e217]:
+                - generic [ref=f25e218]:
+                  - text: PVC Pipe 50mm
+                  - generic [ref=f25e219]: · Supreme
+                - generic [ref=f25e220]: 100 Mtr
+          - generic [ref=f25e221]:
+            - heading "Suppliers & actions" [level=2] [ref=f25e223]
+            - generic [ref=f25e224]:
+              - list [ref=f25e225]:
+                - listitem [ref=f25e226]:
+                  - text: Pipe Traders Pvt Ltd
+                  - generic [ref=f25e228]: quoted
+              - generic [ref=f25e229]:
+                - button "Close" [ref=f25e352] [cursor=pointer]
+                - button "Cancel" [ref=f25e231] [cursor=pointer]
+          - generic [ref=f25e232]:
+            - heading "Enter a supplier's quotation" [level=2] [ref=f25e234]
+            - generic [ref=f25e236]:
+              - generic [ref=f25e237]:
+                - generic [ref=f25e238]:
+                  - generic [ref=f25e239]: Supplier *
+                  - combobox [ref=f25e240] [cursor=pointer]:
+                    - generic [ref=f25e241]: Which supplier's quotation?
+                - generic [ref=f25e242]:
+                  - generic [ref=f25e243]: Their quotation no.
+                  - textbox "Their quotation no." [ref=f25e244]
+                - generic [ref=f25e245]:
+                  - generic [ref=f25e246]: Quotation date *
+                  - textbox "Quotation date *" [ref=f25e247]: 2026-11-21
+                - generic [ref=f25e248]:
+                  - generic [ref=f25e249]: Valid until
+                  - textbox "Valid until" [ref=f25e250]
+                - generic [ref=f25e251]:
+                  - generic [ref=f25e252]: Delivery in (days)
+                  - textbox "Delivery in (days)" [ref=f25e253]
+                - generic [ref=f25e254]:
+                  - generic [ref=f25e255]: Freight / transport ₹
+                  - textbox "Freight / transport ₹" [ref=f25e256]: "0"
+                - generic [ref=f25e257]:
+                  - generic [ref=f25e258]: GST on freight
+                  - combobox "GST on freight" [ref=f25e259]:
+                    - option "0%"
+                    - option "5%"
+                    - option "12%"
+                    - option "18%" [selected]
+                    - option "28%"
+                - generic [ref=f25e260]:
+                  - generic [ref=f25e261]: Payment terms offered
+                  - textbox "Payment terms offered" [ref=f25e262]
+              - generic [ref=f25e264]:
+                - generic [ref=f25e265]:
+                  - checkbox "PVC Pipe 50mm · asked 100 Mtr" [checked] [ref=f25e266]
+                  - text: PVC Pipe 50mm
+                  - generic [ref=f25e267]: · asked 100 Mtr
+                - generic [ref=f25e268]:
+                  - generic [ref=f25e269]:
+                    - generic [ref=f25e270]: Brand offered
+                    - combobox "PVC Pipe 50mm brand offered" [ref=f25e271]:
+                      - option "Select brand"
+                      - option "Supreme" [selected]
+                  - generic [ref=f25e272]:
+                    - generic [ref=f25e273]: Qty
+                    - textbox "PVC Pipe 50mm quantity" [ref=f25e274]: "100"
+                  - generic [ref=f25e275]:
+                    - generic [ref=f25e276]: Rate ₹ / Mtr
+                    - textbox "PVC Pipe 50mm rate" [ref=f25e277]
+                  - generic [ref=f25e278]:
+                    - generic [ref=f25e279]: Discount %
+                    - textbox "PVC Pipe 50mm discount" [ref=f25e280]: "0"
+                  - generic [ref=f25e281]:
+                    - generic [ref=f25e282]: GST
+                    - combobox "PVC Pipe 50mm GST" [ref=f25e283]:
+                      - option "0%"
+                      - option "5%"
+                      - option "12%"
+                      - option "18%" [selected]
+                      - option "28%"
+              - button "Save quotation" [ref=f25e284] [cursor=pointer]
+          - generic [ref=f25e285]:
+            - generic [ref=f25e286]:
+              - heading "Compare quotations" [level=2] [ref=f25e287]
+              - button "Award to recommended" [ref=f25e391] [cursor=pointer]
+            - generic [ref=f25e288]:
+              - paragraph [ref=f25e289]: Landed cost = price after discount + GST + share of freight. “Recommended” is the cheapest valid landed cost, with on-time delivery history as the tie-breaker.
+              - generic [ref=f25e291]:
+                - heading "PVC Pipe 50mm · 100 Mtr" [level=3] [ref=f25e292]:
+                  - text: PVC Pipe 50mm
+                  - generic [ref=f25e293]: · 100 Mtr
+                - table [ref=f25e393]:
+                  - rowgroup [ref=f25e394]:
+                    - row [ref=f25e395]:
+                      - columnheader "Supplier · brand" [ref=f25e396]
+                      - columnheader "Rate" [ref=f25e397]
+                      - columnheader "Landed / unit" [ref=f25e398]
+                      - columnheader "Delivery" [ref=f25e399]
+                      - columnheader "Track record" [ref=f25e400]
+                      - columnheader "Award qty" [ref=f25e401]
+                  - rowgroup [ref=f25e402]:
+                    - row [ref=f25e403]:
+                      - cell "Pipe Traders Pvt Ltd Supreme Recommended Lowest price" [ref=f25e404]:
+                        - generic [ref=f25e405]: Pipe Traders Pvt Ltd
+                        - generic [ref=f25e406]:
+                          - text: Supreme
+                          - generic [ref=f25e407]: Recommended
+                          - generic [ref=f25e408]: Lowest price
+                      - cell "₹180.00" [ref=f25e409]
+                      - cell "₹212.40" [ref=f25e410]
+                      - cell "5 days" [ref=f25e411]
+                      - cell "No history" [ref=f25e412]
+                      - cell [ref=f25e413]:
+                        - textbox "Award PVC Pipe 50mm to Pipe Traders Pvt Ltd" [ref=f25e414]
+              - button "Send award for approval" [disabled]
+          - generic [ref=f25e295]:
+            - heading "Quotation history" [level=2] [ref=f25e297]
+            - list [ref=f25e415]:
+              - listitem [ref=f25e416]:
+                - generic [ref=f25e417]: Pipe Traders Pvt Ltd
+                - generic [ref=f25e418]: SQ/2026-27/0001 · rev 1 · 21 Nov 2026
+                - generic [ref=f25e419]: Received
+          - generic [ref=f25e420]:
+            - heading "Supplier quotations" [level=2] [ref=f25e422]
+            - generic [ref=f25e423]:
+              - paragraph [ref=f25e424]: Attach each supplier’s own quotation (PDF / photo) so the comparison can be checked against it.
+              - region "Pipe Traders Pvt Ltd · SQ/2026-27/0001 rev 1" [ref=f25e426]:
+                - generic [ref=f25e427]:
+                  - heading "Pipe Traders Pvt Ltd · SQ/2026-27/0001 rev 1 0" [level=2] [ref=f25e428]:
+                    - text: Pipe Traders Pvt Ltd · SQ/2026-27/0001 rev 1
+                    - generic [ref=f25e431]: "0"
+                  - button "Upload" [ref=f25e432] [cursor=pointer]
+                - paragraph [ref=f25e433]: No documents attached yet.
+          - region "Activity & audit history" [ref=f25e300]:
+            - heading "Activity & audit history" [level=2] [ref=f25e301]
+            - list [ref=f25e306]:
+              - listitem [ref=f25e434]:
+                - generic [ref=f25e435]: 21 Nov 2026, 12:13 pm
+                - generic [ref=f25e436]: Smoke Admin
+                - generic [ref=f25e437]: Recorded quotation SQ/2026-27/0001 from Pipe Traders Pvt Ltd on RFQ/2026-27/0001
+              - listitem [ref=f25e353]:
+                - generic [ref=f25e354]: 21 Nov 2026, 12:12 pm
+                - generic [ref=f25e355]: Smoke Admin
+                - generic [ref=f25e356]: "Marked as shared with suppliers: RFQ/2026-27/0001"
+              - listitem [ref=f25e307]:
+                - generic [ref=f25e308]: 21 Nov 2026, 12:12 pm
+                - generic [ref=f25e309]: Smoke Admin
+                - generic [ref=f25e310]: Created rate enquiry RFQ/2026-27/0001 – Rates for PR/2026-27/0001 – Smoke Test Site (1 items, 1 suppliers)
+        - generic [ref=f25e311]:
+          - region "Related documents" [ref=f25e312]:
+            - heading "Related documents" [level=2] [ref=f25e313]
+            - list [ref=f25e317]:
+              - listitem [ref=f25e318]:
+                - generic [ref=f25e319]: Requisition
+                - link "PR/2026-27/0001" [ref=f25e320] [cursor=pointer]:
+                  - /url: /purchase-requisitions/0afb856c-0ef8-4bd1-8e50-56939b5077b2
+          - region "Enquiry documents" [ref=f25e321]:
+            - generic [ref=f25e322]:
+              - heading "Enquiry documents 0" [level=2] [ref=f25e323]:
+                - text: Enquiry documents
+                - generic [ref=f25e326]: "0"
+              - button "Upload" [ref=f25e327] [cursor=pointer]
+            - paragraph [ref=f25e328]: No documents attached yet.
+  - region "Notifications alt+T":
+    - list:
+      - listitem [ref=f25e438]:
+        - button "Close toast" [ref=f25e439] [cursor=pointer]
+        - generic [ref=f25e447]: Quotation recorded. Attach the supplier's quotation file under “Supplier quotations”.
+  - alert [ref=f25e36]: Rate enquiry · Watcon Enterprise

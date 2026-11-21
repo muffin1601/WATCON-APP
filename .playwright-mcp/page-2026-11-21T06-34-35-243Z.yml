@@ -1,0 +1,76 @@
+- generic:
+  - generic:
+    - generic:
+      - banner [aria-hidden]:
+        - button
+        - generic:
+          - button:
+            - generic: Search projects, tasks, people…
+            - generic: Ctrl K
+          - generic:
+            - heading [level=2]: Search
+            - paragraph: Search projects, tasks, team members and departments
+        - button
+        - button:
+          - generic: "1"
+        - button:
+          - generic: SA
+          - generic: Smoke Admin
+      - main:
+        - generic [aria-hidden]:
+          - navigation:
+            - list:
+              - listitem:
+                - link:
+                  - /url: /dashboard
+                  - text: Dashboard
+              - listitem [aria-hidden]
+              - listitem:
+                - link [disabled]: Brands
+          - generic:
+            - generic:
+              - heading [level=1]: Brands
+              - paragraph: Brands that items can be stocked in. Each item–brand pair has its own stock balance.
+            - generic:
+              - button [expanded]: Add brand
+        - generic [aria-hidden]:
+          - generic:
+            - searchbox
+          - combobox:
+            - generic: "Status: All"
+        - generic [aria-hidden]:
+          - paragraph: No brands found
+          - paragraph: Add a brand or adjust your filters.
+        - generic:
+          - generic: No records
+          - generic [aria-hidden]:
+            - combobox:
+              - generic: 20 / page
+            - button [disabled]
+            - generic: 1 / 1
+            - button [disabled]
+  - region "Notifications alt+T"
+  - alert
+  - dialog "Add brand" [ref=f14e59]:
+    - generic [ref=f14e60]:
+      - heading "Add brand" [level=2] [ref=f14e61]
+      - paragraph [ref=f14e62]: A brand code is generated automatically.
+    - generic [ref=f14e63]:
+      - generic [ref=f14e64]:
+        - generic [ref=f14e65]:
+          - text: Brand name
+          - generic [aria-hidden] [ref=f14e66]: "*"
+        - textbox "Brand name" [active] [ref=f14e67]
+      - generic [ref=f14e68]:
+        - generic [ref=f14e69]: Description
+        - textbox "Description" [ref=f14e70]
+      - generic [ref=f14e71]:
+        - generic [ref=f14e72]: Status
+        - combobox "Status" [ref=f14e73] [cursor=pointer]:
+          - generic: Active
+        - combobox [aria-hidden] [ref=f14e74]
+        - paragraph [ref=f14e75]: Inactive brands keep their history but cannot be linked or receive new movements.
+      - generic [ref=f14e76]:
+        - button "Cancel" [ref=f14e77] [cursor=pointer]
+        - button "Create brand" [ref=f14e78] [cursor=pointer]
+    - button "Close" [ref=f14e79] [cursor=pointer]

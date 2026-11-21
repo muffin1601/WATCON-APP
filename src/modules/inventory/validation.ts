@@ -64,6 +64,8 @@ export const MOVEMENT_TYPES = ["INWARD", "OUTWARD", "ADJUSTMENT"] as const;
 export const movementSchema = z
   .object({
     itemBrandId: uuid,
+    /** Optional; defaults to the Central Warehouse. */
+    locationId: uuid.optional().nullable().or(z.literal("")).transform((v) => (v ? v : null)),
     type: z.enum(MOVEMENT_TYPES),
     /** Only used for ADJUSTMENT (IN = increase, OUT = decrease). */
     direction: z.enum(["IN", "OUT"]).optional().nullable(),
@@ -123,7 +125,9 @@ export const ledgerQuerySchema = z.object({
   q,
   itemId: optUuid,
   brandId: optUuid,
-  type: z.enum(["OPENING", "INWARD", "OUTWARD", "ADJUSTMENT"]).optional().catch(undefined),
+  type: z.enum(["OPENING", "INWARD", "OUTWARD", "ADJUSTMENT", "RECEIPT", "TRANSFER_OUT", "TRANSFER_IN", "RETURN_TO_SUPPLIER", "CLIENT_DELIVERY", "CONSUMPTION", "WRITE_OFF", "REVERSAL"]).optional().catch(undefined),
+  locationId: optUuid,
+  projectId: optUuid,
   from: optDay,
   to: optDay,
   page,

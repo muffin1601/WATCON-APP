@@ -1,0 +1,232 @@
+- generic:
+  - generic [aria-hidden]:
+    - generic:
+      - banner:
+        - button
+        - generic:
+          - button:
+            - generic: Search projects, tasks, people…
+            - generic: Ctrl K
+          - generic:
+            - heading [level=2]: Search
+            - paragraph: Search projects, tasks, team members and departments
+        - button
+        - button:
+          - generic: "1"
+        - button:
+          - generic: SA
+          - generic: Smoke Admin
+      - main:
+        - generic:
+          - navigation:
+            - list:
+              - listitem:
+                - link:
+                  - /url: /projects
+                  - text: Projects
+              - listitem [aria-hidden]
+              - listitem:
+                - link:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345
+                  - text: PRJ-0001
+              - listitem [aria-hidden]
+              - listitem:
+                - link:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=rate-enquiries
+                  - text: Rate enquiries
+              - listitem [aria-hidden]
+              - listitem:
+                - link [disabled]: RFQ/2026-27/0001
+          - generic:
+            - generic:
+              - heading [level=1]: RFQ/2026-27/0001
+              - paragraph: Rates for PR/2026-27/0001 – Smoke Test Site
+              - generic:
+                - generic: Draft
+                - generic:
+                  - text: For project
+                  - link:
+                    - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=rate-enquiries
+                    - text: PRJ-0001 – Smoke Test Site
+                  - generic:
+                    - text: · Sales order
+                    - link:
+                      - /url: /sales-orders/3624e4d7-eeb4-450d-babb-15b14a87f794
+                      - text: SO/2026-27/0002
+            - generic:
+              - link:
+                - /url: /api/documents/pdf?type=rfq&id=001d12aa-6b14-48a4-be18-5e10bf67a628&inline=1
+                - text: Print
+              - link:
+                - /url: /api/documents/pdf?type=rfq&id=001d12aa-6b14-48a4-be18-5e10bf67a628
+                - text: PDF
+              - link:
+                - /url: https://wa.me/?text=Rate%20enquiry%20RFQ%2F2026-27%2F0001%3A%20Rates%20for%20PR%2F2026-27%2F0001%20%E2%80%93%20Smoke%20Test%20Site%0AProject%3A%20Smoke%20Test%20Site%0APlease%20quote%20by%2024%20Nov%202026%0A%0A%E2%80%A2%20PVC%20Pipe%2050mm%20(Supreme)%20%E2%80%93%20100%20Mtr%0A%0APlease%20share%20your%20best%20rate%2C%20GST%2C%20freight%20and%20delivery%20time.
+                - text: WhatsApp
+              - link:
+                - /url: mailto:?subject=Rate%20enquiry%20RFQ%2F2026-27%2F0001&body=Rate%20enquiry%20RFQ%2F2026-27%2F0001%3A%20Rates%20for%20PR%2F2026-27%2F0001%20%E2%80%93%20Smoke%20Test%20Site%0AProject%3A%20Smoke%20Test%20Site%0APlease%20quote%20by%2024%20Nov%202026%0A%0A%E2%80%A2%20PVC%20Pipe%2050mm%20(Supreme)%20%E2%80%93%20100%20Mtr%0A%0APlease%20share%20your%20best%20rate%2C%20GST%2C%20freight%20and%20delivery%20time.
+                - text: Email
+        - status:
+          - generic:
+            - paragraph: "Next: share the enquiry with the suppliers"
+            - generic: Use PDF / WhatsApp / email (top right) to send it, then press “Mark as shared with suppliers”.
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=2]: Enquiry
+              - generic:
+                - generic:
+                  - generic:
+                    - term: Requisition
+                    - definition:
+                      - link:
+                        - /url: /purchase-requisitions/0afb856c-0ef8-4bd1-8e50-56939b5077b2
+                        - text: PR/2026-27/0001
+                  - generic:
+                    - term: Deliver to
+                    - definition: Smoke Test Site (site)
+                  - generic:
+                    - term: Needed at site by
+                    - definition: —
+                  - generic:
+                    - term: Quotes due
+                    - definition: 24 Nov 2026
+                  - generic:
+                    - term: Payment / freight terms
+                    - definition: —
+                  - generic:
+                    - term: Tax terms
+                    - definition: —
+                  - generic:
+                    - term: Delivery address
+                    - definition: —
+                  - generic:
+                    - term: Specifications
+                    - definition: —
+            - generic:
+              - generic:
+                - heading [level=2]: Materials requested
+              - generic:
+                - list:
+                  - listitem:
+                    - generic:
+                      - text: PVC Pipe 50mm
+                      - generic: · Supreme
+                    - generic: 100 Mtr
+            - generic:
+              - generic:
+                - heading [level=2]: Suppliers & actions
+              - generic:
+                - list:
+                  - listitem:
+                    - text: Pipe Traders Pvt Ltd
+                    - generic: awaiting quote
+                - generic:
+                  - button [expanded]: Mark as shared with suppliers
+                  - button: Cancel
+            - generic:
+              - generic:
+                - heading [level=2]: Enter a supplier's quotation
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: Supplier *
+                      - combobox:
+                        - generic: Which supplier's quotation?
+                    - generic:
+                      - generic: Their quotation no.
+                      - textbox
+                    - generic:
+                      - generic: Quotation date *
+                      - textbox: 2026-11-21
+                    - generic:
+                      - generic: Valid until
+                      - textbox
+                    - generic:
+                      - generic: Delivery in (days)
+                      - textbox
+                    - generic:
+                      - generic: Freight / transport ₹
+                      - textbox: "0"
+                    - generic:
+                      - generic: GST on freight
+                      - combobox
+                    - generic:
+                      - generic: Payment terms offered
+                      - textbox
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox [checked]
+                        - text: PVC Pipe 50mm
+                        - generic: · asked 100 Mtr
+                      - generic:
+                        - generic:
+                          - generic: Brand offered
+                          - combobox
+                        - generic:
+                          - generic: Qty
+                          - textbox: "100"
+                        - generic:
+                          - generic: Rate ₹ / Mtr
+                          - textbox
+                        - generic:
+                          - generic: Discount %
+                          - textbox: "0"
+                        - generic:
+                          - generic: GST
+                          - combobox
+                  - button: Save quotation
+            - generic:
+              - generic:
+                - heading [level=2]: Compare quotations
+              - generic:
+                - paragraph: Landed cost = price after discount + GST + share of freight. “Recommended” is the cheapest valid landed cost, with on-time delivery history as the tie-breaker.
+                - generic:
+                  - generic:
+                    - heading [level=3]:
+                      - text: PVC Pipe 50mm
+                      - generic: · 100 Mtr
+                    - paragraph: No quotations yet.
+            - generic:
+              - generic:
+                - heading [level=2]: Quotation history
+              - generic:
+                - paragraph: No quotations yet. Enter each supplier’s quotation above as it comes in.
+            - region:
+              - heading [level=2]: Activity & audit history
+              - list:
+                - listitem:
+                  - generic: 21 Nov 2026, 12:12 pm
+                  - generic: Smoke Admin
+                  - generic: Created rate enquiry RFQ/2026-27/0001 – Rates for PR/2026-27/0001 – Smoke Test Site (1 items, 1 suppliers)
+          - generic:
+            - region:
+              - heading [level=2]: Related documents
+              - list:
+                - listitem:
+                  - generic: Requisition
+                  - link:
+                    - /url: /purchase-requisitions/0afb856c-0ef8-4bd1-8e50-56939b5077b2
+                    - text: PR/2026-27/0001
+            - region:
+              - generic:
+                - heading [level=2]:
+                  - text: Enquiry documents
+                  - generic: "0"
+                - button: Upload
+              - paragraph: No documents attached yet.
+  - region "Notifications alt+T"
+  - alert: Rate enquiry · Watcon Enterprise
+  - alertdialog "Mark the enquiry as shared?" [ref=f25e341]:
+    - generic [ref=f25e342]:
+      - heading "Mark the enquiry as shared?" [level=2] [ref=f25e343]
+      - paragraph [ref=f25e344]:
+        - generic [ref=f25e345]:
+          - generic [ref=f25e346]: Share it first using PDF / WhatsApp / email (top right). This only records that you shared it — the app does not send messages.
+          - textbox "Shared via (e.g. WhatsApp, email)" [ref=f25e347]
+    - generic [ref=f25e348]:
+      - button "Cancel" [active] [ref=f25e349] [cursor=pointer]
+      - button "Mark as shared with suppliers" [ref=f25e350] [cursor=pointer]

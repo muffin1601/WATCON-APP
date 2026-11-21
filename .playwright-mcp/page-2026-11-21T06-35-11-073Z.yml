@@ -1,0 +1,120 @@
+- generic:
+  - generic:
+    - generic:
+      - banner [aria-hidden]:
+        - button
+        - generic:
+          - button:
+            - generic: Search projects, tasks, people…
+            - generic: Ctrl K
+          - generic:
+            - heading [level=2]: Search
+            - paragraph: Search projects, tasks, team members and departments
+        - button
+        - button:
+          - generic: "1"
+        - button:
+          - generic: SA
+          - generic: Smoke Admin
+      - main:
+        - generic [aria-hidden]:
+          - navigation:
+            - list:
+              - listitem:
+                - link:
+                  - /url: /items
+                  - text: Items
+              - listitem [aria-hidden]
+              - listitem:
+                - link [disabled]: ITM-0001
+          - generic:
+            - generic:
+              - heading [level=1]: PVC Pipe 50mm
+              - generic:
+                - generic: ITM-0001
+                - generic: Active
+                - generic: "Unit: Mtr"
+            - generic:
+              - button: Edit
+              - button: Deactivate
+              - button: Post stock
+        - generic [aria-hidden]:
+          - generic:
+            - generic: Brands
+            - generic: "0"
+          - generic:
+            - generic: Total stock (Mtr)
+            - generic: "0"
+          - generic:
+            - generic: Inward (all time)
+            - generic: "0"
+          - generic:
+            - generic: Outward (all time)
+            - generic: "0"
+        - region [aria-hidden]:
+          - generic:
+            - heading [level=2]: Brand-wise stock
+            - button [expanded]: Add brand
+          - generic:
+            - paragraph: No brands linked
+            - paragraph: Add a brand to start tracking stock for this item.
+        - region "Stock ledger":
+          - heading [level=2] [aria-hidden]: Stock ledger
+          - generic [aria-hidden]:
+            - combobox:
+              - generic: "Brand: All"
+            - combobox:
+              - generic: "Type: All"
+            - group:
+              - generic: Date
+              - generic: Date
+              - textbox
+              - generic: –
+              - textbox
+          - generic [aria-hidden]:
+            - paragraph: No stock movements
+            - paragraph: Movements appear here once stock is posted.
+          - generic:
+            - generic: No records
+            - generic [aria-hidden]:
+              - combobox:
+                - generic: 20 / page
+              - button [disabled]
+              - generic: 1 / 1
+              - button [disabled]
+        - paragraph [aria-hidden]: Created 21 Nov 2026, 12:04 pm by Smoke Admin · Last updated 21 Nov 2026, 12:04 pm
+  - region "Notifications alt+T"
+  - alert
+  - dialog "Add brand to item" [ref=f15e38]:
+    - generic [ref=f15e39]:
+      - heading "Add brand to item" [level=2] [ref=f15e40]
+      - paragraph [ref=f15e41]: Each brand keeps its own stock balance for this item.
+    - generic [ref=f15e42]:
+      - generic [ref=f15e43]:
+        - generic [ref=f15e44]:
+          - text: Brand
+          - generic [aria-hidden] [ref=f15e45]: "*"
+        - combobox "Brand" [ref=f15e46] [cursor=pointer]:
+          - generic [ref=f15e47]: Supreme
+      - generic [ref=f15e48]:
+        - generic [ref=f15e49]:
+          - generic [ref=f15e50]: Opening stock (Mtr)
+          - textbox "Opening stock (Mtr)" [ref=f15e51]
+          - paragraph [ref=f15e52]: Optional. Posted as an opening entry.
+        - generic [ref=f15e53]:
+          - generic [ref=f15e54]: Opening date
+          - textbox "Opening date" [ref=f15e55]: 2026-11-21
+      - generic [ref=f15e56]:
+        - button "Cancel" [ref=f15e57] [cursor=pointer]
+        - button "Add brand" [ref=f15e58] [cursor=pointer]
+    - button "Close" [ref=f15e59] [cursor=pointer]
+  - dialog [ref=f15e61]:
+    - generic [ref=f15e62]:
+      - group [ref=f15e65]:
+        - combobox [expanded] [ref=f15e66]
+        - group [ref=f15e67]
+      - listbox "Suggestions" [active] [ref=f15e71]:
+        - group [ref=f15e73]:
+          - option "Supreme BRD-001" [selected] [ref=f15e74]:
+            - generic [ref=f15e75]: Supreme
+            - generic [ref=f15e76]: BRD-001

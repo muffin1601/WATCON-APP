@@ -1,0 +1,119 @@
+- generic [ref=f23e1]:
+  - generic [ref=f23e3]:
+    - banner [ref=f23e4]:
+      - button "Toggle navigation" [ref=f23e5] [cursor=pointer]
+      - generic [ref=f23e6]:
+        - button "Search projects, tasks, people… Ctrl K" [ref=f23e7] [cursor=pointer]:
+          - generic [ref=f23e11]: Search projects, tasks, people…
+          - generic [ref=f23e12]: Ctrl K
+        - generic [ref=f23e13]:
+          - heading "Search" [level=2] [ref=f23e14]
+          - paragraph [ref=f23e15]: Search projects, tasks, team members and departments
+      - button "Change theme" [ref=f23e16] [cursor=pointer]
+      - button "Notifications (1 unread)" [ref=f23e17] [cursor=pointer]:
+        - generic [ref=f23e18]: "1"
+      - button "Account menu" [ref=f23e19] [cursor=pointer]:
+        - generic [ref=f23e20]: SP
+        - generic [ref=f23e22]: Smoke PM
+    - main [ref=f23e23]:
+      - generic [ref=f23e37]:
+        - navigation "breadcrumb" [ref=f23e38]:
+          - list [ref=f23e39]:
+            - listitem [ref=f23e40]:
+              - link "Projects" [ref=f23e41] [cursor=pointer]:
+                - /url: /projects
+            - listitem [aria-hidden] [ref=f23e42]
+            - listitem [ref=f23e45]:
+              - link "PRJ-0001" [ref=f23e46] [cursor=pointer]:
+                - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345
+            - listitem [aria-hidden] [ref=f23e47]
+            - listitem [ref=f23e50]:
+              - link "Material planning" [disabled] [ref=f23e51]
+        - generic [ref=f23e53]:
+          - heading "Material planning" [level=1] [ref=f23e54]
+          - paragraph [ref=f23e55]: Requirements for PRJ-0001 – Smoke Test Site, each traced to its sales order, against stock, open orders and site receipts.
+      - region "Material planning" [ref=f23e56]:
+        - generic [ref=f23e57]:
+          - link [ref=f23e58] [cursor=pointer]:
+            - /url: /material-planning?projectId=b4e386dc-8674-4d4c-9048-ad82db6e3345
+            - paragraph [ref=f23e59]: Requirement lines
+            - paragraph [ref=f23e60]: "1"
+          - link [ref=f23e61] [cursor=pointer]:
+            - /url: /material-planning?projectId=b4e386dc-8674-4d4c-9048-ad82db6e3345&status=SHORTAGE
+            - paragraph [ref=f23e62]: Shortage / low stock
+            - paragraph [ref=f23e63]: "1"
+          - generic [ref=f23e64]:
+            - paragraph [ref=f23e65]: Lines to order
+            - paragraph [ref=f23e66]: "1"
+            - paragraph [ref=f23e67]: 1 without a price
+          - link [ref=f23e68] [cursor=pointer]:
+            - /url: /material-planning?projectId=b4e386dc-8674-4d4c-9048-ad82db6e3345&status=AWAITING_DELIVERY
+            - paragraph [ref=f23e69]: Awaiting delivery
+            - paragraph [ref=f23e70]: "0"
+          - link [ref=f23e71] [cursor=pointer]:
+            - /url: /material-planning?projectId=b4e386dc-8674-4d4c-9048-ad82db6e3345&status=DELAYED
+            - paragraph [ref=f23e72]: Delayed deliveries
+            - paragraph [ref=f23e73]: "0"
+          - generic [ref=f23e74]:
+            - paragraph [ref=f23e75]: Est. procurement
+            - paragraph [ref=f23e76]: ₹0
+            - paragraph [ref=f23e77]: to order × last rate
+        - generic [ref=f23e78]:
+          - searchbox "Search item, brand or project…" [ref=f23e80]
+          - combobox "Status" [ref=f23e81] [cursor=pointer]:
+            - generic: "Status: All"
+          - combobox "Requirements" [ref=f23e82] [cursor=pointer]:
+            - generic: "Requirements: Open"
+          - button "Add requirement" [ref=f23e84] [cursor=pointer]
+        - generic [ref=f23e85]:
+          - generic [ref=f23e86]:
+            - button "Create requisition (1)" [ref=f23e87] [cursor=pointer]
+            - button "Select lines to order" [active] [ref=f23e88] [cursor=pointer]
+            - generic [ref=f23e89]:
+              - checkbox "Show all quantity columns" [ref=f23e90] [cursor=pointer]
+              - text: Show all quantity columns
+          - table [ref=f23e92]:
+            - rowgroup [ref=f23e93]:
+              - row [ref=f23e94]:
+                - columnheader [ref=f23e95]
+                - columnheader "Item – brand" [ref=f23e96]
+                - columnheader "Required" [ref=f23e97]
+                - columnheader "Free stock" [ref=f23e98]
+                - columnheader "Reserved" [ref=f23e99]
+                - columnheader "Incoming" [ref=f23e100]
+                - columnheader "Open PR" [ref=f23e101]
+                - columnheader "At site" [ref=f23e102]
+                - columnheader "Consumed" [ref=f23e103]
+                - columnheader "Shortage" [ref=f23e104]
+                - columnheader "To order" [ref=f23e105]
+                - columnheader "Status" [ref=f23e106]
+                - columnheader [ref=f23e107]
+            - rowgroup [ref=f23e108]:
+              - row [ref=f23e109]:
+                - cell [ref=f23e110]:
+                  - checkbox "Select PVC Pipe 50mm" [checked] [ref=f23e111] [cursor=pointer]
+                - cell "PVC Pipe 50mm Supreme · ITM-0001 From sales order SO/2026-27/0002" [ref=f23e112]:
+                  - link "PVC Pipe 50mm" [ref=f23e113] [cursor=pointer]:
+                    - /url: /items/45ec131c-b677-4d11-ab6a-1ece4c7ad26c
+                  - generic [ref=f23e114]: Supreme · ITM-0001
+                  - link "From sales order SO/2026-27/0002" [ref=f23e115] [cursor=pointer]:
+                    - /url: /sales-orders/3624e4d7-eeb4-450d-babb-15b14a87f794
+                - cell "100 Mtr no date" [ref=f23e116]:
+                  - text: 100 Mtr
+                  - generic [ref=f23e117]: no date
+                - cell "—" [ref=f23e118]
+                - cell "—" [ref=f23e119]
+                - cell "—" [ref=f23e120]
+                - cell "—" [ref=f23e121]
+                - cell "—" [ref=f23e122]
+                - cell "—" [ref=f23e123]
+                - cell "100" [ref=f23e124]
+                - cell "100" [ref=f23e125]
+                - cell "Shortage Medium urgency" [ref=f23e126]:
+                  - generic [ref=f23e127]: Shortage
+                  - generic [ref=f23e128]: Medium urgency
+                - cell [ref=f23e129]:
+                  - button "Actions for PVC Pipe 50mm" [ref=f23e130] [cursor=pointer]
+          - paragraph [ref=f23e131]: Shortage = required − (at site + in transit + consumed) − project reservations − approved incoming. To order = shortage − PO pipeline − open requisitions − free warehouse stock, so lines already covered are never ordered twice. Estimated cost uses the last purchase rate (before tax).
+  - region "Notifications alt+T"
+  - alert [ref=f23e36]

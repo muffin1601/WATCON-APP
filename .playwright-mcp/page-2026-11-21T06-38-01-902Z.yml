@@ -1,0 +1,114 @@
+- generic [active] [ref=f16e1]:
+  - generic [ref=f16e3]:
+    - banner [ref=f16e4]:
+      - button "Toggle navigation" [ref=f16e5] [cursor=pointer]
+      - generic [ref=f16e6]:
+        - button "Search projects, tasks, people… Ctrl K" [ref=f16e7] [cursor=pointer]:
+          - generic [ref=f16e11]: Search projects, tasks, people…
+          - generic [ref=f16e12]: Ctrl K
+        - generic [ref=f16e13]:
+          - heading "Search" [level=2] [ref=f16e14]
+          - paragraph [ref=f16e15]: Search projects, tasks, team members and departments
+      - button "Change theme" [ref=f16e16] [cursor=pointer]
+      - button "Notifications (1 unread)" [ref=f16e17] [cursor=pointer]:
+        - generic [ref=f16e18]: "1"
+      - button "Account menu" [ref=f16e19] [cursor=pointer]:
+        - generic [ref=f16e20]: SA
+        - generic [ref=f16e22]: Smoke Admin
+    - main [ref=f16e23]:
+      - generic [ref=f16e294]:
+        - navigation "breadcrumb" [ref=f16e295]:
+          - list [ref=f16e296]:
+            - listitem [ref=f16e297]:
+              - link "Clients & suppliers" [ref=f16e298] [cursor=pointer]:
+                - /url: /parties
+            - listitem [aria-hidden] [ref=f16e299]
+            - listitem [ref=f16e302]:
+              - link "PTY-0002" [disabled] [ref=f16e303]
+        - generic [ref=f16e304]:
+          - generic [ref=f16e305]:
+            - heading "Pipe Traders Pvt Ltd" [level=1] [ref=f16e306]
+            - generic [ref=f16e307]:
+              - generic [ref=f16e308]: PTY-0002
+              - generic [ref=f16e309]: Supplier
+              - generic [ref=f16e310]: Active
+          - link "Edit" [ref=f16e312] [cursor=pointer]:
+            - /url: /parties/5bc30321-76b8-4fcc-8360-12f7b243f90a/edit
+      - generic [ref=f16e313]:
+        - generic [ref=f16e314]:
+          - generic [ref=f16e315]:
+            - heading "Registration & tax" [level=2] [ref=f16e317]
+            - generic [ref=f16e319]:
+              - generic [ref=f16e320]:
+                - term [ref=f16e321]: Legal name
+                - definition [ref=f16e322]: —
+              - generic [ref=f16e323]:
+                - term [ref=f16e324]: GSTIN
+                - definition [ref=f16e325]: Unregistered
+              - generic [ref=f16e326]:
+                - term [ref=f16e327]: PAN
+                - definition [ref=f16e328]: —
+              - generic [ref=f16e329]:
+                - term [ref=f16e330]: State (place of supply)
+                - definition [ref=f16e331]: 06 – Haryana
+              - generic [ref=f16e332]:
+                - term [ref=f16e333]: Default TDS
+                - definition [ref=f16e334]: —
+              - generic [ref=f16e335]:
+                - term [ref=f16e336]: Payment terms
+                - definition [ref=f16e337]: —
+              - generic [ref=f16e338]:
+                - term [ref=f16e339]: Credit limit
+                - definition [ref=f16e340]: —
+          - generic [ref=f16e341]:
+            - heading "Contact & bank" [level=2] [ref=f16e343]
+            - generic [ref=f16e345]:
+              - generic [ref=f16e346]:
+                - term [ref=f16e347]: Contact person
+                - definition [ref=f16e348]: —
+              - generic [ref=f16e349]:
+                - term [ref=f16e350]: Phone
+                - definition [ref=f16e351]: —
+              - generic [ref=f16e352]:
+                - term [ref=f16e353]: Email
+                - definition [ref=f16e354]: —
+              - generic [ref=f16e355]:
+                - term [ref=f16e356]: WhatsApp
+                - definition [ref=f16e357]: —
+              - generic [ref=f16e358]:
+                - term [ref=f16e359]: Address
+                - definition [ref=f16e360]: —
+              - generic [ref=f16e361]:
+                - term [ref=f16e362]: Bank
+                - definition [ref=f16e363]: —
+              - generic [ref=f16e364]:
+                - term [ref=f16e365]: Account
+                - definition [ref=f16e366]: —
+              - generic [ref=f16e367]:
+                - term [ref=f16e368]: IFSC
+                - definition [ref=f16e369]: —
+              - generic [ref=f16e370]:
+                - term [ref=f16e371]: Notes
+                - definition [ref=f16e372]: —
+          - region "Activity & audit history" [ref=f16e373]:
+            - heading "Activity & audit history" [level=2] [ref=f16e374]
+            - list [ref=f16e379]:
+              - listitem [ref=f16e380]:
+                - generic [ref=f16e381]: 21 Nov 2026, 12:08 pm
+                - generic [ref=f16e382]: Smoke Admin
+                - generic [ref=f16e383]: Created supplier PTY-0002 – Pipe Traders Pvt Ltd
+        - generic [ref=f16e384]:
+          - region "Documents" [ref=f16e385]:
+            - generic [ref=f16e386]:
+              - heading "Documents 0" [level=2] [ref=f16e387]:
+                - text: Documents
+                - generic [ref=f16e390]: "0"
+              - button "Upload" [ref=f16e391] [cursor=pointer]
+            - paragraph [ref=f16e392]: No documents attached yet.
+          - paragraph [ref=f16e393]: Created 21 Nov 2026, 12:08 pm by Smoke Admin · updated 21 Nov 2026, 12:08 pm
+  - region "Notifications alt+T":
+    - list:
+      - listitem [ref=f16e394]:
+        - button "Close toast" [ref=f16e395] [cursor=pointer]
+        - generic [ref=f16e403]: Party created
+  - alert [ref=f16e86]: Party · Watcon Enterprise

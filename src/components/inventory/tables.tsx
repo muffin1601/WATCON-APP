@@ -226,17 +226,32 @@ export type LedgerRow = {
   reason: string | null;
   item: { id: string; code: string; name: string; unit: string };
   brand: { id: string; name: string };
+  location: { id: string; name: string } | null;
+  project: { id: string; code: string } | null;
+  source: { label: string; href: string | null } | null;
   createdBy: string;
+  /** Manual entry that has not been reversed (reversal is offered to stock.adjust holders). */
+  reversible?: boolean;
 };
 
+const IN_STYLE = "border-emerald-200 bg-emerald-50 text-emerald-700";
+const OUT_STYLE = "border-rose-200 bg-rose-50 text-rose-700";
 const TYPE_STYLES: Record<StockTxnType, string> = {
   OPENING: "border-sky-200 bg-sky-50 text-sky-700",
-  INWARD: "border-emerald-200 bg-emerald-50 text-emerald-700",
-  OUTWARD: "border-rose-200 bg-rose-50 text-rose-700",
+  INWARD: IN_STYLE,
+  OUTWARD: OUT_STYLE,
   ADJUSTMENT: "border-amber-200 bg-amber-50 text-amber-800",
+  RECEIPT: IN_STYLE,
+  TRANSFER_OUT: "border-violet-200 bg-violet-50 text-violet-700",
+  TRANSFER_IN: "border-violet-200 bg-violet-50 text-violet-700",
+  RETURN_TO_SUPPLIER: OUT_STYLE,
+  CLIENT_DELIVERY: OUT_STYLE,
+  CONSUMPTION: "border-slate-200 bg-slate-50 text-slate-700",
+  WRITE_OFF: "border-amber-200 bg-amber-50 text-amber-800",
+  REVERSAL: "border-amber-200 bg-amber-50 text-amber-800",
 };
 
-export function LedgerTable({ rows, showItem = true }: { rows: LedgerRow[]; showItem?: boolean }) {
+export function LedgerTable({ rows, showItem = true, action }: { rows: LedgerRow[]; showItem?: boolean; action?: (row: LedgerRow) => React.ReactNode }) {
   const columns: DataTableColumn<LedgerRow>[] = [
     { id: "date", header: "Date", cell: ({ row }) => <span className="whitespace-nowrap">{formatDate(row.original.txnDate)}</span> },
     { id: "code", header: "Entry", cell: ({ row }) => <span className="font-mono text-xs whitespace-nowrap text-muted-foreground">{row.original.code}</span> },
@@ -246,7 +261,7 @@ export function LedgerTable({ rows, showItem = true }: { rows: LedgerRow[]; show
       cell: ({ row }) => (
         <span className={cn("inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium whitespace-nowrap", TYPE_STYLES[row.original.type])}>
           {STOCK_TXN_LABELS[row.original.type]}
-          {row.original.type === "ADJUSTMENT" && (row.original.direction === "IN" ? " +" : " −")}
+          {(row.original.type === "ADJUSTMENT" || row.original.type === "REVERSAL") && (row.original.direction === "IN" ? " +" : " −")}
         </span>
       ),
     },
@@ -264,10 +279,24 @@ export function LedgerTable({ rows, showItem = true }: { rows: LedgerRow[]; show
   }
   columns.push(
     { id: "brand", header: "Brand", cell: ({ row }) => <span className="whitespace-nowrap">{row.original.brand.name}</span> },
+    { id: "location", header: "Location", cell: ({ row }) => <span className="whitespace-nowrap">{row.original.location?.name ?? "—"}</span> },
     { id: "in", header: "In", className: cn(num, "text-emerald-700"), cell: ({ row }) => (row.original.direction === "IN" ? formatQty(row.original.quantity) : "") },
     { id: "out", header: "Out", className: cn(num, "text-rose-700"), cell: ({ row }) => (row.original.direction === "OUT" ? formatQty(row.original.quantity) : "") },
     { id: "balance", header: "Balance", className: cn(num, "font-medium"), cell: ({ row }) => `${formatQty(row.original.balanceAfter)} ${row.original.item.unit}` },
-    { id: "reference", header: "Reference", cell: ({ row }) => <span className="whitespace-nowrap text-muted-foreground">{row.original.reference ?? "—"}</span> },
+    {
+      id: "reference",
+      header: "Source / reference",
+      cell: ({ row }) => {
+        const s = row.original.source;
+        return (
+          <span className="flex flex-col whitespace-nowrap">
+            {s && (s.href ? <Link href={s.href} className="text-primary hover:underline">{s.label}</Link> : <span>{s.label}</span>)}
+            {row.original.reference && <span className="text-xs text-muted-foreground">{row.original.reference}</span>}
+            {!s && !row.original.reference && <span className="text-muted-foreground">—</span>}
+          </span>
+        );
+      },
+    },
     {
       id: "notes",
       header: "Reason / remarks",
@@ -275,5 +304,6 @@ export function LedgerTable({ rows, showItem = true }: { rows: LedgerRow[]; show
     },
     { id: "by", header: "By", cell: ({ row }) => <span className="whitespace-nowrap">{row.original.createdBy}</span> },
   );
+  if (action) columns.push({ id: "action", header: "", cell: ({ row }) => action(row.original) });
   return <DataTable columns={columns} data={rows} getRowId={(r) => r.id} empty={<EmptyState icon={History} title="No stock movements" description="Movements appear here once stock is posted." />} />;
 }

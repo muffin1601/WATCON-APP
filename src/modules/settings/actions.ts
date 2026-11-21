@@ -1,6 +1,7 @@
 "use server";
 
 import { runAction } from "@/lib/actions";
+import { setApprovalLimit, updateCommercialSettings, updateSeries } from "./commercial";
 import { updateCompany, updateRolePermissions } from "./service";
 
 export async function updateCompanyAction(input: unknown) {
@@ -12,5 +13,23 @@ export async function updateCompanyAction(input: unknown) {
 export async function updateRolePermissionsAction(input: unknown) {
   return runAction(async (actor) => {
     await updateRolePermissions(actor, input);
+  }, ["/settings"]);
+}
+
+export async function updateCommercialSettingsAction(input: unknown) {
+  return runAction(async (actor) => {
+    await updateCommercialSettings(actor, input);
+  }, ["/settings"]);
+}
+
+export async function updateSeriesAction(input: unknown) {
+  return runAction(async (actor) => {
+    await updateSeries(actor, input);
+  }, ["/settings"]);
+}
+
+export async function setApprovalLimitAction(input: unknown) {
+  return runAction(async (actor) => {
+    await setApprovalLimit(actor, input);
   }, ["/settings"]);
 }

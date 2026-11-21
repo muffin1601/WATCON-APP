@@ -41,8 +41,8 @@ describe("scopes", () => {
   it("without tasks.manage nothing is manageable", () => {
     expect(taskManageWhere(actor("USER"))).toEqual({ id: { in: [] } });
   });
-  it("admins may only manage USER-role accounts", () => {
-    expect(memberManageWhere(actor("ADMIN"))).toEqual({ organizationId: "o1", role: { key: "USER" } });
+  it("admins may only manage non-administrator accounts", () => {
+    expect(memberManageWhere(actor("ADMIN"))).toEqual({ organizationId: "o1", role: { key: { notIn: ["SUPER_ADMIN", "ADMIN"] } } });
     expect(memberManageWhere(actor("USER"))).toEqual({ id: { in: [] } });
   });
 });

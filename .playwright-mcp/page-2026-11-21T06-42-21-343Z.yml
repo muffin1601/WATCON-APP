@@ -1,0 +1,147 @@
+- generic [active] [ref=f24e1]:
+  - generic [ref=f24e3]:
+    - banner [ref=f24e4]:
+      - button "Toggle navigation" [ref=f24e5] [cursor=pointer]
+      - generic [ref=f24e6]:
+        - button "Search projects, tasks, people… Ctrl K" [ref=f24e7] [cursor=pointer]:
+          - generic [ref=f24e11]: Search projects, tasks, people…
+          - generic [ref=f24e12]: Ctrl K
+        - generic [ref=f24e13]:
+          - heading "Search" [level=2] [ref=f24e14]
+          - paragraph [ref=f24e15]: Search projects, tasks, team members and departments
+      - button "Change theme" [ref=f24e16] [cursor=pointer]
+      - button "Notifications (1 unread)" [ref=f24e17] [cursor=pointer]:
+        - generic [ref=f24e18]: "1"
+      - button "Account menu" [ref=f24e19] [cursor=pointer]:
+        - generic [ref=f24e20]: SA
+        - generic [ref=f24e22]: Smoke Admin
+    - main [ref=f24e23]:
+      - generic [ref=f24e47]:
+        - navigation "breadcrumb" [ref=f24e48]:
+          - list [ref=f24e49]:
+            - listitem [ref=f24e50]:
+              - link "Projects" [ref=f24e51] [cursor=pointer]:
+                - /url: /projects
+            - listitem [aria-hidden] [ref=f24e52]
+            - listitem [ref=f24e55]:
+              - link "PRJ-0001" [ref=f24e56] [cursor=pointer]:
+                - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345
+            - listitem [aria-hidden] [ref=f24e57]
+            - listitem [ref=f24e60]:
+              - link "Requisitions" [ref=f24e61] [cursor=pointer]:
+                - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=requisitions
+            - listitem [aria-hidden] [ref=f24e62]
+            - listitem [ref=f24e65]:
+              - link "PR/2026-27/0001" [disabled] [ref=f24e66]
+        - generic [ref=f24e67]:
+          - generic [ref=f24e68]:
+            - heading "PR/2026-27/0001" [level=1] [ref=f24e69]
+            - generic [ref=f24e70]:
+              - generic [ref=f24e71]: Approved
+              - generic [ref=f24e72]:
+                - text: For project
+                - link "PRJ-0001 – Smoke Test Site" [ref=f24e73] [cursor=pointer]:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=requisitions
+                - generic [ref=f24e74]:
+                  - text: · Sales order
+                  - link "SO/2026-27/0002" [ref=f24e75] [cursor=pointer]:
+                    - /url: /sales-orders/3624e4d7-eeb4-450d-babb-15b14a87f794
+          - generic [ref=f24e76]:
+            - link "Request rates" [ref=f24e77] [cursor=pointer]:
+              - /url: /rate-enquiries/new?prId=0afb856c-0ef8-4bd1-8e50-56939b5077b2
+            - link "Create PO" [ref=f24e78] [cursor=pointer]:
+              - /url: /purchase-orders/new?prId=0afb856c-0ef8-4bd1-8e50-56939b5077b2
+            - button "Close" [ref=f24e79] [cursor=pointer]
+            - button "Cancel" [ref=f24e80] [cursor=pointer]
+            - link "Print" [ref=f24e81] [cursor=pointer]:
+              - /url: /api/documents/pdf?type=purchase_requisition&id=0afb856c-0ef8-4bd1-8e50-56939b5077b2&inline=1
+            - link "PDF" [ref=f24e82] [cursor=pointer]:
+              - /url: /api/documents/pdf?type=purchase_requisition&id=0afb856c-0ef8-4bd1-8e50-56939b5077b2
+            - link "WhatsApp" [ref=f24e83] [cursor=pointer]:
+              - /url: https://wa.me/?text=Purchase%20requisition%20PR%2F2026-27%2F0001%20%E2%80%93%20Smoke%20Test%20Site%0A%E2%80%A2%20PVC%20Pipe%2050mm%20(Supreme)%20%E2%80%93%20100%20Mtr
+            - link "Email" [ref=f24e84] [cursor=pointer]:
+              - /url: mailto:?subject=Requisition%20PR%2F2026-27%2F0001&body=Purchase%20requisition%20PR%2F2026-27%2F0001%20%E2%80%93%20Smoke%20Test%20Site%0A%E2%80%A2%20PVC%20Pipe%2050mm%20(Supreme)%20%E2%80%93%20100%20Mtr
+      - status [ref=f24e85]:
+        - generic [ref=f24e88]:
+          - paragraph [ref=f24e89]: "Approved — next: get rates or order"
+          - generic [ref=f24e90]: Request quotations from suppliers when you need to compare prices, or raise a purchase order directly if the supplier and rate are known.
+        - generic [ref=f24e91]:
+          - link "Request rates" [ref=f24e92] [cursor=pointer]:
+            - /url: /rate-enquiries/new?prId=0afb856c-0ef8-4bd1-8e50-56939b5077b2
+          - link "Create purchase order" [ref=f24e95] [cursor=pointer]:
+            - /url: /purchase-orders/new?prId=0afb856c-0ef8-4bd1-8e50-56939b5077b2
+      - generic [ref=f24e98]:
+        - generic [ref=f24e99]:
+          - generic [ref=f24e100]:
+            - heading "Details" [level=2] [ref=f24e102]
+            - generic [ref=f24e104]:
+              - generic [ref=f24e105]:
+                - term [ref=f24e106]: Deliver to
+                - definition [ref=f24e107]: Smoke Test Site (site)
+              - generic [ref=f24e108]:
+                - term [ref=f24e109]: Required by
+                - definition [ref=f24e110]: —
+              - generic [ref=f24e111]:
+                - term [ref=f24e112]: Raised by
+                - definition [ref=f24e113]: Smoke PM · 21 Nov 2026, 12:11 pm
+              - generic [ref=f24e114]:
+                - term [ref=f24e115]: Submitted
+                - definition [ref=f24e116]: Smoke PM · 21 Nov 2026, 12:11 pm
+              - generic [ref=f24e117]:
+                - term [ref=f24e118]: Approved
+                - definition [ref=f24e119]: Smoke Admin · 21 Nov 2026, 12:12 pm
+              - generic [ref=f24e120]:
+                - term [ref=f24e121]: Purpose
+                - definition [ref=f24e122]: Shortage from material planning
+          - generic [ref=f24e123]:
+            - heading "Lines" [level=2] [ref=f24e125]
+            - table [ref=f24e127]:
+              - rowgroup [ref=f24e128]:
+                - row [ref=f24e129]:
+                  - columnheader "#" [ref=f24e130]
+                  - columnheader "Item – brand" [ref=f24e131]
+                  - columnheader "Requested" [ref=f24e132]
+                  - columnheader "Ordered" [ref=f24e133]
+                  - columnheader "Required by" [ref=f24e134]
+              - rowgroup [ref=f24e135]:
+                - row [ref=f24e136]:
+                  - cell "1" [ref=f24e137]
+                  - cell "PVC Pipe 50mm Supreme" [ref=f24e138]:
+                    - generic [ref=f24e139]: PVC Pipe 50mm
+                    - generic [ref=f24e140]: Supreme
+                  - cell "100 Mtr" [ref=f24e141]
+                  - cell "0" [ref=f24e142]
+                  - cell "—" [ref=f24e143]
+          - region "Activity & audit history" [ref=f24e144]:
+            - heading "Activity & audit history" [level=2] [ref=f24e145]
+            - list [ref=f24e150]:
+              - listitem [ref=f24e151]:
+                - generic [ref=f24e152]: 21 Nov 2026, 12:12 pm
+                - generic [ref=f24e153]: Smoke Admin
+                - generic [ref=f24e154]: Approved requisition PR/2026-27/0001
+              - listitem [ref=f24e155]:
+                - generic [ref=f24e156]: 21 Nov 2026, 12:11 pm
+                - generic [ref=f24e157]: Smoke PM
+                - generic [ref=f24e158]: Submitted requisition PR/2026-27/0001
+              - listitem [ref=f24e159]:
+                - generic [ref=f24e160]: 21 Nov 2026, 12:11 pm
+                - generic [ref=f24e161]: Smoke PM
+                - generic [ref=f24e162]: Created requisition PR/2026-27/0001 for PRJ-0001 (1 lines)
+        - generic [ref=f24e163]:
+          - region "Related documents" [ref=f24e164]:
+            - heading "Related documents" [level=2] [ref=f24e165]
+            - paragraph [ref=f24e169]: No linked documents yet.
+          - region "Documents & evidence" [ref=f24e170]:
+            - generic [ref=f24e171]:
+              - heading "Documents & evidence 0" [level=2] [ref=f24e172]:
+                - text: Documents & evidence
+                - generic [ref=f24e175]: "0"
+              - button "Upload" [ref=f24e176] [cursor=pointer]
+            - paragraph [ref=f24e177]: This record is posted/approved — attached evidence is retained and cannot be removed.
+            - paragraph [ref=f24e180]: No documents attached yet.
+  - region "Notifications alt+T":
+    - list:
+      - listitem [ref=f24e181]:
+        - button "Close toast" [ref=f24e182] [cursor=pointer]
+        - generic [ref=f24e190]: Requisition approved.
+  - alert [ref=f24e36]

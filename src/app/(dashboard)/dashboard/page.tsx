@@ -2,6 +2,7 @@ import { AlertTriangle, Building2, CheckCircle2, CircleDashed, FolderKanban, Fol
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PriorityBadge, ProgressBar, StatusBadge } from "@/components/shared/badges";
+import { MyWork } from "@/components/insights/my-work";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatCard } from "@/components/shared/stat-card";
 import { EmptyState } from "@/components/shared/states";
@@ -76,6 +77,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
     <>
       <PageHeader title={`Welcome, ${user.fullName.split(" ")[0]}`} description="Live overview of the projects and tasks you can access." />
       {denied && <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">You do not have permission to open that page.</p>}
+      <MyWork user={user} />
 
       {anyQuick && (
         <div className="mb-6 flex flex-wrap gap-2" aria-label="Quick actions">

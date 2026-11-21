@@ -23,13 +23,15 @@ import { movementSchema, type MovementInput } from "@/modules/inventory/validati
 type Output = z.output<typeof movementSchema>;
 
 export type PositionOption = { id: string; itemCode: string; itemName: string; brandName: string; unit: string; currentQty: string };
+export type MovementLocation = { id: string; name: string; type: string; status: string };
 
-function MovementForm({ positions, canPost, canAdjust, today, presetId, onDone }: { positions: PositionOption[]; canPost: boolean; canAdjust: boolean; today: string; presetId?: string; onDone: () => void }) {
+function MovementForm({ positions, locations = [], canPost, canAdjust, today, presetId, onDone }: { positions: PositionOption[]; locations?: MovementLocation[]; canPost: boolean; canAdjust: boolean; today: string; presetId?: string; onDone: () => void }) {
   const router = useRouter();
   const form = useForm<MovementInput, unknown, Output>({
     resolver: zodResolver(movementSchema),
     defaultValues: {
       itemBrandId: presetId ?? "",
+      locationId: null,
       type: canPost ? "INWARD" : "ADJUSTMENT",
       direction: null,
       quantity: "",
@@ -75,6 +77,23 @@ function MovementForm({ positions, canPost, canAdjust, today, presetId, onDone }
           )}
         />
       </Field>
+      {locations.length > 0 && (
+        <Field id="mv-loc" label="Location" error={errors.locationId?.message} help="Blank = Central Warehouse. Totals shown above are company-wide; the location balance is checked when posting.">
+          <Controller
+            control={form.control}
+            name="locationId"
+            render={({ field }) => (
+              <SingleSelect
+                id="mv-loc"
+                options={locations.filter((l) => l.status === "ACTIVE" && (l.type === "WAREHOUSE" || l.type === "SITE")).map((l) => ({ value: l.id, label: l.name, hint: l.type === "SITE" ? "Site store" : "Warehouse" }))}
+                value={field.value ?? null}
+                onChange={(v) => field.onChange(v)}
+                placeholder="Central Warehouse"
+              />
+            )}
+          />
+        </Field>
+      )}
       <div className="grid gap-4 sm:grid-cols-2">
         <Field id="mv-type" label="Movement" required error={errors.type?.message}>
           <Controller
@@ -146,7 +165,7 @@ function MovementForm({ positions, canPost, canAdjust, today, presetId, onDone }
   );
 }
 
-export function PostMovementButton({ positions, canPost, canAdjust, today, presetId, label = "Post stock", size = "default", variant = "default" }: { positions: PositionOption[]; canPost: boolean; canAdjust: boolean; today: string; presetId?: string; label?: string; size?: "sm" | "default"; variant?: "default" | "outline" }) {
+export function PostMovementButton({ positions, locations, canPost, canAdjust, today, presetId, label = "Post stock", size = "default", variant = "default" }: { positions: PositionOption[]; locations?: MovementLocation[]; canPost: boolean; canAdjust: boolean; today: string; presetId?: string; label?: string; size?: "sm" | "default"; variant?: "default" | "outline" }) {
   if (!canPost && !canAdjust) return null;
   return (
     <FormDialog
@@ -158,7 +177,7 @@ export function PostMovementButton({ positions, canPost, canAdjust, today, prese
         </Button>
       }
     >
-      {(close) => <MovementForm positions={positions} canPost={canPost} canAdjust={canAdjust} today={today} presetId={presetId} onDone={close} />}
+      {(close) => <MovementForm positions={positions} locations={locations} canPost={canPost} canAdjust={canAdjust} today={today} presetId={presetId} onDone={close} />}
     </FormDialog>
   );
 }

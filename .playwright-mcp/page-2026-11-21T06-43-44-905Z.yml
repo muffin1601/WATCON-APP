@@ -1,0 +1,228 @@
+- generic:
+  - generic [aria-hidden]:
+    - generic:
+      - banner:
+        - button
+        - generic:
+          - button:
+            - generic: Search projects, tasks, people…
+            - generic: Ctrl K
+          - generic:
+            - heading [level=2]: Search
+            - paragraph: Search projects, tasks, team members and departments
+        - button
+        - button:
+          - generic: "1"
+        - button [expanded]:
+          - generic: SA
+          - generic: Smoke Admin
+      - main:
+        - generic:
+          - navigation:
+            - list:
+              - listitem:
+                - link:
+                  - /url: /projects
+                  - text: Projects
+              - listitem [aria-hidden]
+              - listitem:
+                - link:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345
+                  - text: PRJ-0001
+              - listitem [aria-hidden]
+              - listitem:
+                - link:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=rate-enquiries
+                  - text: Rate enquiries
+              - listitem [aria-hidden]
+              - listitem:
+                - link [disabled]: RFQ/2026-27/0001
+          - generic:
+            - generic:
+              - heading [level=1]: RFQ/2026-27/0001
+              - paragraph: Rates for PR/2026-27/0001 – Smoke Test Site
+              - generic:
+                - generic: Award pending
+                - generic:
+                  - text: For project
+                  - link:
+                    - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=rate-enquiries
+                    - text: PRJ-0001 – Smoke Test Site
+                  - generic:
+                    - text: · Sales order
+                    - link:
+                      - /url: /sales-orders/3624e4d7-eeb4-450d-babb-15b14a87f794
+                      - text: SO/2026-27/0002
+            - generic:
+              - link:
+                - /url: /api/documents/pdf?type=rfq&id=001d12aa-6b14-48a4-be18-5e10bf67a628&inline=1
+                - text: Print
+              - link:
+                - /url: /api/documents/pdf?type=rfq&id=001d12aa-6b14-48a4-be18-5e10bf67a628
+                - text: PDF
+              - link:
+                - /url: https://wa.me/?text=Rate%20enquiry%20RFQ%2F2026-27%2F0001%3A%20Rates%20for%20PR%2F2026-27%2F0001%20%E2%80%93%20Smoke%20Test%20Site%0AProject%3A%20Smoke%20Test%20Site%0APlease%20quote%20by%2024%20Nov%202026%0A%0A%E2%80%A2%20PVC%20Pipe%2050mm%20(Supreme)%20%E2%80%93%20100%20Mtr%0A%0APlease%20share%20your%20best%20rate%2C%20GST%2C%20freight%20and%20delivery%20time.
+                - text: WhatsApp
+              - link:
+                - /url: mailto:?subject=Rate%20enquiry%20RFQ%2F2026-27%2F0001&body=Rate%20enquiry%20RFQ%2F2026-27%2F0001%3A%20Rates%20for%20PR%2F2026-27%2F0001%20%E2%80%93%20Smoke%20Test%20Site%0AProject%3A%20Smoke%20Test%20Site%0APlease%20quote%20by%2024%20Nov%202026%0A%0A%E2%80%A2%20PVC%20Pipe%2050mm%20(Supreme)%20%E2%80%93%20100%20Mtr%0A%0APlease%20share%20your%20best%20rate%2C%20GST%2C%20freight%20and%20delivery%20time.
+                - text: Email
+        - status:
+          - generic:
+            - paragraph: Award sent for approval
+            - generic: You created or submitted this document; another approver must approve it.
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=2]: Enquiry
+              - generic:
+                - generic:
+                  - generic:
+                    - term: Requisition
+                    - definition:
+                      - link:
+                        - /url: /purchase-requisitions/0afb856c-0ef8-4bd1-8e50-56939b5077b2
+                        - text: PR/2026-27/0001
+                  - generic:
+                    - term: Deliver to
+                    - definition: Smoke Test Site (site)
+                  - generic:
+                    - term: Needed at site by
+                    - definition: —
+                  - generic:
+                    - term: Quotes due
+                    - definition: 24 Nov 2026
+                  - generic:
+                    - term: Payment / freight terms
+                    - definition: —
+                  - generic:
+                    - term: Tax terms
+                    - definition: —
+                  - generic:
+                    - term: Delivery address
+                    - definition: —
+                  - generic:
+                    - term: Specifications
+                    - definition: —
+            - generic:
+              - generic:
+                - heading [level=2]: Materials requested
+              - generic:
+                - list:
+                  - listitem:
+                    - generic:
+                      - text: PVC Pipe 50mm
+                      - generic: · Supreme
+                    - generic: 100 Mtr
+            - generic:
+              - generic:
+                - heading [level=2]: Suppliers & actions
+              - generic:
+                - list:
+                  - listitem:
+                    - text: Pipe Traders Pvt Ltd
+                    - generic: quoted
+                - generic:
+                  - button: Cancel
+                - paragraph: You created or submitted this document; another approver must approve it.
+            - generic:
+              - generic:
+                - heading [level=2]: Compare quotations
+              - generic:
+                - paragraph: Landed cost = price after discount + GST + share of freight. “Recommended” is the cheapest valid landed cost, with on-time delivery history as the tie-breaker.
+                - generic:
+                  - generic:
+                    - heading [level=3]:
+                      - text: PVC Pipe 50mm
+                      - generic: · 100 Mtr
+                    - generic:
+                      - table:
+                        - rowgroup:
+                          - row:
+                            - columnheader: Supplier · brand
+                            - columnheader: Rate
+                            - columnheader: Landed / unit
+                            - columnheader: Delivery
+                            - columnheader: Track record
+                        - rowgroup:
+                          - row:
+                            - cell:
+                              - generic: Pipe Traders Pvt Ltd
+                              - generic:
+                                - text: Supreme
+                                - generic: Recommended
+                                - generic: Lowest price
+                                - generic: Awarded 100
+                            - cell: ₹180.00
+                            - cell: ₹212.40
+                            - cell: 5 days
+                            - cell: No history
+            - generic:
+              - generic:
+                - heading [level=2]: Quotation history
+              - generic:
+                - list:
+                  - listitem:
+                    - generic: Pipe Traders Pvt Ltd
+                    - generic: SQ/2026-27/0001 · rev 1 · 21 Nov 2026
+                    - generic: Received
+            - generic:
+              - generic:
+                - heading [level=2]: Supplier quotations
+              - generic:
+                - paragraph: Attach each supplier’s own quotation (PDF / photo) so the comparison can be checked against it.
+                - generic:
+                  - region:
+                    - generic:
+                      - heading [level=2]:
+                        - text: Pipe Traders Pvt Ltd · SQ/2026-27/0001 rev 1
+                        - generic: "0"
+                      - button: Upload
+                    - paragraph: No documents attached yet.
+            - region:
+              - heading [level=2]: Activity & audit history
+              - list:
+                - listitem:
+                  - generic: 21 Nov 2026, 12:13 pm
+                  - generic: Smoke Admin
+                  - generic: Proposed award on RFQ/2026-27/0001 for approval
+                - listitem:
+                  - generic: 21 Nov 2026, 12:13 pm
+                  - generic: Smoke Admin
+                  - generic: Recorded quotation SQ/2026-27/0001 from Pipe Traders Pvt Ltd on RFQ/2026-27/0001
+                - listitem:
+                  - generic: 21 Nov 2026, 12:12 pm
+                  - generic: Smoke Admin
+                  - generic: "Marked as shared with suppliers: RFQ/2026-27/0001"
+                - listitem:
+                  - generic: 21 Nov 2026, 12:12 pm
+                  - generic: Smoke Admin
+                  - generic: Created rate enquiry RFQ/2026-27/0001 – Rates for PR/2026-27/0001 – Smoke Test Site (1 items, 1 suppliers)
+          - generic:
+            - region:
+              - heading [level=2]: Related documents
+              - list:
+                - listitem:
+                  - generic: Requisition
+                  - link:
+                    - /url: /purchase-requisitions/0afb856c-0ef8-4bd1-8e50-56939b5077b2
+                    - text: PR/2026-27/0001
+            - region:
+              - generic:
+                - heading [level=2]:
+                  - text: Enquiry documents
+                  - generic: "0"
+                - button: Upload
+              - paragraph: No documents attached yet.
+  - region "Notifications alt+T"
+  - alert: Rate enquiry · Watcon Enterprise
+  - menu "Account menu" [active] [ref=f25e483]:
+    - generic [ref=f25e484]:
+      - generic [ref=f25e485]: Smoke Admin
+      - generic [ref=f25e486]: smoke@example.test
+      - generic [ref=f25e487]: Super Admin · EMP-0001
+    - separator [ref=f25e488]
+    - menuitem "My profile" [ref=f25e489]
+    - menuitem "Change password" [ref=f25e490]
+    - separator [ref=f25e491]
+    - menuitem "Sign out" [ref=f25e493]

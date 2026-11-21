@@ -1,0 +1,21 @@
+- generic [ref=f20e1]:
+  - generic [ref=f20e391]:
+    - img "Watcon International" [ref=f20e394]
+    - generic [ref=f20e395]:
+      - heading "Sign in" [level=1] [ref=f20e396]
+      - paragraph [ref=f20e397]: Use your work email or username.
+      - generic [ref=f20e398]:
+        - generic [ref=f20e399]:
+          - generic [ref=f20e400]: Email or username
+          - textbox "Email or username" [active] [ref=f20e401]
+        - generic [ref=f20e402]:
+          - generic [ref=f20e403]: Password
+          - generic [ref=f20e404]:
+            - textbox "Password" [ref=f20e405]
+            - button "Show password" [ref=f20e406] [cursor=pointer]
+        - button "Sign in" [ref=f20e410] [cursor=pointer]
+        - link "Forgot your password?" [ref=f20e412] [cursor=pointer]:
+          - /url: /forgot-password
+    - paragraph [ref=f20e413]: Authorized personnel only. Activity is logged.
+  - region "Notifications alt+T"
+  - alert [ref=f20e151]: Sign in · Watcon Enterprise

@@ -1,0 +1,151 @@
+- generic:
+  - generic [aria-hidden]:
+    - generic:
+      - banner:
+        - button
+        - generic:
+          - button:
+            - generic: Search projects, tasks, people…
+            - generic: Ctrl K
+          - generic:
+            - heading [level=2]: Search
+            - paragraph: Search projects, tasks, team members and departments
+        - button
+        - button:
+          - generic: "1"
+        - button [expanded]:
+          - generic: SP
+          - generic: Smoke PM
+      - main:
+        - generic:
+          - navigation:
+            - list:
+              - listitem:
+                - link:
+                  - /url: /projects
+                  - text: Projects
+              - listitem [aria-hidden]
+              - listitem:
+                - link:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345
+                  - text: PRJ-0001
+              - listitem [aria-hidden]
+              - listitem:
+                - link:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=requisitions
+                  - text: Requisitions
+              - listitem [aria-hidden]
+              - listitem:
+                - link [disabled]: PR/2026-27/0001
+          - generic:
+            - generic: Submitted
+            - generic:
+              - text: For project
+              - link:
+                - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=requisitions
+                - text: PRJ-0001 – Smoke Test Site
+              - generic:
+                - text: · Sales order
+                - link:
+                  - /url: /sales-orders/3624e4d7-eeb4-450d-babb-15b14a87f794
+                  - text: SO/2026-27/0002
+            - generic:
+              - button: Cancel
+              - generic: You created or submitted this document; another approver must approve it.
+              - link:
+                - /url: /api/documents/pdf?type=purchase_requisition&id=0afb856c-0ef8-4bd1-8e50-56939b5077b2&inline=1
+                - text: Print
+              - link:
+                - /url: /api/documents/pdf?type=purchase_requisition&id=0afb856c-0ef8-4bd1-8e50-56939b5077b2
+                - text: PDF
+              - link:
+                - /url: https://wa.me/?text=Purchase%20requisition%20PR%2F2026-27%2F0001%20%E2%80%93%20Smoke%20Test%20Site%0A%E2%80%A2%20PVC%20Pipe%2050mm%20(Supreme)%20%E2%80%93%20100%20Mtr
+                - text: WhatsApp
+              - link:
+                - /url: mailto:?subject=Requisition%20PR%2F2026-27%2F0001&body=Purchase%20requisition%20PR%2F2026-27%2F0001%20%E2%80%93%20Smoke%20Test%20Site%0A%E2%80%A2%20PVC%20Pipe%2050mm%20(Supreme)%20%E2%80%93%20100%20Mtr
+                - text: Email
+        - status:
+          - generic:
+            - paragraph: Submitted — waiting for approval
+            - generic: You created or submitted this document; another approver must approve it.
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=2]: Details
+              - generic:
+                - generic:
+                  - generic:
+                    - term: Deliver to
+                    - definition: Smoke Test Site (site)
+                  - generic:
+                    - term: Required by
+                    - definition: —
+                  - generic:
+                    - term: Raised by
+                    - definition: Smoke PM · 21 Nov 2026, 12:11 pm
+                  - generic:
+                    - term: Submitted
+                    - definition: Smoke PM · 21 Nov 2026, 12:11 pm
+                  - generic:
+                    - term: Approved
+                    - definition: —
+                  - generic:
+                    - term: Purpose
+                    - definition: Shortage from material planning
+            - generic:
+              - generic:
+                - heading [level=2]: Lines
+              - generic:
+                - table:
+                  - rowgroup:
+                    - row:
+                      - columnheader: "#"
+                      - columnheader: Item – brand
+                      - columnheader: Requested
+                      - columnheader: Ordered
+                      - columnheader: Required by
+                  - rowgroup:
+                    - row:
+                      - cell: "1"
+                      - cell:
+                        - generic: PVC Pipe 50mm
+                        - generic: Supreme
+                      - cell: 100 Mtr
+                      - cell: "0"
+                      - cell: —
+            - region:
+              - heading [level=2]: Activity & audit history
+              - list:
+                - listitem:
+                  - generic: 21 Nov 2026, 12:11 pm
+                  - generic: Smoke PM
+                  - generic: Submitted requisition PR/2026-27/0001
+                - listitem:
+                  - generic: 21 Nov 2026, 12:11 pm
+                  - generic: Smoke PM
+                  - generic: Created requisition PR/2026-27/0001 for PRJ-0001 (1 lines)
+          - generic:
+            - region:
+              - heading [level=2]: Related documents
+              - paragraph: No linked documents yet.
+            - region:
+              - generic:
+                - heading [level=2]:
+                  - text: Documents & evidence
+                  - generic: "0"
+                - button: Upload
+              - paragraph: This record is posted/approved — attached evidence is retained and cannot be removed.
+              - paragraph: No documents attached yet.
+  - region "Notifications alt+T"
+  - alert: Requisition · Watcon Enterprise
+  - menu "Account menu" [active] [ref=f23e286]:
+    - generic [ref=f23e287]:
+      - generic [ref=f23e288]: Smoke PM
+      - generic [ref=f23e289]: pm@example.test
+      - generic [ref=f23e290]: Admin · EMP-0002
+    - separator [ref=f23e291]
+    - menuitem "My profile" [ref=f23e292]
+    - menuitem "Change password" [ref=f23e293]
+    - separator [ref=f23e294]
+    - menuitem "Sign out" [ref=f23e296]

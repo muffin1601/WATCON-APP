@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ChangePasswordForm } from "@/components/forms/change-password-form";
 import { CompanyForm } from "@/components/settings/company-form";
+import { CommercialSettings } from "@/components/settings/commercial-settings";
 import { RoleMatrix } from "@/components/settings/role-matrix";
 import { PageHeader } from "@/components/shared/page-header";
 import { UrlTabs } from "@/components/shared/url-tabs";
@@ -8,7 +9,8 @@ import { FilterBar, FilterSelect, SearchInput } from "@/components/tables/filter
 import { Pagination } from "@/components/tables/pagination";
 import { requireUser } from "@/lib/auth/session";
 import { formatDateTime } from "@/lib/format";
-import { ROLE_LABELS, can } from "@/lib/permissions/definitions";
+import { EDITABLE_ROLE_KEYS, ROLE_LABELS, can } from "@/lib/permissions/definitions";
+import { getCommercialAdmin } from "@/modules/settings/commercial";
 import { getOrganization, getRoleMatrix, listAuditLogs } from "@/modules/settings/service";
 
 export const metadata: Metadata = { title: "Settings" };
@@ -19,6 +21,7 @@ export default async function SettingsPage({ searchParams }: PageProps<"/setting
   const tabs = [
     { key: "account", label: "My account" },
     ...(can(user, "settings.company") ? [{ key: "company", label: "Company" }] : []),
+    ...(can(user, "settings.commercial") ? [{ key: "commercial", label: "Commercial" }] : []),
     ...(can(user, "settings.roles") ? [{ key: "roles", label: "Roles & permissions" }] : []),
     ...(can(user, "audit.view") ? [{ key: "audit", label: "Audit log" }] : []),
   ];
@@ -41,6 +44,7 @@ export default async function SettingsPage({ searchParams }: PageProps<"/setting
         </section>
       )}
       {tab === "company" && <CompanySection organizationId={user.organizationId} />}
+      {tab === "commercial" && <CommercialSection user={user} />}
       {tab === "roles" && <RolesSection />}
       {tab === "audit" && <AuditSection user={user} sp={sp} />}
     </>
@@ -57,10 +61,15 @@ async function CompanySection({ organizationId }: { organizationId: string }) {
   );
 }
 
+async function CommercialSection({ user }: { user: Awaited<ReturnType<typeof requireUser>> }) {
+  const data = await getCommercialAdmin(user);
+  return <CommercialSettings {...data} />;
+}
+
 async function RolesSection() {
   const m = await getRoleMatrix();
   const grantsOf = (k: string) => m.roles.find((r) => r.key === k)?.granted ?? [];
-  return <RoleMatrix permissions={m.permissions} initial={{ ADMIN: grantsOf("ADMIN"), USER: grantsOf("USER") }} />;
+  return <RoleMatrix permissions={m.permissions} roles={EDITABLE_ROLE_KEYS.map((k) => ({ key: k, label: ROLE_LABELS[k] }))} initial={Object.fromEntries(EDITABLE_ROLE_KEYS.map((k) => [k, grantsOf(k)]))} />;
 }
 
 async function AuditSection({ user, sp }: { user: Awaited<ReturnType<typeof requireUser>>; sp: Record<string, string | string[] | undefined> }) {
@@ -69,7 +78,7 @@ async function AuditSection({ user, sp }: { user: Awaited<ReturnType<typeof requ
     <section>
       <FilterBar params={["q", "entity"]}>
         <SearchInput placeholder="Search audit log…" />
-        <FilterSelect param="entity" label="Entity" options={["user", "project", "department", "task", "organization", "role", "session"].map((v) => ({ value: v, label: v[0]!.toUpperCase() + v.slice(1) }))} />
+        <FilterSelect param="entity" label="Entity" options={["user", "project", "department", "task", "organization", "role", "session", "settings", "party", "item", "stock", "location", "reservation", "attachment", "purchase_requisition", "rfq", "purchase_order", "grn", "challan", "supplier_bill", "payment", "client_po", "sales_order", "ra_bill", "client_invoice"].map((v) => ({ value: v, label: v[0]!.toUpperCase() + v.slice(1) }))} />
       </FilterBar>
       <div className="overflow-x-auto rounded-xl border bg-card">
         <table className="w-full text-sm">

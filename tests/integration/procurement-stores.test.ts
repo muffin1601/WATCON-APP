@@ -1,0 +1,286 @@
+import { beforeEach, describe, expect, it } from "vitest";
+import { db } from "@/lib/db";
+import { recordConsumption } from "@/modules/inventory/locations";
+import { ledgerBalance } from "@/modules/inventory/repository";
+import { getMrp, saveRequirement } from "@/modules/planning/service";
+import { createPo, getPo, poAction, updatePo } from "@/modules/procurement/po";
+import { createPr, createPrFromMrp, prAction } from "@/modules/procurement/pr";
+import { createPosFromAward, createRfq, getRfq, proposeAward, recordQuotation, rfqAction } from "@/modules/procurement/rfq";
+import { challanAction, createChallan, getChallan } from "@/modules/stores/challan";
+import { createGrn, grnAction, postGrn } from "@/modules/stores/grn";
+import { commercialFixture, day, errorOf, key, type CFx } from "./commercial-helpers";
+
+let fx: CFx;
+beforeEach(async () => {
+  fx = await commercialFixture();
+});
+
+const v = async (model: "purchaseOrder" | "purchaseRequisition" | "grn" | "rfq" | "challan", id: string) => ((await (db[model] as unknown as { findUniqueOrThrow: (a: object) => Promise<{ version: number }> }).findUniqueOrThrow({ where: { id } })).version);
+
+async function approvedPo(qty = "50", extra: Record<string, unknown> = {}) {
+  const po = await createPo(fx.roles.pu.actor, { projectId: fx.p1.id, partyId: fx.supplier.id, orderDate: day(), expectedDate: day(5), lines: [{ itemBrandId: fx.ibUltra.id, quantity: qty, rate: "380", gstRate: "28" }], ...extra });
+  await poAction(fx.roles.pu.actor, po.id, "submit", { version: await v("purchaseOrder", po.id) });
+  await poAction(fx.actors.admin, po.id, "approve", { version: await v("purchaseOrder", po.id) });
+  return db.purchaseOrder.findUniqueOrThrow({ where: { id: po.id }, include: { lines: true } });
+}
+
+const receive = (poId: string, lineId: string, received: string, extra: Record<string, string> = {}) =>
+  createGrn(fx.roles.se.actor, { clientKey: key(), poId, receiptDate: day(), submit: true, lines: [{ poLineId: lineId, receivedQty: received, ...extra }] });
+
+const siteBalance = async (projectId = fx.p1.id, ib = fx.ibUltra.id) => {
+  const loc = await db.stockLocation.findUnique({ where: { projectId } });
+  if (!loc) return "0";
+  const b = await db.stockBalance.findUnique({ where: { itemBrandId_locationId: { itemBrandId: ib, locationId: loc.id } } });
+  return b ? b.onHand.toFixed(0) : "0";
+};
+
+describe("purchase orders", () => {
+  it("computes GST server-side and enforces separation of duties on approval", async () => {
+    const po = await createPo(fx.roles.pu.actor, { projectId: fx.p1.id, partyId: fx.supplier.id, orderDate: day(), charges: "500", chargesGstRate: "18", lines: [{ itemBrandId: fx.ibUltra.id, quantity: "10", rate: "380.50", discountPct: "2", gstRate: "28" }] });
+    // 10 × 380.50 = 3805.00, −2% = 3728.90 taxable; CGST/SGST 14% = 522.05 each; freight 500 + 18% = 590 → 5362.99 → rounded 5363
+    expect([po.taxable.toFixed(2), po.cgst.toFixed(2), po.sgst.toFixed(2), po.igst.toFixed(2), po.total.toFixed(2)]).toEqual(["3728.90", "567.05", "567.05", "0.00", "5363.00"]);
+    await poAction(fx.roles.pu.actor, po.id, "submit", { version: 1 });
+    expect((await errorOf(poAction(fx.roles.pu.actor, po.id, "approve", { version: 2 }))).message).toMatch(/permission/);
+    const ownAdminPo = await createPo(fx.actors.admin, { projectId: fx.p1.id, partyId: fx.supplier.id, orderDate: day(), lines: [{ itemBrandId: fx.ibAcc.id, quantity: "1", rate: "1", gstRate: "18" }] });
+    await poAction(fx.actors.admin, ownAdminPo.id, "submit", { version: 1 });
+    expect((await errorOf(poAction(fx.actors.admin, ownAdminPo.id, "approve", { version: 2 }))).message).toMatch(/Separation of duties/);
+  });
+
+  it("uses IGST for an inter-state supplier", async () => {
+    const po = await createPo(fx.roles.pu.actor, { projectId: fx.p1.id, partyId: fx.supplier2.id, orderDate: day(), roundToRupee: false, lines: [{ itemBrandId: fx.ibAcc.id, quantity: "4", rate: "100", gstRate: "18" }] });
+    expect([po.taxMode, po.igst.toFixed(2), po.cgst.toFixed(2), po.total.toFixed(2)]).toEqual(["INTER", "72.00", "0.00", "472.00"]);
+  });
+
+  it("blocks receipts against unapproved orders (unless the exception is switched on)", async () => {
+    const po = await createPo(fx.roles.pu.actor, { projectId: fx.p1.id, partyId: fx.supplier.id, orderDate: day(), lines: [{ itemBrandId: fx.ibUltra.id, quantity: "5", rate: "1", gstRate: "28" }] });
+    const line = (await db.poLine.findFirstOrThrow({ where: { poId: po.id } })).id;
+    expect((await errorOf(receive(po.id, line, "5"))).message).toMatch(/approved, open purchase orders/);
+    await poAction(fx.roles.pu.actor, po.id, "submit", { version: 1 });
+    await db.orgSettings.update({ where: { organizationId: fx.org.id }, data: { allowReceiptOnUnapprovedPo: true } });
+    await receive(po.id, line, "5");
+  });
+});
+
+describe("site receipts (GRN) and stock posting", () => {
+  it("partial deliveries, multiple GRNs, stock lands at the SITE only on posting, rejected never enters stock", async () => {
+    const po = await approvedPo("50");
+    const line = po.lines[0]!;
+    const g1 = await receive(po.id, line.id, "30", { damagedQty: "2", rejectedQty: "3" });
+    expect(await siteBalance()).toBe("0"); // submitted ≠ posted
+    expect((await errorOf(postGrn(fx.roles.se.actor, g1.id, 1))).message).toMatch(/permission/);
+    await postGrn(fx.roles.sk.actor, g1.id, await v("grn", g1.id));
+    expect(await siteBalance()).toBe("25");
+    const wh = await db.stockBalance.findUnique({ where: { itemBrandId_locationId: { itemBrandId: fx.ibUltra.id, locationId: fx.warehouse.id } } });
+    expect(wh?.onHand.toFixed(0)).toBe("100"); // central warehouse untouched
+    let pl = await db.poLine.findUniqueOrThrow({ where: { id: line.id } });
+    expect([pl.receivedQty.toFixed(0), pl.acceptedQty.toFixed(0), pl.rejectedQty.toFixed(0)]).toEqual(["30", "25", "5"]);
+    expect((await db.purchaseOrder.findUniqueOrThrow({ where: { id: po.id } })).status).toBe("PARTIALLY_RECEIVED");
+    const g2 = await receive(po.id, line.id, "25");
+    await postGrn(fx.roles.sk.actor, g2.id, await v("grn", g2.id));
+    pl = await db.poLine.findUniqueOrThrow({ where: { id: line.id } });
+    expect(pl.acceptedQty.toFixed(0)).toBe("50");
+    expect((await db.purchaseOrder.findUniqueOrThrow({ where: { id: po.id } })).status).toBe("FULLY_RECEIVED");
+    expect(await ledgerBalance(fx.ibUltra.id)).toEqual({ ledger: "150", current: "150" });
+    const ib = await db.itemBrand.findUniqueOrThrow({ where: { id: fx.ibUltra.id } });
+    expect(ib.lastPurchaseRate?.toFixed(4)).toBe("380.0000");
+  });
+
+  it("two people receiving the same PO at once cannot exceed the ordered quantity", async () => {
+    const po = await approvedPo("40");
+    const line = po.lines[0]!.id;
+    const a = await receive(po.id, line, "30");
+    const b = await receive(po.id, line, "30");
+    const r = await Promise.allSettled([postGrn(fx.roles.sk.actor, a.id, 1), postGrn(fx.roles.pm.actor, b.id, 1)]);
+    expect(r.filter((x) => x.status === "fulfilled")).toHaveLength(1);
+    const failure = r.find((x) => x.status === "rejected") as PromiseRejectedResult;
+    expect(String(failure.reason.message)).toMatch(/exceed the ordered quantity/);
+    expect(await siteBalance()).toBe("30");
+  });
+
+  it("posting the same receipt twice (double click / two verifiers) posts once", async () => {
+    const po = await approvedPo("10");
+    const g = await receive(po.id, po.lines[0]!.id, "10");
+    const r = await Promise.allSettled([postGrn(fx.roles.sk.actor, g.id, 1), postGrn(fx.roles.pm.actor, g.id, 1)]);
+    expect(r.filter((x) => x.status === "fulfilled")).toHaveLength(1);
+    expect(await siteBalance()).toBe("10");
+    expect(await db.stockTransaction.count({ where: { sourceType: "grn", sourceId: g.id } })).toBe(1);
+  });
+
+  it("a repeated save from a phone returns the same receipt", async () => {
+    const po = await approvedPo("10");
+    const k = key();
+    const input = { clientKey: k, poId: po.id, receiptDate: day(), lines: [{ poLineId: po.lines[0]!.id, receivedQty: "4" }] };
+    const [a, b] = await Promise.all([createGrn(fx.roles.se.actor, input), createGrn(fx.roles.se.actor, input)]);
+    expect(a.id).toBe(b.id);
+    expect(await db.grn.count({ where: { poId: po.id } })).toBe(1);
+  });
+
+  it("the receiver cannot verify their own receipt; outsiders cannot record receipts for the project", async () => {
+    const po = await approvedPo("10");
+    const g = await createGrn(fx.roles.sk.actor, { clientKey: key(), poId: po.id, receiptDate: day(), submit: true, lines: [{ poLineId: po.lines[0]!.id, receivedQty: "1" }] });
+    expect((await errorOf(postGrn(fx.roles.sk.actor, g.id, 1))).message).toMatch(/Separation of duties/);
+    expect((await errorOf(createGrn(fx.roles.outsider.actor, { clientKey: key(), poId: po.id, receiptDate: day(), lines: [{ poLineId: po.lines[0]!.id, receivedQty: "1" }] }))).message).toMatch(/not found/i);
+  });
+
+  it("reverses a posted receipt, but not once the stock has been consumed", async () => {
+    const po = await approvedPo("10");
+    const g = await receive(po.id, po.lines[0]!.id, "10");
+    await postGrn(fx.roles.sk.actor, g.id, await v("grn", g.id));
+    await recordConsumption(fx.roles.se.actor, { projectId: fx.p1.id, itemBrandId: fx.ibUltra.id, quantity: "6", txnDate: day(), idempotencyKey: key() });
+    expect((await errorOf(grnAction(fx.actors.admin, g.id, "reverse", { version: await v("grn", g.id), note: "Wrong PO" }))).message).toMatch(/Insufficient stock/);
+    await recordConsumption(fx.roles.se.actor, { projectId: fx.p1.id, itemBrandId: fx.ibAcc.id, quantity: "1", txnDate: day(), idempotencyKey: key() }).catch(() => null);
+    const po2 = await approvedPo("5");
+    const g2 = await receive(po2.id, po2.lines[0]!.id, "5");
+    await postGrn(fx.roles.sk.actor, g2.id, await v("grn", g2.id));
+    await grnAction(fx.actors.admin, g2.id, "reverse", { version: await v("grn", g2.id), note: "Duplicate delivery note" });
+    const pl = await db.poLine.findUniqueOrThrow({ where: { id: po2.lines[0]!.id } });
+    expect(pl.acceptedQty.toFixed(0)).toBe("0");
+    expect((await db.purchaseOrder.findUniqueOrThrow({ where: { id: po2.id } })).status).toBe("APPROVED");
+    expect(await siteBalance()).toBe("4");
+  });
+});
+
+describe("PO amendments, cancellation and closure", () => {
+  it("an approved PO is amended (snapshot + re-approval), never edited in place; received quantities are protected", async () => {
+    const po = await approvedPo("20");
+    const g = await receive(po.id, po.lines[0]!.id, "8");
+    await postGrn(fx.roles.sk.actor, g.id, await v("grn", g.id));
+    const ver = await v("purchaseOrder", po.id);
+    expect((await errorOf(updatePo(fx.roles.pu.actor, po.id, ver, { partyId: fx.supplier.id, projectId: fx.p1.id, orderDate: day(), lines: [{ id: po.lines[0]!.id, itemBrandId: fx.ibUltra.id, quantity: "25", rate: "380", gstRate: "28" }] }))).message).toMatch(/Use Amend/);
+    await poAction(fx.roles.pu.actor, po.id, "amend", { version: ver, note: "Client increased quantity" });
+    expect((await errorOf(updatePo(fx.roles.pu.actor, po.id, ver + 1, { partyId: fx.supplier.id, projectId: fx.p1.id, orderDate: day(), lines: [{ id: po.lines[0]!.id, itemBrandId: fx.ibUltra.id, quantity: "5", rate: "380", gstRate: "28" }] }))).message).toMatch(/cannot be below/);
+    await updatePo(fx.roles.pu.actor, po.id, ver + 1, { partyId: fx.supplier.id, projectId: fx.p1.id, orderDate: day(), lines: [{ id: po.lines[0]!.id, itemBrandId: fx.ibUltra.id, quantity: "25", rate: "380", gstRate: "28" }, { itemBrandId: fx.ibAcc.id, quantity: "5", rate: "360", gstRate: "28" }] });
+    await poAction(fx.roles.pu.actor, po.id, "submit", { version: await v("purchaseOrder", po.id) });
+    await poAction(fx.actors.superAdmin, po.id, "approve", { version: await v("purchaseOrder", po.id) });
+    // (an admin who is not on the project cannot even see the PO — approvers need project access)
+    const after = await getPo(fx.actors.admin, po.id);
+    expect(after.po.status).toBe("PARTIALLY_RECEIVED");
+    expect(after.po.revision).toBe(1);
+    expect(after.po.revisions).toHaveLength(1);
+    expect(after.po.lines.map((l) => [l.quantity, l.acceptedQty])).toEqual([["25", "8"], ["5", "0"]]);
+  });
+
+  it("a partially received PO cannot be cancelled, but can be short-closed (releasing the requisition)", async () => {
+    const pr = await createPr(fx.roles.se.actor, { projectId: fx.p1.id, lines: [{ itemBrandId: fx.ibUltra.id, quantity: "20" }] });
+    await prAction(fx.roles.se.actor, pr.id, "submit", { version: 1 });
+    await prAction(fx.roles.pm.actor, pr.id, "approve", { version: 2 });
+    const prLine = await db.prLine.findFirstOrThrow({ where: { prId: pr.id } });
+    const po = await approvedPo("20", { prId: pr.id, lines: [{ itemBrandId: fx.ibUltra.id, quantity: "20", rate: "380", gstRate: "28", prLineId: prLine.id }] });
+    expect((await db.purchaseRequisition.findUniqueOrThrow({ where: { id: pr.id } })).status).toBe("ORDERED");
+    const g = await receive(po.id, po.lines[0]!.id, "12");
+    await postGrn(fx.roles.sk.actor, g.id, await v("grn", g.id));
+    expect((await errorOf(poAction(fx.actors.admin, po.id, "cancel", { version: await v("purchaseOrder", po.id), note: "x" }))).message).toMatch(/Short-close/);
+    await poAction(fx.actors.admin, po.id, "close", { version: await v("purchaseOrder", po.id), note: "Supplier cannot supply balance" });
+    expect((await db.prLine.findUniqueOrThrow({ where: { id: prLine.id } })).orderedQty.toFixed(0)).toBe("12");
+    expect((await db.purchaseRequisition.findUniqueOrThrow({ where: { id: pr.id } })).status).toBe("PARTIALLY_ORDERED");
+    // the requisition cannot be over-ordered
+    expect((await errorOf(createPo(fx.roles.pu.actor, { projectId: fx.p1.id, partyId: fx.supplier.id, orderDate: day(), lines: [{ itemBrandId: fx.ibUltra.id, quantity: "9", rate: "1", gstRate: "28", prLineId: prLine.id }] }))).message).toMatch(/exceed the requisitioned quantity/);
+  });
+});
+
+describe("transfers & challans", () => {
+  it("dispatch puts stock in transit; partial receipt; discrepancy write-off; nothing counted twice", async () => {
+    const c = await createChallan(fx.roles.sk.actor, { type: "ISSUE_TO_SITE", projectId: fx.p1.id, fromLocationId: fx.warehouse.id, dispatchDate: day(), vehicleNo: "MH12AB1234", lines: [{ itemBrandId: fx.ibUltra.id, quantity: "20" }] });
+    await challanAction(fx.roles.sk.actor, c.id, "dispatch", { version: 1 });
+    const transit = async () => (await db.stockBalance.findUnique({ where: { itemBrandId_locationId: { itemBrandId: fx.ibUltra.id, locationId: fx.transit.id } } }))?.onHand.toFixed(0);
+    expect(await transit()).toBe("20");
+    expect(await siteBalance()).toBe("0");
+    const detail = await getChallan(fx.actors.admin, c.id);
+    const g = await createGrn(fx.roles.se.actor, { clientKey: key(), challanId: c.id, receiptDate: day(), submit: true, lines: [{ challanLineId: detail.challan.lines[0]!.id, receivedQty: "15", damagedQty: "1" }] });
+    await postGrn(fx.roles.sk.actor, g.id, await v("grn", g.id));
+    expect([await transit(), await siteBalance()]).toEqual(["5", "14"]);
+    expect((await db.challan.findUniqueOrThrow({ where: { id: c.id } })).status).toBe("PARTIALLY_RECEIVED");
+    expect((await errorOf(challanAction(fx.roles.sk.actor, c.id, "close_discrepancy", { version: await v("challan", c.id), note: "5 bags missing", resolution: "WRITE_OFF" }))).message).toMatch(/Stock adjustments/);
+    await challanAction(fx.actors.superAdmin, c.id, "close_discrepancy", { version: await v("challan", c.id), note: "5 bags missing", resolution: "WRITE_OFF" });
+    expect(await transit()).toBe("0");
+    expect(await ledgerBalance(fx.ibUltra.id)).toEqual({ ledger: "95", current: "95" });
+  });
+});
+
+describe("material planning → requisition → RFQ → award → POs", () => {
+  it("avoids double ordering and drives the full sourcing workflow", async () => {
+    await saveRequirement(fx.roles.pm.actor, { projectId: fx.p1.id, itemBrandId: fx.ibAcc.id, requiredQty: "140", requiredBy: day(10) });
+    let mrp = await getMrp(fx.roles.pm.actor, { projectId: fx.p1.id });
+    const row = mrp.rows[0]!;
+    // 40 ACC in the warehouse is free → 100 must be ordered
+    expect([row.shortage, row.freeStock, row.toOrder, row.canReserveNow, row.status]).toEqual(["140", "40", "100", "40", "LOW_STOCK"]);
+    const pr = await createPrFromMrp(fx.roles.se.actor, { projectId: fx.p1.id, requirementIds: [row.requirementId] });
+    mrp = await getMrp(fx.roles.pm.actor, { projectId: fx.p1.id });
+    expect([mrp.rows[0]!.openPr, mrp.rows[0]!.toOrder]).toEqual(["100", "0"]);
+    expect((await errorOf(createPrFromMrp(fx.roles.se.actor, { projectId: fx.p1.id, requirementIds: [row.requirementId] }))).message).toMatch(/Nothing to order/);
+
+    await prAction(fx.roles.se.actor, pr.id, "submit", { version: 1 });
+    await prAction(fx.roles.pm.actor, pr.id, "approve", { version: 2 });
+    const prLine = await db.prLine.findFirstOrThrow({ where: { prId: pr.id } });
+    const rfq = await createRfq(fx.roles.pu.actor, { projectId: fx.p1.id, prId: pr.id, title: "ACC cement", supplierIds: [fx.supplier.id, fx.supplier2.id], lines: [{ itemId: fx.item.id, itemBrandId: fx.ibAcc.id, quantity: "100", prLineId: prLine.id }] });
+    await rfqAction(fx.roles.pu.actor, rfq.id, "send", { version: 1, via: "WhatsApp" });
+    const rl = await db.rfqLine.findFirstOrThrow({ where: { rfqId: rfq.id } });
+    await recordQuotation(fx.roles.pu.actor, { rfqId: rfq.id, partyId: fx.supplier.id, quoteDate: day(), validUntil: day(15), freight: "2000", freightGstRate: "18", lines: [{ rfqLineId: rl.id, itemBrandId: fx.ibAcc.id, quantity: "100", rate: "350", gstRate: "28", leadTimeDays: 3 }] });
+    await recordQuotation(fx.roles.pu.actor, { rfqId: rfq.id, partyId: fx.supplier2.id, quoteDate: day(), validUntil: day(15), lines: [{ rfqLineId: rl.id, itemBrandId: fx.ibAcc.id, quantity: "100", rate: "362", gstRate: "28", leadTimeDays: 7 }] });
+    const cmp = await getRfq(fx.roles.pu.actor, rfq.id);
+    const quotes = cmp.comparison[0]!.quotes;
+    // lowest rate is supplier 1 (350) but freight makes its landed cost higher: 350×100×1.28 + 2360 = 47160 → 471.6/unit vs 463.36
+    expect(quotes.find((q) => q.partyId === fx.supplier.id)!.lowestRate).toBe(true);
+    expect(quotes.find((q) => q.partyId === fx.supplier2.id)!.recommended).toBe(true);
+    // split award 60 / 40
+    const ver = await v("rfq", rfq.id);
+    await proposeAward(fx.roles.pu.actor, rfq.id, { version: ver, awards: quotes.map((q) => ({ quotationLineId: q.quotationLineId, quantity: q.partyId === fx.supplier2.id ? "60" : "40" })) });
+    expect((await errorOf(rfqAction(fx.roles.pu.actor, rfq.id, "approve_award", { version: ver + 1 }))).message).toMatch(/permission/);
+    await rfqAction(fx.roles.pm.actor, rfq.id, "approve_award", { version: ver + 1 });
+    const attempts = await Promise.allSettled([createPosFromAward(fx.roles.pu.actor, rfq.id), createPosFromAward(fx.roles.pu.actor, rfq.id)]);
+    const succeeded = attempts.filter((result) => result.status === "fulfilled");
+    expect(succeeded).toHaveLength(1);
+    expect(succeeded[0]!.value).toHaveLength(2);
+    expect(attempts.filter((result) => result.status === "rejected")).toHaveLength(1);
+    expect((await db.prLine.findUniqueOrThrow({ where: { id: prLine.id } })).orderedQty.toFixed(0)).toBe("100");
+    expect((await errorOf(createPosFromAward(fx.roles.pu.actor, rfq.id))).message).toMatch(/already created/);
+    mrp = await getMrp(fx.roles.pm.actor, { projectId: fx.p1.id });
+    expect([mrp.rows[0]!.poPipeline, mrp.rows[0]!.openPr, mrp.rows[0]!.toOrder]).toEqual(["100", "0", "0"]);
+  });
+});
+
+  it("rejects unrelated brands, locations and requisitions on an enquiry", async () => {
+    const base = { projectId: fx.p1.id, title: "Material rates", supplierIds: [fx.supplier.id], lines: [{ itemId: fx.item.id, itemBrandId: fx.ibAcc.id, quantity: "5" }] };
+    expect((await errorOf(createRfq(fx.roles.pu.actor, { ...base, deliveryLocationId: fx.transit.id }))).message).toMatch(/delivery location/i);
+    const pr = await createPr(fx.actors.admin, { projectId: fx.p2.id, lines: [{ itemBrandId: fx.ibAcc.id, quantity: "5" }] });
+    expect((await errorOf(createRfq(fx.roles.pu.actor, { ...base, prId: pr.id }))).message).toMatch(/requisition/i);
+    const otherItem = await db.item.create({ data: { organizationId: fx.org.id, code: "OTHER-ITEM", name: "Other item", unit: "Nos" } });
+    expect((await errorOf(createRfq(fx.roles.pu.actor, { ...base, lines: [{ itemId: otherItem.id, itemBrandId: fx.ibAcc.id, quantity: "5" }] }))).message).toMatch(/brand/i);
+  });
+
+describe("every procurement document belongs to one project", () => {
+  it("requisitions, enquiries and purchase orders cannot be saved without a project", async () => {
+    const pr = await errorOf(createPr(fx.roles.se.actor, { lines: [{ itemBrandId: fx.ibUltra.id, quantity: "5" }] }));
+    expect((pr as { fieldErrors?: Record<string, string> }).fieldErrors?.projectId).toMatch(/project/i);
+    const rfq = await errorOf(createRfq(fx.roles.pu.actor, { projectId: "", title: "Rates", supplierIds: [fx.supplier.id], lines: [{ itemId: fx.item.id, itemBrandId: fx.ibAcc.id, quantity: "5" }] }));
+    expect((rfq as { fieldErrors?: Record<string, string> }).fieldErrors?.projectId).toMatch(/project/i);
+    const po = await errorOf(createPo(fx.roles.pu.actor, { projectId: null, partyId: fx.supplier.id, orderDate: day(), lines: [{ itemBrandId: fx.ibUltra.id, quantity: "1", rate: "1", gstRate: "28" }] }));
+    expect((po as { fieldErrors?: Record<string, string> }).fieldErrors?.projectId).toMatch(/project/i);
+  });
+
+  it("a PO delivers to its project's site store by default", async () => {
+    const po = await createPo(fx.roles.pu.actor, { projectId: fx.p1.id, partyId: fx.supplier.id, orderDate: day(), lines: [{ itemBrandId: fx.ibUltra.id, quantity: "1", rate: "1", gstRate: "28" }] });
+    const row = await db.purchaseOrder.findUniqueOrThrow({ where: { id: po.id }, include: { deliveryLocation: true } });
+    expect(row.deliveryLocation.type).toBe("SITE");
+    expect(row.deliveryLocation.projectId).toBe(fx.p1.id);
+  });
+});
+
+describe("challan rules", () => {
+  it("client deliveries require the project's approved sales order", async () => {
+    const e = await errorOf(createChallan(fx.roles.sk.actor, { type: "CLIENT_DELIVERY", projectId: fx.p1.id, fromLocationId: fx.warehouse.id, partyId: fx.client.id, dispatchDate: day(), lines: [{ itemBrandId: fx.ibUltra.id, quantity: "1" }] }));
+    expect(e.message).toMatch(/sales order/i);
+  });
+
+  it("a supplier return against a PO is linked to the PO line automatically and cannot exceed what was accepted", async () => {
+    const po = await approvedPo("10");
+    const g = await receive(po.id, po.lines[0]!.id, "10");
+    await postGrn(fx.roles.sk.actor, g.id, await v("grn", g.id));
+    const site = await db.stockLocation.findUniqueOrThrow({ where: { projectId: fx.p1.id } });
+    const c = await createChallan(fx.roles.sk.actor, { type: "RETURN_TO_SUPPLIER", projectId: fx.p1.id, fromLocationId: site.id, partyId: fx.supplier.id, poId: po.id, dispatchDate: day(), lines: [{ itemBrandId: fx.ibUltra.id, quantity: "3" }] });
+    const line = await db.challanLine.findFirstOrThrow({ where: { challanId: c.id } });
+    expect(line.poLineId).toBe(po.lines[0]!.id);
+    await challanAction(fx.roles.sk.actor, c.id, "dispatch", { version: await v("challan", c.id) });
+    expect((await db.poLine.findUniqueOrThrow({ where: { id: po.lines[0]!.id } })).returnedQty.toFixed(0)).toBe("3");
+  });
+});

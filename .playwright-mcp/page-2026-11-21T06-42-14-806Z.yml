@@ -1,0 +1,153 @@
+- generic:
+  - generic [aria-hidden]:
+    - generic:
+      - banner:
+        - button
+        - generic:
+          - button:
+            - generic: Search projects, tasks, people…
+            - generic: Ctrl K
+          - generic:
+            - heading [level=2]: Search
+            - paragraph: Search projects, tasks, team members and departments
+        - button
+        - button:
+          - generic: "1"
+        - button:
+          - generic: SA
+          - generic: Smoke Admin
+      - main:
+        - generic:
+          - navigation:
+            - list:
+              - listitem:
+                - link:
+                  - /url: /projects
+                  - text: Projects
+              - listitem [aria-hidden]
+              - listitem:
+                - link:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345
+                  - text: PRJ-0001
+              - listitem [aria-hidden]
+              - listitem:
+                - link:
+                  - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=requisitions
+                  - text: Requisitions
+              - listitem [aria-hidden]
+              - listitem:
+                - link [disabled]: PR/2026-27/0001
+          - generic:
+            - generic:
+              - heading [level=1]: PR/2026-27/0001
+              - generic:
+                - generic: Submitted
+                - generic:
+                  - text: For project
+                  - link:
+                    - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=requisitions
+                    - text: PRJ-0001 – Smoke Test Site
+                  - generic:
+                    - text: · Sales order
+                    - link:
+                      - /url: /sales-orders/3624e4d7-eeb4-450d-babb-15b14a87f794
+                      - text: SO/2026-27/0002
+            - generic:
+              - button [expanded]: Approve
+              - button: Reject
+              - button: Cancel
+              - link:
+                - /url: /api/documents/pdf?type=purchase_requisition&id=0afb856c-0ef8-4bd1-8e50-56939b5077b2&inline=1
+                - text: Print
+              - link:
+                - /url: /api/documents/pdf?type=purchase_requisition&id=0afb856c-0ef8-4bd1-8e50-56939b5077b2
+                - text: PDF
+              - link:
+                - /url: https://wa.me/?text=Purchase%20requisition%20PR%2F2026-27%2F0001%20%E2%80%93%20Smoke%20Test%20Site%0A%E2%80%A2%20PVC%20Pipe%2050mm%20(Supreme)%20%E2%80%93%20100%20Mtr
+                - text: WhatsApp
+              - link:
+                - /url: mailto:?subject=Requisition%20PR%2F2026-27%2F0001&body=Purchase%20requisition%20PR%2F2026-27%2F0001%20%E2%80%93%20Smoke%20Test%20Site%0A%E2%80%A2%20PVC%20Pipe%2050mm%20(Supreme)%20%E2%80%93%20100%20Mtr
+                - text: Email
+        - status:
+          - generic:
+            - paragraph: Waiting for your approval
+            - generic: Approve it so purchasing can request rates or raise a purchase order, or reject it with a reason.
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=2]: Details
+              - generic:
+                - generic:
+                  - generic:
+                    - term: Deliver to
+                    - definition: Smoke Test Site (site)
+                  - generic:
+                    - term: Required by
+                    - definition: —
+                  - generic:
+                    - term: Raised by
+                    - definition: Smoke PM · 21 Nov 2026, 12:11 pm
+                  - generic:
+                    - term: Submitted
+                    - definition: Smoke PM · 21 Nov 2026, 12:11 pm
+                  - generic:
+                    - term: Approved
+                    - definition: —
+                  - generic:
+                    - term: Purpose
+                    - definition: Shortage from material planning
+            - generic:
+              - generic:
+                - heading [level=2]: Lines
+              - generic:
+                - table:
+                  - rowgroup:
+                    - row:
+                      - columnheader: "#"
+                      - columnheader: Item – brand
+                      - columnheader: Requested
+                      - columnheader: Ordered
+                      - columnheader: Required by
+                  - rowgroup:
+                    - row:
+                      - cell: "1"
+                      - cell:
+                        - generic: PVC Pipe 50mm
+                        - generic: Supreme
+                      - cell: 100 Mtr
+                      - cell: "0"
+                      - cell: —
+            - region:
+              - heading [level=2]: Activity & audit history
+              - list:
+                - listitem:
+                  - generic: 21 Nov 2026, 12:11 pm
+                  - generic: Smoke PM
+                  - generic: Submitted requisition PR/2026-27/0001
+                - listitem:
+                  - generic: 21 Nov 2026, 12:11 pm
+                  - generic: Smoke PM
+                  - generic: Created requisition PR/2026-27/0001 for PRJ-0001 (1 lines)
+          - generic:
+            - region:
+              - heading [level=2]: Related documents
+              - paragraph: No linked documents yet.
+            - region:
+              - generic:
+                - heading [level=2]:
+                  - text: Documents & evidence
+                  - generic: "0"
+                - button: Upload
+              - paragraph: This record is posted/approved — attached evidence is retained and cannot be removed.
+              - paragraph: No documents attached yet.
+  - region "Notifications alt+T"
+  - alert
+  - alertdialog "Approve this requisition?" [ref=f24e38]:
+    - generic [ref=f24e39]:
+      - heading "Approve this requisition?" [level=2] [ref=f24e40]
+      - paragraph [ref=f24e41]:
+        - generic [ref=f24e42]: Purchasing can then request rates and raise purchase orders.
+    - generic [ref=f24e44]:
+      - button "Cancel" [active] [ref=f24e45] [cursor=pointer]
+      - button "Approve" [ref=f24e46] [cursor=pointer]

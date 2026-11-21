@@ -1,0 +1,21 @@
+- generic [ref=f25e1]:
+  - generic [ref=f25e494]:
+    - img "Watcon International" [ref=f25e497]
+    - generic [ref=f25e498]:
+      - heading "Sign in" [level=1] [ref=f25e499]
+      - paragraph [ref=f25e500]: Use your work email or username.
+      - generic [ref=f25e501]:
+        - generic [ref=f25e502]:
+          - generic [ref=f25e503]: Email or username
+          - textbox "Email or username" [active] [ref=f25e504]
+        - generic [ref=f25e505]:
+          - generic [ref=f25e506]: Password
+          - generic [ref=f25e507]:
+            - textbox "Password" [ref=f25e508]
+            - button "Show password" [ref=f25e509] [cursor=pointer]
+        - button "Sign in" [ref=f25e513] [cursor=pointer]
+        - link "Forgot your password?" [ref=f25e515] [cursor=pointer]:
+          - /url: /forgot-password
+    - paragraph [ref=f25e516]: Authorized personnel only. Activity is logged.
+  - region "Notifications alt+T"
+  - alert [ref=f25e36]: Sign in

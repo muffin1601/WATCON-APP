@@ -1,0 +1,74 @@
+- generic [active] [ref=f16e1]:
+  - generic [ref=f16e3]:
+    - banner [ref=f16e4]:
+      - button "Toggle navigation" [ref=f16e5] [cursor=pointer]
+      - generic [ref=f16e6]:
+        - button "Search projects, tasks, people… Ctrl K" [ref=f16e7] [cursor=pointer]:
+          - generic [ref=f16e11]: Search projects, tasks, people…
+          - generic [ref=f16e12]: Ctrl K
+        - generic [ref=f16e13]:
+          - heading "Search" [level=2] [ref=f16e14]
+          - paragraph [ref=f16e15]: Search projects, tasks, team members and departments
+      - button "Change theme" [ref=f16e16] [cursor=pointer]
+      - button "Notifications (1 unread)" [ref=f16e17] [cursor=pointer]:
+        - generic [ref=f16e18]: "1"
+      - button "Account menu" [ref=f16e19] [cursor=pointer]:
+        - generic [ref=f16e20]: SA
+        - generic [ref=f16e22]: Smoke Admin
+    - main [ref=f16e23]:
+      - generic [ref=f16e24]:
+        - navigation "breadcrumb" [ref=f16e25]:
+          - list [ref=f16e26]:
+            - listitem [ref=f16e27]:
+              - link "Dashboard" [ref=f16e28] [cursor=pointer]:
+                - /url: /dashboard
+            - listitem [aria-hidden] [ref=f16e29]
+            - listitem [ref=f16e32]:
+              - link "Clients & suppliers" [disabled] [ref=f16e33]
+        - generic [ref=f16e34]:
+          - generic [ref=f16e35]:
+            - heading "Clients & suppliers" [level=1] [ref=f16e36]
+            - paragraph [ref=f16e37]: Party master with GST registration, payment terms, TDS defaults and bank details.
+          - link "Add party" [ref=f16e39] [cursor=pointer]:
+            - /url: /parties/new
+      - generic [ref=f16e40]:
+        - searchbox "Search name, code, GSTIN, city…" [ref=f16e42]
+        - combobox "Type" [ref=f16e43] [cursor=pointer]:
+          - generic: "Type: All"
+        - combobox "Status" [ref=f16e44] [cursor=pointer]:
+          - generic: "Status: All"
+      - table [ref=f16e48]:
+        - rowgroup [ref=f16e49]:
+          - row [ref=f16e50]:
+            - columnheader "Code" [ref=f16e51]:
+              - button "Code" [ref=f16e52] [cursor=pointer]
+            - columnheader "Name" [ref=f16e56]:
+              - button "Name" [ref=f16e57] [cursor=pointer]
+            - columnheader "Type" [ref=f16e60]
+            - columnheader "GSTIN" [ref=f16e61]
+            - columnheader "State" [ref=f16e62]
+            - columnheader "Contact" [ref=f16e63]
+            - columnheader "Terms" [ref=f16e64]
+            - columnheader "Status" [ref=f16e65]
+        - rowgroup [ref=f16e66]:
+          - row [ref=f16e67]:
+            - cell "PTY-0001" [ref=f16e68]
+            - cell [ref=f16e69]:
+              - link "Smoke Client Ltd" [ref=f16e70] [cursor=pointer]:
+                - /url: /parties/d9a495ed-b971-49ba-bcd6-a45a22a16ac1
+            - cell "Client" [ref=f16e71]
+            - cell "Unregistered" [ref=f16e74]
+            - cell "—" [ref=f16e76]
+            - cell "—" [ref=f16e77]
+            - cell "—" [ref=f16e78]
+            - cell "Active" [ref=f16e79]
+      - generic [ref=f16e81]:
+        - generic [ref=f16e82]: Showing 1–1 of 1
+        - generic [ref=f16e83]:
+          - combobox "Rows per page" [ref=f16e84] [cursor=pointer]:
+            - generic: 20 / page
+          - button "Previous page" [disabled]
+          - generic [ref=f16e85]: 1 / 1
+          - button "Next page" [disabled]
+  - region "Notifications alt+T"
+  - alert [ref=f16e86]

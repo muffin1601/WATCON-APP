@@ -1,0 +1,148 @@
+- generic [active] [ref=f20e1]:
+  - generic [ref=f20e415]:
+    - banner [ref=f20e416]:
+      - button "Toggle navigation" [ref=f20e417] [cursor=pointer]
+      - generic [ref=f20e418]:
+        - button "Search projects, tasks, people… Ctrl K" [ref=f20e419] [cursor=pointer]:
+          - generic [ref=f20e423]: Search projects, tasks, people…
+          - generic [ref=f20e424]: Ctrl K
+        - generic [ref=f20e425]:
+          - heading "Search" [level=2] [ref=f20e426]
+          - paragraph [ref=f20e427]: Search projects, tasks, team members and departments
+      - button "Change theme" [ref=f20e428] [cursor=pointer]
+      - button "Notifications (1 unread)" [ref=f20e429] [cursor=pointer]:
+        - generic [ref=f20e430]: "1"
+      - button "Account menu" [ref=f20e431] [cursor=pointer]:
+        - generic [ref=f20e432]: SP
+        - generic [ref=f20e434]: Smoke PM
+    - main [ref=f20e435]:
+      - generic [ref=f20e438]:
+        - heading "Welcome, Smoke" [level=1] [ref=f20e439]
+        - paragraph [ref=f20e440]: Live overview of the projects and tasks you can access.
+      - region "My work" [ref=f20e441]:
+        - heading "My work" [level=2] [ref=f20e442]
+        - generic [ref=f20e443]:
+          - link [ref=f20e444] [cursor=pointer]:
+            - /url: /approvals
+            - generic [ref=f20e448]:
+              - paragraph [ref=f20e449]: "1"
+              - paragraph [ref=f20e450]: Waiting for your approval
+          - link [ref=f20e453] [cursor=pointer]:
+            - /url: /approvals?kind=grn
+            - generic [ref=f20e459]:
+              - paragraph [ref=f20e460]: "0"
+              - paragraph [ref=f20e461]: Site receipts to verify
+          - link [ref=f20e464] [cursor=pointer]:
+            - /url: /reports?r=pending-deliveries
+            - generic [ref=f20e470]:
+              - paragraph [ref=f20e471]: "0"
+              - paragraph [ref=f20e472]: Overdue supplier deliveries
+      - generic "Quick actions" [ref=f20e475]:
+        - link "Create project" [ref=f20e476] [cursor=pointer]:
+          - /url: /projects/new
+        - link "Create task" [ref=f20e477] [cursor=pointer]:
+          - /url: /tasks/new
+        - link "Add department" [ref=f20e478] [cursor=pointer]:
+          - /url: /departments?new=1
+        - link "Add team member" [ref=f20e479] [cursor=pointer]:
+          - /url: /team-members/new
+      - generic [ref=f20e480]:
+        - link "Total projects 1" [ref=f20e481] [cursor=pointer]:
+          - /url: /projects
+          - generic [ref=f20e482]:
+            - generic [ref=f20e483]: Total projects
+            - generic [ref=f20e488]: "1"
+        - link "Active projects 0" [ref=f20e490] [cursor=pointer]:
+          - /url: /projects?status=ACTIVE
+          - generic [ref=f20e491]:
+            - generic [ref=f20e492]: Active projects
+            - generic [ref=f20e497]: "0"
+        - link "Completed projects 0" [ref=f20e499] [cursor=pointer]:
+          - /url: /projects?status=COMPLETED
+          - generic [ref=f20e500]:
+            - generic [ref=f20e501]: Completed projects
+            - generic [ref=f20e507]: "0"
+        - link "Total tasks 0" [ref=f20e509] [cursor=pointer]:
+          - /url: /tasks
+          - generic [ref=f20e510]:
+            - generic [ref=f20e511]: Total tasks
+            - generic [ref=f20e517]: "0"
+        - link "Pending tasks 0 To Do + Blocked" [ref=f20e519] [cursor=pointer]:
+          - /url: /tasks?status=TODO,BLOCKED
+          - generic [ref=f20e520]:
+            - generic [ref=f20e521]: Pending tasks
+            - generic [ref=f20e533]:
+              - generic [ref=f20e534]: "0"
+              - generic [ref=f20e535]: To Do + Blocked
+        - link "In progress 0" [ref=f20e536] [cursor=pointer]:
+          - /url: /tasks?status=IN_PROGRESS
+          - generic [ref=f20e537]:
+            - generic [ref=f20e538]: In progress
+            - generic [ref=f20e546]: "0"
+        - link "Completed tasks 0" [ref=f20e548] [cursor=pointer]:
+          - /url: /tasks?status=COMPLETED
+          - generic [ref=f20e549]:
+            - generic [ref=f20e550]: Completed tasks
+            - generic [ref=f20e556]: "0"
+        - link "Overdue tasks 0" [ref=f20e558] [cursor=pointer]:
+          - /url: /tasks?overdue=1
+          - generic [ref=f20e559]:
+            - generic [ref=f20e560]: Overdue tasks
+            - generic [ref=f20e565]: "0"
+        - link "Departments 0" [ref=f20e567] [cursor=pointer]:
+          - /url: /departments
+          - generic [ref=f20e568]:
+            - generic [ref=f20e569]: Departments
+            - generic [ref=f20e576]: "0"
+        - link "Team members 2" [ref=f20e578] [cursor=pointer]:
+          - /url: /team-members
+          - generic [ref=f20e579]:
+            - generic [ref=f20e580]: Team members
+            - generic [ref=f20e588]: "2"
+      - generic [ref=f20e590]:
+        - region "My tasks" [ref=f20e591]:
+          - generic [ref=f20e592]:
+            - heading "My tasks" [level=2] [ref=f20e593]
+            - link "View all" [ref=f20e594] [cursor=pointer]:
+              - /url: /tasks?mine=1
+          - paragraph [ref=f20e595]: No open tasks are assigned to you.
+        - region "Overdue tasks" [ref=f20e596]:
+          - generic [ref=f20e597]:
+            - heading "Overdue tasks" [level=2] [ref=f20e598]
+            - link "View all" [ref=f20e599] [cursor=pointer]:
+              - /url: /tasks?overdue=1
+          - paragraph [ref=f20e600]: Nothing is overdue.
+      - generic [ref=f20e601]:
+        - region "Recent projects" [ref=f20e603]:
+          - generic [ref=f20e604]:
+            - heading "Recent projects" [level=2] [ref=f20e605]
+            - link "All projects" [ref=f20e606] [cursor=pointer]:
+              - /url: /projects
+          - table [ref=f20e608]:
+            - rowgroup [ref=f20e609]:
+              - row [ref=f20e610]:
+                - columnheader "Project" [ref=f20e611]
+                - columnheader "Status" [ref=f20e612]
+                - columnheader "Tasks" [ref=f20e613]
+                - columnheader "Done" [ref=f20e614]
+                - columnheader "Progress" [ref=f20e615]
+                - columnheader "Updated" [ref=f20e616]
+            - rowgroup [ref=f20e617]:
+              - row [ref=f20e618]:
+                - cell "Smoke Test Site Plot 1, Gurugram" [ref=f20e619]:
+                  - link "Smoke Test Site" [ref=f20e620] [cursor=pointer]:
+                    - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345
+                  - generic [ref=f20e621]: Plot 1, Gurugram
+                - cell "Planning" [ref=f20e622]
+                - cell "0" [ref=f20e625]
+                - cell "0" [ref=f20e626]
+                - cell "0 0%" [ref=f20e627]:
+                  - generic [ref=f20e628]:
+                    - progressbar "Progress" [ref=f20e629]
+                    - generic [ref=f20e630]: 0%
+                - cell "21 Nov 2026" [ref=f20e631]
+        - region "Recent activity" [ref=f20e632]:
+          - heading "Recent activity" [level=2] [ref=f20e634]
+          - paragraph [ref=f20e635]: No recent activity.
+  - region "Notifications alt+T"
+  - alert [ref=f20e151]

@@ -1,0 +1,91 @@
+- generic:
+  - generic:
+    - generic:
+      - banner [aria-hidden]:
+        - button
+        - generic:
+          - button:
+            - generic: Search projects, tasks, people…
+            - generic: Ctrl K
+          - generic:
+            - heading [level=2]: Search
+            - paragraph: Search projects, tasks, team members and departments
+        - button
+        - button:
+          - generic: "1"
+        - button:
+          - generic: SA
+          - generic: Smoke Admin
+      - main:
+        - generic [aria-hidden]:
+          - navigation:
+            - list:
+              - listitem:
+                - link:
+                  - /url: /dashboard
+                  - text: Dashboard
+              - listitem [aria-hidden]
+              - listitem:
+                - link [disabled]: Items
+          - generic:
+            - generic:
+              - heading [level=1]: Items
+              - paragraph: Item master with brand-wise stock.
+            - generic:
+              - button: Post stock
+              - button [expanded]: Add item
+        - generic [aria-hidden]:
+          - generic:
+            - searchbox
+          - combobox:
+            - generic: "Category: All"
+          - combobox:
+            - generic: "Status: All"
+        - generic [aria-hidden]:
+          - paragraph: No items found
+          - paragraph: Add an item or adjust your filters.
+        - generic:
+          - generic: No records
+          - generic [aria-hidden]:
+            - combobox:
+              - generic: 20 / page
+            - button [disabled]
+            - generic: 1 / 1
+            - button [disabled]
+  - region "Notifications alt+T"
+  - alert
+  - dialog "Add item" [ref=f13e38]:
+    - heading "Add item" [level=2] [ref=f13e40]
+    - generic [ref=f13e41]:
+      - generic [ref=f13e42]:
+        - generic [ref=f13e43]:
+          - generic [ref=f13e44]: Item code
+          - textbox "Item code" [active] [ref=f13e45]
+          - paragraph [ref=f13e46]: Leave blank to generate one (ITM-0001).
+        - generic [ref=f13e47]:
+          - generic [ref=f13e48]:
+            - text: Unit
+            - generic [aria-hidden] [ref=f13e49]: "*"
+          - combobox "Unit" [ref=f13e50]: Nos
+      - generic [ref=f13e51]:
+        - generic [ref=f13e52]:
+          - text: Item name
+          - generic [aria-hidden] [ref=f13e53]: "*"
+        - textbox "Item name" [ref=f13e54]
+      - generic [ref=f13e55]:
+        - generic [ref=f13e56]: Category
+        - combobox "Category" [ref=f13e57]
+        - paragraph [ref=f13e58]: Pick an existing category or type a new one.
+      - generic [ref=f13e59]:
+        - generic [ref=f13e60]: Description
+        - textbox "Description" [ref=f13e61]
+      - generic [ref=f13e62]:
+        - generic [ref=f13e63]: Status
+        - combobox "Status" [ref=f13e64] [cursor=pointer]:
+          - generic: Active
+        - combobox [aria-hidden] [ref=f13e65]
+        - paragraph [ref=f13e66]: Inactive items keep their stock history but cannot receive new movements.
+      - generic [ref=f13e67]:
+        - button "Cancel" [ref=f13e68] [cursor=pointer]
+        - button "Create item" [ref=f13e69] [cursor=pointer]
+    - button "Close" [ref=f13e70] [cursor=pointer]

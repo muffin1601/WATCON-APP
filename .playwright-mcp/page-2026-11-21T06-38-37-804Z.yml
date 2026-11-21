@@ -1,0 +1,113 @@
+- generic [active] [ref=f19e1]:
+  - generic [ref=f19e3]:
+    - banner [ref=f19e4]:
+      - button "Toggle navigation" [ref=f19e5] [cursor=pointer]
+      - generic [ref=f19e6]:
+        - button "Search projects, tasks, people… Ctrl K" [ref=f19e7] [cursor=pointer]:
+          - generic [ref=f19e11]: Search projects, tasks, people…
+          - generic [ref=f19e12]: Ctrl K
+        - generic [ref=f19e13]:
+          - heading "Search" [level=2] [ref=f19e14]
+          - paragraph [ref=f19e15]: Search projects, tasks, team members and departments
+      - button "Change theme" [ref=f19e16] [cursor=pointer]
+      - button "Notifications (1 unread)" [ref=f19e17] [cursor=pointer]:
+        - generic [ref=f19e18]: "1"
+      - button "Account menu" [ref=f19e19] [cursor=pointer]:
+        - generic [ref=f19e20]: SA
+        - generic [ref=f19e22]: Smoke Admin
+    - main [ref=f19e23]:
+      - generic [ref=f19e24]:
+        - navigation "breadcrumb" [ref=f19e25]:
+          - list [ref=f19e26]:
+            - listitem [ref=f19e27]:
+              - link "Projects" [ref=f19e28] [cursor=pointer]:
+                - /url: /projects
+            - listitem [aria-hidden] [ref=f19e29]
+            - listitem [ref=f19e32]:
+              - link "PRJ-0001" [ref=f19e33] [cursor=pointer]:
+                - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345
+            - listitem [aria-hidden] [ref=f19e34]
+            - listitem [ref=f19e37]:
+              - link "Sales orders" [disabled] [ref=f19e38]
+        - generic [ref=f19e39]:
+          - generic [ref=f19e40]:
+            - heading "Smoke Test Site" [level=1] [ref=f19e41]
+            - generic [ref=f19e42]:
+              - generic [ref=f19e43]: PRJ-0001
+              - generic [ref=f19e44]: Planning
+              - generic [ref=f19e46]: Medium
+          - generic [ref=f19e47]:
+            - link "Create task" [ref=f19e48] [cursor=pointer]:
+              - /url: /tasks/new?projectId=b4e386dc-8674-4d4c-9048-ad82db6e3345
+            - link "Edit" [ref=f19e49] [cursor=pointer]:
+              - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345/edit
+            - button "Archive" [ref=f19e50] [cursor=pointer]
+      - navigation "Project sections" [ref=f19e51]:
+        - tablist [ref=f19e52]:
+          - tab "Overview" [ref=f19e53] [cursor=pointer]
+          - tab "Sales 1" [selected] [ref=f19e54] [cursor=pointer]:
+            - text: Sales
+            - generic [ref=f19e55]: "1"
+          - tab "Materials" [ref=f19e56] [cursor=pointer]
+          - tab "Site & stores" [ref=f19e57] [cursor=pointer]
+          - tab "Accounts" [ref=f19e58] [cursor=pointer]
+          - tab "Records" [ref=f19e59] [cursor=pointer]
+        - tablist "Sales" [ref=f19e60]:
+          - tab "Sales orders 1" [selected] [ref=f19e61] [cursor=pointer]:
+            - text: Sales orders
+            - generic [ref=f19e62]: "1"
+          - tab "Client POs 0" [ref=f19e63] [cursor=pointer]:
+            - text: Client POs
+            - generic [ref=f19e64]: "0"
+          - tab "Running bills 0" [ref=f19e65] [cursor=pointer]:
+            - text: Running bills
+            - generic [ref=f19e66]: "0"
+          - tab "Invoices 0" [ref=f19e67] [cursor=pointer]:
+            - text: Invoices
+            - generic [ref=f19e68]: "0"
+          - tab "Receipts 0" [ref=f19e69] [cursor=pointer]:
+            - text: Receipts
+            - generic [ref=f19e70]: "0"
+      - generic [ref=f19e71]:
+        - paragraph [ref=f19e72]: Approved sales orders are locked. To change one, open it and send an amendment request — a Super Admin approves it and the change is applied as a new revision.
+        - region "Sales orders" [ref=f19e73]:
+          - generic [ref=f19e74]:
+            - generic [ref=f19e75]:
+              - heading "Sales orders" [level=2] [ref=f19e76]
+              - paragraph [ref=f19e77]: Supply orders drawn from the client PO. They drive deliveries to the client and supply invoices.
+            - generic [ref=f19e78]:
+              - link "Open module" [ref=f19e79] [cursor=pointer]:
+                - /url: /sales-orders?projectId=b4e386dc-8674-4d4c-9048-ad82db6e3345
+              - link "New sales order" [ref=f19e80] [cursor=pointer]:
+                - /url: /sales-orders/new?projectId=b4e386dc-8674-4d4c-9048-ad82db6e3345
+          - generic [ref=f19e81]:
+            - searchbox "Search number or party…" [ref=f19e83]
+            - combobox "Status" [ref=f19e84] [cursor=pointer]:
+              - generic: "Status: All"
+          - table [ref=f19e86]:
+            - rowgroup [ref=f19e87]:
+              - row [ref=f19e88]:
+                - columnheader "Number" [ref=f19e89]
+                - columnheader "Date" [ref=f19e90]
+                - columnheader "Details" [ref=f19e91]
+                - columnheader "Amount" [ref=f19e92]
+                - columnheader "Status" [ref=f19e93]
+            - rowgroup [ref=f19e94]:
+              - row [ref=f19e95]:
+                - cell [ref=f19e96]:
+                  - link "SO/2026-27/0001 rev 1" [ref=f19e97] [cursor=pointer]:
+                    - /url: /sales-orders/6562fa56-d1b7-429c-a99c-f87b91ff8842
+                - cell "21 Nov 2026" [ref=f19e98]
+                - cell "Smoke Client Ltd" [ref=f19e99]
+                - cell "₹14,160.00" [ref=f19e101]
+                - cell "Approved" [ref=f19e102]
+          - generic [ref=f19e104]:
+            - generic [ref=f19e105]: Showing 1–1 of 1
+            - generic [ref=f19e106]:
+              - combobox "Rows per page" [ref=f19e107] [cursor=pointer]:
+                - generic: 25 / page
+              - button "Previous page" [disabled]
+              - generic [ref=f19e108]: 1 / 1
+              - button "Next page" [disabled]
+  - region "Notifications alt+T"
+  - alert [ref=f19e109]

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ChevronsUpDown, X } from "lucide-react";
+import { Check, ChevronsUpDown, Plus, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
@@ -58,10 +58,16 @@ export function MultiSelect({ options, value, onChange, placeholder = "Select…
   );
 }
 
-/** Searchable single-select. */
-export function SingleSelect({ options, value, onChange, placeholder = "Select…", searchPlaceholder = "Search…", emptyText = "No matches.", id, invalid, disabled, allowClear = true }: { options: ComboOption[]; value: string | null; onChange: (v: string | null) => void; placeholder?: string; searchPlaceholder?: string; emptyText?: string; id?: string; invalid?: boolean; disabled?: boolean; allowClear?: boolean }) {
+/**
+ * Searchable single-select. With `onCreate`, typing a value that has no case-insensitive
+ * exact match offers "Add …" (the server still enforces uniqueness).
+ */
+export function SingleSelect({ options, value, onChange, placeholder = "Select…", searchPlaceholder = "Search…", emptyText = "No matches.", id, invalid, disabled, allowClear = true, onCreate, createLabel = "Add" }: { options: ComboOption[]; value: string | null; onChange: (v: string | null) => void; placeholder?: string; searchPlaceholder?: string; emptyText?: string; id?: string; invalid?: boolean; disabled?: boolean; allowClear?: boolean; onCreate?: (text: string) => void; createLabel?: string }) {
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const current = options.find((o) => o.value === value);
+  const typed = search.trim();
+  const exact = typed && options.some((o) => o.label.trim().toLowerCase() === typed.toLowerCase());
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -71,11 +77,19 @@ export function SingleSelect({ options, value, onChange, placeholder = "Select�
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-(--radix-popover-trigger-width) min-w-64 p-0" align="start">
-        <Command filter={(itemValue, search) => (itemValue.toLowerCase().includes(search.toLowerCase()) ? 1 : 0)}>
-          <CommandInput placeholder={searchPlaceholder} />
+        <Command filter={(itemValue, search) => (itemValue.startsWith("__create__") ? 1 : itemValue.toLowerCase().includes(search.toLowerCase()) ? 1 : 0)}>
+          <CommandInput placeholder={searchPlaceholder} value={search} onValueChange={setSearch} />
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>
+              {onCreate && typed && !exact && (
+                <CommandItem value={`__create__ ${typed}`} onSelect={() => { onCreate(typed); setSearch(""); setOpen(false); }}>
+                  <Plus className="size-4" />
+                  <span className="truncate">
+                    {createLabel} “{typed}”
+                  </span>
+                </CommandItem>
+              )}
               {allowClear && value && (
                 <CommandItem value="__clear__ none" onSelect={() => { onChange(null); setOpen(false); }}>
                   <X className="size-4 opacity-60" />

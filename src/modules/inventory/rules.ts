@@ -5,14 +5,17 @@
  *      (OPENING / INWARD → IN, OUTWARD → OUT, ADJUSTMENT → chosen direction).
  *  S2  Stock can never go below zero (no approved business rule permits it).
  *  S3  A movement cannot be dated in the future, nor earlier than the latest movement
- *      already posted for the same item–brand, so the ledger's running balance stays
- *      in date order.
+ *      already posted for the same item–brand AT THE SAME LOCATION, so each location's
+ *      running balance stays in date order. Documents post on their posting date.
+ *  S5  Balances are kept per item–brand–location; item_brands.current_qty is their sum.
+ *  S6  An OUT movement may not consume stock reserved for a different project
+ *      (except physical corrections: adjustments, write-offs, reversals).
  *  S4  Period summary: opening = everything before `from` plus OPENING entries;
  *      inward / outward = non-opening movements inside the period;
  *      closing = opening + inward − outward.
  */
 
-export type StockTxnType = "OPENING" | "INWARD" | "OUTWARD" | "ADJUSTMENT";
+export type StockTxnType = "OPENING" | "INWARD" | "OUTWARD" | "ADJUSTMENT" | "RECEIPT" | "TRANSFER_OUT" | "TRANSFER_IN" | "RETURN_TO_SUPPLIER" | "CLIENT_DELIVERY" | "CONSUMPTION" | "WRITE_OFF" | "REVERSAL";
 export type StockDirection = "IN" | "OUT";
 
 export const STOCK_TXN_LABELS: Record<StockTxnType, string> = {
@@ -20,11 +23,22 @@ export const STOCK_TXN_LABELS: Record<StockTxnType, string> = {
   INWARD: "Inward",
   OUTWARD: "Outward",
   ADJUSTMENT: "Adjustment",
+  RECEIPT: "GRN receipt",
+  TRANSFER_OUT: "Transfer out",
+  TRANSFER_IN: "Transfer in",
+  RETURN_TO_SUPPLIER: "Return to supplier",
+  CLIENT_DELIVERY: "Client delivery",
+  CONSUMPTION: "Consumption",
+  WRITE_OFF: "Write-off",
+  REVERSAL: "Reversal",
 };
 
+/** Movement types whose OUT leg may use stock reserved for another project (physical corrections). */
+export const RESERVATION_EXEMPT_TYPES: readonly StockTxnType[] = ["ADJUSTMENT", "WRITE_OFF", "REVERSAL"];
+
 export function directionFor(type: StockTxnType, adjustmentDirection?: StockDirection | null): StockDirection {
-  if (type === "OPENING" || type === "INWARD") return "IN";
-  if (type === "OUTWARD") return "OUT";
+  if (type === "OPENING" || type === "INWARD" || type === "RECEIPT" || type === "TRANSFER_IN") return "IN";
+  if (type === "OUTWARD" || type === "TRANSFER_OUT" || type === "RETURN_TO_SUPPLIER" || type === "CLIENT_DELIVERY" || type === "CONSUMPTION" || type === "WRITE_OFF") return "OUT";
   if (!adjustmentDirection) throw new Error("Adjustment direction is required");
   return adjustmentDirection;
 }

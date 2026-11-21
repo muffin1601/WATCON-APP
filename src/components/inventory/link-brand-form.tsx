@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
@@ -13,14 +14,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { callAction } from "@/lib/call-action";
 import { applyActionResult } from "@/lib/forms";
-import { linkBrandAction, unlinkBrandAction } from "@/modules/inventory/actions";
+import { createBrandAction, linkBrandAction, unlinkBrandAction } from "@/modules/inventory/actions";
 import { linkBrandSchema, type LinkBrandInput } from "@/modules/inventory/validation";
 
 type Output = z.output<typeof linkBrandSchema>;
 export type BrandOption = { id: string; code: string; name: string; status: string };
 
-function LinkBrandForm({ itemId, unit, brands, canAdjust, today, onDone }: { itemId: string; unit: string; brands: BrandOption[]; canAdjust: boolean; today: string; onDone: () => void }) {
+function LinkBrandForm({ itemId, unit, brands: initialBrands, canAdjust, today, onDone, canCreateBrand = true }: { itemId: string; unit: string; brands: BrandOption[]; canAdjust: boolean; today: string; onDone: () => void; canCreateBrand?: boolean }) {
   const router = useRouter();
+  const [extra, setExtra] = useState<BrandOption[]>([]);
+  const brands = [...initialBrands, ...extra];
   const form = useForm<LinkBrandInput, unknown, Output>({
     resolver: zodResolver(linkBrandSchema),
     defaultValues: { itemId, brandId: "", openingQty: "", openingDate: today },
@@ -36,7 +39,7 @@ function LinkBrandForm({ itemId, unit, brands, canAdjust, today, onDone }: { ite
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      <Field id="lb-brand" label="Brand" required error={errors.brandId?.message} help={brands.length ? undefined : "All active brands are already linked. Add a brand on the Brands page first."}>
+      <Field id="lb-brand" label="Brand" required error={errors.brandId?.message} help={brands.length ? undefined : "All brands are already linked — type a new brand name to add it."}>
         <Controller
           control={form.control}
           name="brandId"
@@ -47,7 +50,18 @@ function LinkBrandForm({ itemId, unit, brands, canAdjust, today, onDone }: { ite
               value={field.value || null}
               onChange={(v) => field.onChange(v ?? "")}
               placeholder="Select a brand"
-              searchPlaceholder="Search brands…"
+              searchPlaceholder="Search or add a brand…"
+              onCreate={canCreateBrand ? async (name) => {
+                const res = await callAction(createBrandAction, { name });
+                if (!res.ok) {
+                  toast.error(res.error);
+                  return;
+                }
+                setExtra((x) => [...x, { id: res.data.id, code: "", name, status: "ACTIVE" }]);
+                field.onChange(res.data.id);
+                toast.success(`Brand "${name}" created`);
+              } : undefined}
+              createLabel="Add brand"
               invalid={!!errors.brandId}
               allowClear={false}
             />

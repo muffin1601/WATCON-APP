@@ -1,0 +1,165 @@
+- generic [ref=f20e1]:
+  - generic [ref=f20e3]:
+    - banner [ref=f20e4]:
+      - button "Toggle navigation" [ref=f20e5] [cursor=pointer]
+      - generic [ref=f20e6]:
+        - button "Search projects, tasks, people… Ctrl K" [ref=f20e7] [cursor=pointer]:
+          - generic [ref=f20e11]: Search projects, tasks, people…
+          - generic [ref=f20e12]: Ctrl K
+        - generic [ref=f20e13]:
+          - heading "Search" [level=2] [ref=f20e14]
+          - paragraph [ref=f20e15]: Search projects, tasks, team members and departments
+      - button "Change theme" [ref=f20e16] [cursor=pointer]
+      - button "Notifications (1 unread)" [ref=f20e17] [cursor=pointer]:
+        - generic [ref=f20e18]: "1"
+      - button "Account menu" [ref=f20e19] [cursor=pointer]:
+        - generic [ref=f20e20]: SA
+        - generic [ref=f20e22]: Smoke Admin
+    - main [ref=f20e23]:
+      - generic [ref=f20e24]:
+        - navigation "breadcrumb" [ref=f20e25]:
+          - list [ref=f20e26]:
+            - listitem [ref=f20e27]:
+              - link "Projects" [ref=f20e28] [cursor=pointer]:
+                - /url: /projects
+            - listitem [aria-hidden] [ref=f20e29]
+            - listitem [ref=f20e32]:
+              - link "PRJ-0001" [ref=f20e33] [cursor=pointer]:
+                - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345
+            - listitem [aria-hidden] [ref=f20e34]
+            - listitem [ref=f20e37]:
+              - link "Sales orders" [ref=f20e38] [cursor=pointer]:
+                - /url: /projects/b4e386dc-8674-4d4c-9048-ad82db6e3345?tab=sales-orders
+            - listitem [aria-hidden] [ref=f20e39]
+            - listitem [ref=f20e42]:
+              - link "New sales order" [disabled] [ref=f20e43]
+        - generic [ref=f20e45]:
+          - heading "New sales order" [level=1] [ref=f20e46]
+          - paragraph [ref=f20e47]: Saved as a draft. Once approved it drives the project's material planning and is locked.
+      - generic [ref=f20e48]:
+        - generic [ref=f20e49]:
+          - generic [ref=f20e50]:
+            - heading "Order" [level=2] [ref=f20e51]
+            - paragraph [ref=f20e52]: Pick the project and client. Linking the client's PO is optional — when linked, quantities stay within the contract.
+          - generic [ref=f20e53]:
+            - generic [ref=f20e54]:
+              - generic [ref=f20e55]:
+                - text: Project
+                - generic [aria-hidden] [ref=f20e56]: "*"
+              - paragraph [ref=f20e57]: PRJ-0001 – Smoke Test Site
+            - generic [ref=f20e58]:
+              - generic [ref=f20e59]:
+                - text: Client
+                - generic [aria-hidden] [ref=f20e60]: "*"
+              - combobox "Client" [ref=f20e61] [cursor=pointer]:
+                - generic [ref=f20e62]: Smoke Client Ltd
+              - link "+ New client" [ref=f20e63] [cursor=pointer]:
+                - /url: /parties/new?type=client
+              - paragraph [ref=f20e64]: "Tax: CGST + SGST (same state)"
+            - generic [ref=f20e65]:
+              - generic [ref=f20e66]: Client PO (optional)
+              - combobox "Client PO (optional)" [ref=f20e67] [cursor=pointer]:
+                - generic [ref=f20e68]: No active client PO
+            - generic [ref=f20e69]:
+              - generic [ref=f20e70]:
+                - text: Order date
+                - generic [aria-hidden] [ref=f20e71]: "*"
+              - textbox "Order date" [ref=f20e72]: 2026-11-21
+            - generic [ref=f20e73]:
+              - generic [ref=f20e74]: Deliver by
+              - textbox "Deliver by" [ref=f20e75]
+              - paragraph [ref=f20e76]: Becomes the 'required by' date for material planning.
+            - generic [ref=f20e77]:
+              - generic [ref=f20e78]: Delivery address
+              - textbox "Delivery address" [ref=f20e79]: Plot 1, Gurugram
+        - generic [ref=f20e80]:
+          - generic [ref=f20e81]:
+            - heading "What is being sold" [level=2] [ref=f20e82]
+            - paragraph [ref=f20e83]: Pick an item – brand for material (it flows into material planning and purchasing), or just type a description for services / labour.
+          - table [ref=f20e85]:
+            - rowgroup [ref=f20e86]:
+              - row [ref=f20e87]:
+                - columnheader "#" [ref=f20e88]
+                - columnheader "Item – brand or description" [ref=f20e89]
+                - columnheader "Unit" [ref=f20e90]
+                - columnheader "Qty" [ref=f20e91]
+                - columnheader "Rate ₹" [ref=f20e92]
+                - columnheader "Disc %" [ref=f20e93]
+                - columnheader "GST %" [ref=f20e94]
+                - columnheader "Amount" [ref=f20e95]
+                - columnheader [ref=f20e96]
+            - rowgroup [ref=f20e97]:
+              - row [ref=f20e98]:
+                - cell "1" [ref=f20e99]
+                - cell [ref=f20e100]:
+                  - combobox [expanded] [ref=f20e101] [cursor=pointer]:
+                    - generic [ref=f20e102]: Material (optional)
+                  - textbox "Line 1 description" [ref=f20e103]:
+                    - /placeholder: Description (required for services)
+                - cell [ref=f20e104]:
+                  - textbox "Line 1 unit" [ref=f20e105]
+                - cell [ref=f20e106]:
+                  - textbox "Line 1 quantity" [ref=f20e107]
+                - cell [ref=f20e108]:
+                  - textbox "Line 1 rate" [ref=f20e109]
+                - cell [ref=f20e110]:
+                  - textbox "Line 1 discount" [ref=f20e111]: "0"
+                - cell "18%" [ref=f20e112]:
+                  - combobox "Line 1 GST" [ref=f20e113]:
+                    - option "0%"
+                    - option "0.25%"
+                    - option "3%"
+                    - option "5%"
+                    - option "12%"
+                    - option "18%" [selected]
+                    - option "28%"
+                - cell "—" [ref=f20e114]
+                - cell "Remove line 1" [ref=f20e115]:
+                  - button "Remove line 1" [disabled]
+          - generic [ref=f20e116]:
+            - button "Add line" [ref=f20e117] [cursor=pointer]
+            - generic [ref=f20e118]:
+              - generic [ref=f20e119]:
+                - generic [ref=f20e120]: Taxable value
+                - generic [ref=f20e121]: ₹0.00
+              - generic [ref=f20e122]:
+                - generic [ref=f20e123]: CGST
+                - generic [ref=f20e124]: ₹0.00
+              - generic [ref=f20e125]:
+                - generic [ref=f20e126]: SGST
+                - generic [ref=f20e127]: ₹0.00
+              - generic [ref=f20e128]:
+                - generic [ref=f20e129]: Total
+                - generic [ref=f20e130]: ₹0.00
+        - generic [ref=f20e131]:
+          - heading "Schedules & terms" [level=2] [ref=f20e133]
+          - generic [ref=f20e134]:
+            - generic [ref=f20e135]:
+              - generic [ref=f20e136]: Delivery schedule
+              - textbox "Delivery schedule" [ref=f20e137]:
+                - /placeholder: e.g. 50% by 15 Dec, balance by 31 Jan
+            - generic [ref=f20e138]:
+              - generic [ref=f20e139]: Billing schedule
+              - textbox "Billing schedule" [ref=f20e140]
+            - generic [ref=f20e141]:
+              - generic [ref=f20e142]: Payment terms
+              - textbox "Payment terms" [ref=f20e143]
+            - generic [ref=f20e144]:
+              - generic [ref=f20e145]: Notes
+              - textbox "Notes" [ref=f20e146]
+        - generic [ref=f20e147]:
+          - generic [ref=f20e148]: Total ₹0.00
+          - button "Cancel" [ref=f20e149] [cursor=pointer]
+          - button "Save draft" [ref=f20e150] [cursor=pointer]
+  - region "Notifications alt+T"
+  - alert [ref=f20e151]
+  - dialog [ref=f20e153]:
+    - generic [ref=f20e154]:
+      - group [ref=f20e157]:
+        - combobox [expanded] [active] [ref=f20e158]
+        - group [ref=f20e159]
+      - listbox "Suggestions" [ref=f20e163]:
+        - group [ref=f20e165]:
+          - option "PVC Pipe 50mm — Supreme ITM-0001 · stock 0 Mtr" [selected] [ref=f20e166]:
+            - generic [ref=f20e167]: PVC Pipe 50mm — Supreme
+            - generic [ref=f20e168]: ITM-0001 · stock 0 Mtr

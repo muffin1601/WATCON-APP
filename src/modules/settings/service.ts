@@ -3,7 +3,7 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { writeAudit } from "@/lib/audit";
 import { ForbiddenError, ValidationError, zodFieldErrors } from "@/lib/errors";
-import { can, isPermissionKey, isSuperAdminOnly, PERMISSIONS, type Actor } from "@/lib/permissions/definitions";
+import { can, EDITABLE_ROLE_KEYS, isPermissionKey, isSuperAdminOnly, PERMISSIONS, type Actor, type RoleKey } from "@/lib/permissions/definitions";
 import { optionalText, text } from "@/lib/validations/common";
 
 const MAX_LOGO_BYTES = 256 * 1024;
@@ -44,9 +44,9 @@ export async function getRoleMatrix() {
   };
 }
 
-const roleUpdateSchema = z.object({ role: z.enum(["ADMIN", "USER"]), permissions: z.array(z.string()).max(100) });
+const roleUpdateSchema = z.object({ role: z.enum(EDITABLE_ROLE_KEYS as [string, ...string[]]), permissions: z.array(z.string()).max(200) });
 
-/** Super Admin edits Admin/User grants. Super-admin-only permissions can never be granted. */
+/** Super Admin edits role grants. Super-admin-only permissions can never be granted. */
 export async function updateRolePermissions(actor: Actor, input: unknown) {
   if (!can(actor, "settings.roles")) throw new ForbiddenError();
   const parsed = roleUpdateSchema.safeParse(input);
@@ -57,7 +57,7 @@ export async function updateRolePermissions(actor: Actor, input: unknown) {
     if (isSuperAdminOnly(k)) throw new ForbiddenError(`"${k}" can only be held by a Super Admin.`);
   }
   await db.$transaction(async (tx) => {
-    const role = await tx.role.findUniqueOrThrow({ where: { key: parsed.data.role } });
+    const role = await tx.role.findUniqueOrThrow({ where: { key: parsed.data.role as Exclude<RoleKey, "SUPER_ADMIN"> } });
     const perms = await tx.permission.findMany({ where: { key: { in: keys } } });
     await tx.rolePermission.deleteMany({ where: { roleId: role.id } });
     await tx.rolePermission.createMany({ data: perms.map((p) => ({ roleId: role.id, permissionId: p.id })) });

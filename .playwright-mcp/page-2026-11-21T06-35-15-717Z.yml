@@ -1,0 +1,122 @@
+- generic [active] [ref=f15e1]:
+  - generic [ref=f15e3]:
+    - banner [aria-hidden] [ref=f15e4]:
+      - button [ref=f15e77] [cursor=pointer]
+      - generic [ref=f15e6]:
+        - button [ref=f15e78] [cursor=pointer]:
+          - generic [ref=f15e11]: Search projects, tasks, people…
+          - generic [ref=f15e12]: Ctrl K
+        - generic [ref=f15e13]:
+          - heading [level=2] [ref=f15e79]: Search
+          - paragraph [ref=f15e15]: Search projects, tasks, team members and departments
+      - button [ref=f15e80] [cursor=pointer]
+      - button [ref=f15e81] [cursor=pointer]:
+        - generic [ref=f15e18]: "1"
+      - button [ref=f15e82] [cursor=pointer]:
+        - generic [ref=f15e20]: SA
+        - generic [ref=f15e22]: Smoke Admin
+    - main [ref=f15e23]:
+      - generic [aria-hidden] [ref=f15e83]:
+        - navigation [ref=f15e84]:
+          - list [ref=f15e85]:
+            - listitem [ref=f15e86]:
+              - link [ref=f15e87] [cursor=pointer]:
+                - /url: /items
+                - text: Items
+            - listitem [aria-hidden] [ref=f15e88]
+            - listitem [ref=f15e91]:
+              - link [disabled] [ref=f15e92]: ITM-0001
+        - generic [ref=f15e93]:
+          - generic [ref=f15e94]:
+            - heading [level=1] [ref=f15e95]: PVC Pipe 50mm
+            - generic [ref=f15e96]:
+              - generic [ref=f15e97]: ITM-0001
+              - generic [ref=f15e98]: Active
+              - generic [ref=f15e100]: "Unit: Mtr"
+          - generic [ref=f15e101]:
+            - button [ref=f15e102] [cursor=pointer]: Edit
+            - button [ref=f15e103] [cursor=pointer]: Deactivate
+            - button [ref=f15e104] [cursor=pointer]: Post stock
+      - generic [aria-hidden] [ref=f15e105]:
+        - generic [ref=f15e106]:
+          - generic [ref=f15e107]: Brands
+          - generic [ref=f15e109]: "1"
+        - generic [ref=f15e111]:
+          - generic [ref=f15e112]: Total stock (Mtr)
+          - generic [ref=f15e114]: "0"
+        - generic [ref=f15e116]:
+          - generic [ref=f15e117]: Inward (all time)
+          - generic [ref=f15e119]: "0"
+        - generic [ref=f15e121]:
+          - generic [ref=f15e122]: Outward (all time)
+          - generic [ref=f15e124]: "0"
+      - region [aria-hidden] [ref=f15e126]:
+        - generic [ref=f15e127]:
+          - heading [level=2] [ref=f15e128]: Brand-wise stock
+          - button [ref=f15e129] [cursor=pointer]: Add brand
+        - table [ref=f15e133]:
+          - rowgroup [ref=f15e134]:
+            - row [ref=f15e135]:
+              - columnheader [ref=f15e136]: Brand
+              - columnheader [ref=f15e137]: Opening
+              - columnheader [ref=f15e138]: Inward
+              - columnheader [ref=f15e139]: Outward
+              - columnheader [ref=f15e140]: Closing
+              - columnheader [ref=f15e141]:
+                - generic [ref=f15e142]: Actions
+          - rowgroup [ref=f15e143]:
+            - row [ref=f15e144]:
+              - cell [ref=f15e145]: Supreme
+              - cell [ref=f15e146]: "0"
+              - cell [ref=f15e147]: "0"
+              - cell [ref=f15e148]: "0"
+              - cell [ref=f15e149]: "0"
+              - cell [ref=f15e150]:
+                - generic [ref=f15e151]:
+                  - link [ref=f15e152] [cursor=pointer]:
+                    - /url: /items/45ec131c-b677-4d11-ab6a-1ece4c7ad26c?brandId=5e41d43a-780a-45b5-b377-fef9268b0268#ledger
+                  - button [ref=f15e153] [cursor=pointer]
+          - rowgroup [ref=f15e154]:
+            - row [ref=f15e155]:
+              - cell [ref=f15e156]: Total
+              - cell [ref=f15e157]: "0"
+              - cell [ref=f15e158]: "0"
+              - cell [ref=f15e159]: "0"
+              - cell [ref=f15e160]: 0 Mtr
+              - cell [ref=f15e161]
+      - region "Stock ledger" [ref=f15e162]:
+        - heading [level=2] [aria-hidden] [ref=f15e163]: Stock ledger
+        - generic [aria-hidden] [ref=f15e164]:
+          - combobox [ref=f15e165] [cursor=pointer]:
+            - generic: "Brand: All"
+          - combobox [ref=f15e166] [cursor=pointer]:
+            - generic: "Type: All"
+          - group [ref=f15e167]:
+            - generic [ref=f15e168]: Date
+            - generic [ref=f15e169]: Date
+            - textbox [ref=f15e170]
+            - generic [ref=f15e171]: –
+            - textbox [ref=f15e172]
+        - generic [aria-hidden] [ref=f15e173]:
+          - paragraph [ref=f15e179]: No stock movements
+          - paragraph [ref=f15e180]: Movements appear here once stock is posted.
+        - generic [ref=f15e181]:
+          - generic [ref=f15e182]: No records
+          - generic [aria-hidden] [ref=f15e183]:
+            - combobox [ref=f15e184] [cursor=pointer]:
+              - generic: 20 / page
+            - button [disabled]
+            - generic [ref=f15e185]: 1 / 1
+            - button [disabled]
+      - paragraph [aria-hidden] [ref=f15e186]: Created 21 Nov 2026, 12:04 pm by Smoke Admin · Last updated 21 Nov 2026, 12:04 pm
+  - region "Notifications alt+T":
+    - list:
+      - listitem [ref=f15e187]:
+        - button "Close toast" [ref=f15e188] [cursor=pointer]
+        - generic [ref=f15e196]: Brand added
+  - alert [ref=f15e36]
+  - dialog "Add brand to item" [ref=f15e38]:
+    - generic [ref=f15e39]:
+      - heading "Add brand to item" [level=2] [ref=f15e40]
+      - paragraph [ref=f15e41]: Each brand keeps its own stock balance for this item.
+    - button "Close" [ref=f15e59] [cursor=pointer]

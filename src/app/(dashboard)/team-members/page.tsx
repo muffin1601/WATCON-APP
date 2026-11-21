@@ -65,7 +65,7 @@ export default async function TeamMembersPage({ searchParams }: PageProps<"/team
           activeTasks: r.activeTasks,
           completedTasks: r.completedTasks,
           // UI hint only; the service re-checks every mutation.
-          canManage: isSuperAdmin || (canCreate && r.role.key === "USER"),
+          canManage: isSuperAdmin || (canCreate && r.role.key !== "ADMIN" && r.role.key !== "SUPER_ADMIN"),
           isSelf: r.id === user.id,
         }))}
       />

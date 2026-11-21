@@ -184,6 +184,7 @@ export async function postStockMovement(actor: Actor, input: unknown) {
     organizationId: actor.organizationId,
     actorId: actor.id,
     itemBrandId: position.id,
+    locationId: data.locationId,
     type: data.type,
     direction: directionFor(data.type, data.direction),
     quantity: data.quantity,
@@ -211,7 +212,7 @@ export async function getLedger(actor: Actor, rawQuery: unknown) {
   requirePermission(actor, "items.view");
   const query = ledgerQuerySchema.parse(rawQuery ?? {});
   const result = await repo.findLedger(
-    { organizationId: actor.organizationId, q: query.q, itemId: query.itemId, brandId: query.brandId, type: query.type, from: toDbDate(query.from), to: toDbDate(query.to) },
+    { organizationId: actor.organizationId, q: query.q, itemId: query.itemId, brandId: query.brandId, type: query.type, locationId: query.locationId, projectId: query.projectId, from: toDbDate(query.from), to: toDbDate(query.to) },
     { skip: (query.page - 1) * query.pageSize, take: query.pageSize },
   );
   return { ...result, page: query.page, pageSize: query.pageSize, query };
